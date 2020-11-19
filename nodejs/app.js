@@ -1,12 +1,20 @@
 const express = require('express');
 const ejs = require('ejs');
 const app = express();
+const admin=require('firebase-admin');
+const serviceAccount=require('./sapproject-28227-firebase-adminsdk-hcmqw-6058543d99.json');
 
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
+
+const db=admin.firestore();
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + "/public"));
 
 app.get('/', (req,res) => {
-    res.send('working')
+    res.send('working');
 })
 
 app.get('/employee' , (req,res) => {
