@@ -21,6 +21,10 @@ app.get('/employee' , (req,res) => {
     res.render('employee');
 })
 
+app.get('/manager', (req,res) => {
+    res.render('manager/manager');
+})
+
 app.listen('3000', ()=>{
     console.log('Server Started at Port 3000...')
 })
