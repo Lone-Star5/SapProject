@@ -132,7 +132,23 @@
 
             <!-- This is for reviewing tasks -->
             <div class="task-review">
-
+                <div class="container">
+                    <div>
+                        <h1>Review Tasks</h1>
+                    </div>
+                    <div>
+                        <ul class="list-group">
+                            <% tasks.forEach((task,i)=>{ %>
+                            <li class="list-group-item"> <%= task.name %> <button style="float:right" onclick="taskAssign(event)" id="<%=i%>" class="btn btn-primary">Select</button></li>
+                            <div style="display:none;" id="task-<%=i%>">
+                                <h1> <%= task.employee %> </h1>
+                                <label> Points </label>
+                                <input type="number" task=<%=task%>>
+                            </div>
+                            <% }) %> 
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <!-- This is for re-assigning tasks of sick employees -->
