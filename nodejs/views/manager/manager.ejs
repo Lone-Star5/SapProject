@@ -56,7 +56,21 @@
             display: block;
             width:50%;
         }
-
+        .review-task-header{
+            height:150px;
+            text-align:center;
+        }
+        .review-task-header h1{
+            padding-top:50px;
+        }
+        .reassign-task-header{
+            height:150px;
+            text-align:center;
+        }
+        .reassign-task-header h1{
+            padding-top:50px;
+        }
+       
        
     </style>
 </head>
@@ -86,7 +100,7 @@
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
                       </svg>
-                      Reassign Tasks of Employees
+                      Reassign Tasks
                 </a>
               </div>
         </div>
@@ -131,20 +145,31 @@
 
 
             <!-- This is for reviewing tasks -->
-            <div class="task-review">
+            <div style="display:none;" class="task-review">
                 <div class="container">
-                    <div>
-                        <h1>Review Tasks</h1>
+                    <div class="review-task-header">
+                        <h1><strong>Review Tasks</strong></h1>
                     </div>
-                    <div>
+                    <div class="mb-5">
                         <ul class="list-group">
                             <% tasks.forEach((task,i)=>{ %>
-                            <li class="list-group-item"> <%= task.name %> <button style="float:right" onclick="taskAssign(event)" id="<%=i%>" class="btn btn-primary">Select</button></li>
-                            <div style="display:none;" id="task-<%=i%>">
-                                <h1> <%= task.employee %> </h1>
-                                <label> Points </label>
-                                <input type="number" task=<%=task%>>
-                            </div>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <%= task.name %> 
+                                    </div>
+                                    <div class="col-md-8"></div>
+                                    <div class="col-md-2">
+                                        <button style="float:right;" onclick="taskReview(event)" id="<%=i%>" class="btn btn-primary">Select</button> 
+                                    </div>
+                                </div>
+                                <div class="mt-4" style="display:none;" id="task-<%=i%>">
+                                    <h5 style="display:inline"> <%= task.employee %> </h1>
+                                    <label> Points </label>
+                                    <input class="points" type="number" data-task= "<%=task.totalPoints%>" >
+                                    <button style="float:right;" class="btn btn-danger submit">Update</button>
+                                </div>
+                            </li>
                             <% }) %> 
                         </ul>
                     </div>
@@ -154,17 +179,60 @@
             <!-- This is for re-assigning tasks of sick employees -->
             <div style="display:none;" class="task-sick">
                 <div class="container">
-                    <div>
+                    <div class="reassign-task-header">
                         <h1>Re-Assign Tasks</h1>
                     </div>
-                    <div>
+                    <div class="mb-5">
                         <ul class="list-group">
-                            <% for(let i=0;i<3;++i) { %>
-                            <li class="list-group-item">Task 1<button style="float:right" onclick="taskAssign(event)" id="<%=i%>" class="btn btn-primary">Select</button></li>
-                            <div style="display:none;" id="task-<%=i%>">
-                                some input
-                            </div>
-                            <% } %> 
+                            <% tasks.forEach((task,i)=>{ %>
+                            <li class="list-group-item"> 
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <%= task.name %>
+                                    </div>
+                                    <div class="col-md-8"></div>
+                                    <div class="col-md-2">
+                                        <button style="float:right" onclick="taskAssign(event)" id="assign-<%=i%>" class="btn btn-primary">Select</button>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4" style="display:none;" id="task-assign-<%=i%>">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h5> Employee Name: <%=task.employee%></h5>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Assign Points
+                                                <input class='reAssign-points' type="number" data-id="<%=i%>" data-task="<%=task.totalPoints%>">
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Select New Employee
+                                                <select>
+                                                    <option>Undetaker</option>
+                                                    <option>Rey Mysterio</option>
+                                                    <option>The Rock</option>
+                                                </select>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <div id="reAssign-points-<%=i%>" class="col-md-10">
+                                                    Task Points: <%=task.totalPoints %>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button style="float:right;" class="btn btn-danger">Update</button>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                       
+                                    </div>
+                                </div>
+                            </li>
+                            <% }) %> 
                         </ul>
                     </div>
                 </div>
@@ -176,6 +244,7 @@
     
     
     <script>
+        // Select which tasks to do for the manager
         Array.from(document.querySelectorAll('a')).forEach((item)=> {
                 document.querySelector(`a.${item.className}`).addEventListener('click', ()=>{
                 displayOff();
@@ -188,9 +257,42 @@
             })
         }
         
-        function taskAssign(event){
-            document.querySelector(`div#task-${event.target.id}`).style.display="block";
+        // Toggle Select Button for Review task
+        function taskReview(event){
+            let element = document.querySelector(`div#task-${event.target.id}`);
+            if(element.style.display=='none')
+                element.style.display='block';
+            else
+                element.style.display='none';
+            // document.querySelector(`div#task-${event.target.id}`).style.display="block";
         }
+        // Toggle Select Button for ReAssign task
+        function taskAssign(event){
+            let element = document.querySelector(`div#task-${event.target.id}`);
+            if(element.style.display=='none')
+                element.style.display='block';
+            else
+                element.style.display='none';
+            // document.querySelector(`div#task-${event.target.id}`).style.display="block";
+        }
+
+        // Set input form to maximum of totalPoints if exceeds for Review Task
+        Array.from(document.querySelectorAll('.points')).forEach((item)=>{
+            item.addEventListener('input',(e)=>{
+            if(e.target.value>Number(e.target.dataset.task)){
+                e.target.value=Number(e.target.dataset.task);
+            }
+        })});
+
+        // Set total points for new employee to the difference of previous total points and assigned points
+        Array.from(document.querySelectorAll('.reAssign-points')).forEach((item)=>{
+            item.addEventListener('input',(e)=>{
+            if(e.target.value>Number(e.target.dataset.task)){
+                e.target.value=Number(e.target.dataset.task);
+            }
+            document.querySelector(`#reAssign-points-${e.target.dataset.id}`).innerText=`Task Points: ${e.target.dataset.task-e.target.value}`;
+        })});
+
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
