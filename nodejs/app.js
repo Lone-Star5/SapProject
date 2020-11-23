@@ -55,7 +55,19 @@ app.get('/manager', (req,res) => {
 })
 
 app.get('/employee',(req,res)=>{
-    
+    tasks=[
+        {
+            name: 'Task 1',
+            employee: 'Employee 1',
+            points: 0,
+            totalPoints: 10,
+            deadline: '2020-12-06',
+            link: 'www.google.com',
+            description: 'This is Task 1',
+            completed: true   
+        }
+    ]
+    res.render('employee',tasks=tasks);
 });
 
 app.listen('3000', ()=>{
