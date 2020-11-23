@@ -122,8 +122,13 @@
                         <label for="task-name">Task Name</label>
                         <!-- <input type="text" class="form-control" name="task-name" id="task-name"> -->
                         <select class="custom-select" name="task-name" id="task-name">
+                            <% tasks.forEach((task,i)=>{ %>
+                                <option><%=task.name%></option>
+                            <%});%>
                         </select>
+                        <button id="fetchDetails" class="btn btn-primary">Fetch details</button>
                     </div>
+                    <div id="detailBlock" style="display: none;">
                     <div class="form-group">
                         <label for="task-employee">Employee Name</label>
                         <input type="text" class="form-control" name="task-employee" id="task-employee" disabled>
@@ -151,6 +156,7 @@
                         <textarea class="form-control" name="task-desc" id="task-desc" rows="10" disabled></textarea>
                     </div>
                     <button class = "btn btn-primary">Submit</button>
+                </div>
                 </form>
             </div>
 
@@ -178,7 +184,8 @@
                                     <h5 style="display:inline"> <%= task.employee %> </h1>
                                     <!-- <label> Points </label>
                                     <input class="points" type="number" data-task= "<%=task.totalPoints%>" > -->
-                                    <button style="float:right" class="btn btn-success submit">Mark as Complete</button>
+                                    <button style="float:right;" class="btn btn-secondary">Add Comment</button>
+                                    <button id="addComment" style="float:right" class="btn btn-success submit">Mark as Complete</button>
                                 </div>
                             </li>
                             <% }) %> 
@@ -221,9 +228,9 @@
                                                 <div id="reAssign-points-<%=i%>" class="col-md-10">
                                                     <strong>Task Points: <%=task.totalPoints %></strong>
                                                 </div><br>
-                                                <div class="col-md-2">
+                                                <!-- <div class="col-md-2">
                                                     <button style="float:right;" class="btn btn-secondary">Add Comment</button>
-                                                </div>
+                                                </div> -->
                                             </div>
                                             
                                         </div>
@@ -292,6 +299,10 @@
             document.querySelector(`#reAssign-points-${e.target.dataset.id}`).innerText=`Task Points: ${e.target.dataset.task-e.target.value}`;
         })});
 
+        var x=document.getElementById('fetchDetails');
+        x.addEventListener('click',()=>{
+            detailBlock.style.display="block";
+        });
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
