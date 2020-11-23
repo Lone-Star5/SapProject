@@ -70,6 +70,10 @@ app.get('/employee',(req,res)=>{
     res.render('employee',tasks=tasks);
 });
 
+app.get('/employee/formWellBeing',(req,res)=>{
+    res.render('employeeHealth');
+});
+
 app.listen('3000', ()=>{
     console.log('Server Started at Port 3000...')
 });
