@@ -65,7 +65,17 @@ app.get('/employee',(req,res)=>{
             link: 'www.google.com',
             description: 'This is Task 1',
             completed: true   
-        }
+        },
+        {
+            name: 'Task 2',
+            employee: 'Employee 2',
+            points: 0,
+            totalPoints: 20,
+            deadline: '2020-12-06',
+            link: 'www.google.com',
+            description: 'This is Task 2',
+            completed: true   
+        },
     ]
     res.render('employee',tasks=tasks);
 });
