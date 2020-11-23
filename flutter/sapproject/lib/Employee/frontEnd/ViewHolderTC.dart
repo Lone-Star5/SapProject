@@ -3,15 +3,15 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ViewHolderTaskAssigned extends StatelessWidget {
+class ViewHolderTaskCompleted extends StatelessWidget {
   final String _textToBeShown;
-  ViewHolderTaskAssigned(this._textToBeShown);
+  ViewHolderTaskCompleted(this._textToBeShown);
   @override
   Widget build(BuildContext context) {
     final double _cotainerHeight = MediaQuery.of(context).size.height * 0.13;
     final double _clipperWidth = MediaQuery.of(context).size.width * 0.3;
     final double _clipperHeight = MediaQuery.of(context).size.height * 0.13;
-    //ViewHolder Container
+    //ViewHolder Container, the basic layout of each tasks
     return Container(
       height: _cotainerHeight,
       margin: const EdgeInsets.all(10.0),
@@ -49,14 +49,33 @@ class ViewHolderTaskAssigned extends StatelessWidget {
                         Colors.grey[400],
                       ],
                       end: Alignment.bottomLeft)),
+              //The Widget which contains the Score :
               child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 15.0),
-                  child: Text(
-                    "25/10/2020",
-                    style: GoogleFonts.ubuntu(
-                        textStyle:
-                            TextStyle(color: Colors.blue[800], fontSize: 20)),
+                //The Widget below is responsible for the drawing of circle
+                child: CustomPaint(
+                  painter: DrawCircle(),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      //Points Obtained
+                      Text(
+                        "20",
+                        style: GoogleFonts.ubuntu(
+                            textStyle:
+                                TextStyle(color: Colors.white, fontSize: 10)),
+                      ),
+                      SizedBox(
+                        width: _clipperWidth * 0.3,
+                        child: Divider(color: Colors.white),
+                      ),
+                      //Total Points for The Task
+                      Text(
+                        "20",
+                        style: GoogleFonts.ubuntu(
+                            textStyle:
+                                TextStyle(color: Colors.white, fontSize: 10)),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -93,5 +112,31 @@ class BackGroundClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
     return true;
+  }
+}
+
+/*
+    Custom Painter
+    Used for drawing the cirlce inside the clip Path
+    Contains the Points obtained!
+*/
+
+class DrawCircle extends CustomPainter {
+  Paint _paint;
+  DrawCircle() {
+    _paint = Paint()
+      ..color = Colors.blueGrey
+      ..strokeWidth = 10.0
+      ..style = PaintingStyle.fill;
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawCircle(Offset(size.width / 2, size.height / 2), 30.0, _paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
   }
 }
