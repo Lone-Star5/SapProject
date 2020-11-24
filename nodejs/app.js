@@ -2,6 +2,7 @@ const express = require('express');
 const ejs = require('ejs');
 const app = express();
 const admin=require('firebase-admin');
+const bodyParser = require('body-parser');
 // const serviceAccount=require('./sapproject-28227-firebase-adminsdk-hcmqw-6058543d99.json');
 
 
@@ -12,6 +13,8 @@ const admin=require('firebase-admin');
 // const db=admin.firestore();
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + "/public"));
+app.use(bodyParser.urlencoded({extended: true}));
+
 
 app.get('/', (req,res) => {
     res.render('landing');
@@ -90,6 +93,21 @@ app.get('/employee/formWellBeing',(req,res)=>{
     res.render('employeeHealth');
 });
 
+
+// HR Routes
+app.get('/hr', (req,res) => {
+    res.render('hr/hr');
+})
+
+app.post('/health/:id', (req,res)=>{
+    let id = req.params.id;
+    data = [{
+        id: id,
+        date: new Date(),
+        status: 'sick'
+    }]
+    res.json(data);
+})
 
 // Server Listening at Port 3000
 app.listen('3000', ()=>{

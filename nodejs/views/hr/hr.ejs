@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human Resources</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    <style>
+         /* Sidebar Navbar */
+         .sidenav {
+            height: 100%;
+            min-height: 97vh;
+            /* width: 100%; */
+            /* position: fixed; */
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
+
+        .sidenav a {
+            padding: 6px 6px 6px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .nav-hr-heading{
+            padding: 6px 6px 6px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #ffffff;
+            display: block;
+            height:100px;
+        }
+
+        .hr-health-header{
+            height:150px;
+            text-align:center;
+        }
+        .hr-health-header h1{
+            padding-top:30px;
+        }
+        #hr-health-employee-details{
+            margin-top:30px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="row">
+        <div class="col-md-3">
+            <div class="sidenav">
+                <div class="nav-hr-heading">
+                    Human Resource
+                </div>
+                <hr style="background:white;">
+                <a class="hr-health" href="#">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
+                      </svg>
+                    Health Report
+                </a>
+
+                <a class="hr-task" href="#">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
+                      </svg>
+                      Employee Report
+                </a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="hr-health">
+                <div class="container">
+                    <div class="hr-health-header">
+                        <h1><strong>Health Report</strong></h1>
+                    </div>
+                    <div class="form-group">
+                        <label for="hr-health-employee">Select Employee</label>
+                        <select name="id" class="custom-select" id="hr-health-employee">
+                            <option id='1'>Undertaker</option>
+                            <option id='2'>Rey Mysterio</option>
+                            <option id='3'>The Rock</option>
+                        </select>
+                    </div>
+                    <div style="display:none;" id="hr-health-employee-details">
+                        <div>
+                            Past Health Reports
+                        </div>
+                        <ul class="list-group" id='ul-hr-health'>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:none;" class="hr-task">
+                task
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Select which tasks to do for the manager
+        Array.from(document.querySelectorAll('a')).forEach((item)=> {
+            document.querySelector(`a.${item.className}`).addEventListener('click', ()=>{
+                displayOff();
+                document.querySelector(`div.${item.className}`).style.display="block";
+            })
+        })
+        let displayOff = () =>{
+            Array.from(document.querySelectorAll('a')).forEach((item)=>{
+                document.querySelector(`div.${item.className}`).style.display="none";
+            })
+        }
+
+        // Show Employee Details
+        document.querySelector('#hr-health-employee').addEventListener('change',()=>{
+            let id = document.querySelector('option:checked').id;
+            fetch(`/health/${id}`, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, *cors, same-origin
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: {
+                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: 'follow', // manual, *follow, error
+                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify({'empty':'data'}) // body data type must match "Content-Type" header
+            }).then(data => data.json()).then((info)=>{
+                document.querySelector('#hr-health-employee-details').style.display='block';
+                console.log(info);
+                let ul = document.querySelector('#ul-hr-health')
+                ul.innerHTML='';
+                ul.style.cursor='pointer';
+                info.forEach((entry)=>{
+                    let {date,status} = entry;
+                    let listItem = document.createElement("li");
+                    listItem.classList.add('list-group-item')
+                    let div = document.createElement('div');
+                    div.classList.add('row');
+                    let div1 = document.createElement('div');
+                    div1.classList.add('col-md-6');
+                    let div2 = document.createElement('div');
+                    div2.classList.add('col-md-6');
+                    div1.innerText='Date: ';
+                    div2.innerText='Status: ';
+                    let span1 = document.createElement('span');
+                    span1.innerText=new Date(date).toDateString();
+                    div1.appendChild(span1);
+                    let span2 = document.createElement('span');
+                    span2.innerText=status;
+                    div2.appendChild(span2); 
+                    div.appendChild(div1);
+                    div.appendChild(div2);
+                    listItem.appendChild(div);
+                    ul.appendChild(listItem);
+                })
+            }) 
+        })
+
+            
+    </script>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+
+</body>
+</html>
