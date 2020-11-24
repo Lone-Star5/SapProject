@@ -58,6 +58,10 @@ app.get('/manager', (req,res) => {
     res.render('manager/manager',tasks=tasks);
 })
 
+app.get('/manager/report', (req,res) => {
+    res.render('manager/report')
+})
+
 app.listen('3000', ()=>{
     console.log('Server Started at Port 3000...')
 })
