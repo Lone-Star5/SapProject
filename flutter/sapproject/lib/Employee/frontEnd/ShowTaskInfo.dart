@@ -20,9 +20,12 @@ class ShowTaskInfo {
                 child: SizedBox(
                   height: _heightForCard,
                   width: _widthForCard,
+                  //Column widget is responsible for containing all the other widgets of showother task
+                  // Contains title, description, points, date and go to task button
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
+                      // The Row widget here is responsible for the Title and the space after it horizontally.
                       Row(children: [
                         Text(
                           StringText.SHOWINFO_TASK_TITLE,
@@ -32,6 +35,7 @@ class ShowTaskInfo {
                         ),
                         Expanded(child: Divider(color: Colors.transparent))
                       ]),
+                      //This widget prints the title, whatever is assigned to the task.
                       Container(
                         margin: EdgeInsets.only(top: 10, bottom: 10),
                         child: Text(
@@ -41,6 +45,7 @@ class ShowTaskInfo {
                               fontWeight: FontWeight.bold, fontSize: 30),
                         ),
                       ),
+                      //This widget is responsible for the description and the space after it.
                       Container(
                         margin: const EdgeInsets.only(bottom: 15),
                         child: Row(children: [
@@ -56,6 +61,7 @@ class ShowTaskInfo {
                           ))
                         ]),
                       ),
+                      //This is a scrollable widget, so that it contains all the description of the task in the screen.
                       Expanded(
                         child: SingleChildScrollView(
                           scrollDirection: Axis.vertical,
@@ -65,6 +71,8 @@ class ShowTaskInfo {
                               )),
                         ),
                       ),
+                      //This widget is resposnsible for showing the Points assigned to each Task
+                      // Contains one text widget for "Points" and A Custom Paint for Circle
                       Container(
                         margin: const EdgeInsets.only(top: 15),
                         child: Row(
@@ -88,6 +96,8 @@ class ShowTaskInfo {
                           ],
                         ),
                       ),
+                      // This widget is responsible for showing the date of the task
+                      // It contains the icon, veritical divider and the date Text Widget
                       Container(
                         margin: const EdgeInsets.only(
                             left: 15, right: 15, bottom: 20, top: 20),
@@ -118,6 +128,8 @@ class ShowTaskInfo {
                           ],
                         ),
                       ),
+                      // Widget for Showing Go To Task Button
+                      // Upon clicking this button the designated webpage for the task will be opened
                       Container(
                         margin: const EdgeInsets.only(bottom: 30),
                         child: GestureDetector(
@@ -148,6 +160,13 @@ class ShowTaskInfo {
         });
   }
 }
+
+/*
+  This is a Custom DrawCircle class, which extends CustomPainter
+  It is responsible for drawing the small circle, besides Point, inside which
+  Points are assigned.
+  It extends "Custom Painer" class
+*/
 
 class DrawCircle extends CustomPainter {
   Paint _paint;

@@ -6,32 +6,60 @@ import 'package:sapproject/Employee/frontEnd/ShowTaskInfo.dart';
 import 'package:sapproject/Employee/frontEnd/ViewHolderTA.dart';
 
 class TaskAssigned extends StatefulWidget {
+  final GlobalKey<ScaffoldState> _scaffoldkey;
+  TaskAssigned(this._scaffoldkey);
   @override
-  _TaskAssignedState createState() => _TaskAssignedState();
+  _TaskAssignedState createState() => _TaskAssignedState(_scaffoldkey);
 }
 
 class _TaskAssignedState extends State<TaskAssigned> {
+  final GlobalKey<ScaffoldState> _scaffoldkey;
   final List<String> _justForDemo = ["Task1", "Task2", "Task3", "Task4"];
+  _TaskAssignedState(this._scaffoldkey);
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final _heightForHeading = MediaQuery.of(context).size.height * 0.17;
     return Column(
       children: <Widget>[
         //Heading for the Task Assigned Page
         Container(
-          margin: const EdgeInsets.only(top: 25, left: 10),
-          padding: const EdgeInsets.only(left: 15, top: 25),
+          height: _heightForHeading,
           width: double.infinity,
-          child: Text(StringText.HEADING_TASK_ASSIGNED,
-              textAlign: TextAlign.left,
-              style: GoogleFonts.montserrat(
-                  textStyle: TextStyle(color: Colors.black, fontSize: 40))),
+          padding: const EdgeInsets.only(left: 20, top: 25),
+          child: Row(
+            children: [
+              InkWell(
+                onTap: () => _scaffoldkey.currentState.openDrawer(),
+                child: Container(
+                  margin: const EdgeInsets.only(left: 10),
+                  child: Icon(
+                    Icons.menu,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              //Text For Heading
+              Container(
+                margin: const EdgeInsets.only(left: 15),
+                child: Text(StringText.HEADING_TASK_ASSIGNED,
+                    textAlign: TextAlign.left,
+                    style: GoogleFonts.montserrat(
+                        textStyle:
+                            TextStyle(color: Colors.white, fontSize: 40))),
+              ),
+            ],
+          ),
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Colors.black, Colors.blueGrey])),
         ),
-        //Grey Line which seperates the Heading from other Task
-        Container(
-            margin:
-                const EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
-            child: Divider(color: Colors.grey)),
         /*
             ReOrderable ListView 
             - This widget is responsible for showing the Task Assigned to the employee by the project manager.
