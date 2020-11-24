@@ -105,6 +105,11 @@ app.post('/health/:id', (req,res)=>{
         id: id,
         date: new Date(),
         status: 'sick'
+    },
+    {
+        id: id,
+        date: new Date(),
+        status: 'not sick'
     }]
     res.json(data);
 })

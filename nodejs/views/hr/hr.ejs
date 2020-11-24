@@ -140,7 +140,6 @@
                 body: JSON.stringify({'empty':'data'}) // body data type must match "Content-Type" header
             }).then(data => data.json()).then((info)=>{
                 document.querySelector('#hr-health-employee-details').style.display='block';
-                console.log(info);
                 let ul = document.querySelector('#ul-hr-health')
                 ul.innerHTML='';
                 ul.style.cursor='pointer';
@@ -151,9 +150,9 @@
                     let div = document.createElement('div');
                     div.classList.add('row');
                     let div1 = document.createElement('div');
-                    div1.classList.add('col-md-6');
+                    div1.classList.add('col-md-10');
                     let div2 = document.createElement('div');
-                    div2.classList.add('col-md-6');
+                    div2.classList.add('col-md-2');
                     div1.innerText='Date: ';
                     div2.innerText='Status: ';
                     let span1 = document.createElement('span');
