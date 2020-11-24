@@ -113,3 +113,17 @@ app.post('/health/:id', (req,res)=>{
 app.listen('3000', ()=>{
     console.log('Server Started at Port 3000...')
 });
+
+
+
+// app.get('/', (req,res) => {
+//     res.render('sample');
+// })
+
+// app.post('/', (req, res) => {
+//     let name=req.body.name;
+//     var temp=db.collection('users').doc(name);
+//     return temp.set({complaint: req.body.complaint, department: req.body.dept}).then(()=>
+//     console.log('Entered')
+//     );
+// });
