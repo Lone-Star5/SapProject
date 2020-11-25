@@ -23,7 +23,7 @@ app.get('/', (req,res) => {
     res.render('landing');
 })
 
-// Manager Routes
+
 app.get('/manager', (req,res) => {
     let tasks = []
     db.collection('Task').get().then((response)=>{
@@ -123,7 +123,6 @@ app.get('/employee/formWellBeing',(req,res)=>{
 });
 
 
-// HR Routes
 app.get('/hr', (req,res) => {
     res.render('hr/hr');
 })
@@ -159,7 +158,10 @@ app.post('/monthlyreport/:id', (req,res) => {
     res.json(data);
 })
 
-// Server Listening at Port 3000
+app.get('/employee/login',(req,res)=>{
+    res.render('Employee_Login');
+});
+
 app.listen('3000', ()=>{
     console.log('Server Started at Port 3000...')
 });
