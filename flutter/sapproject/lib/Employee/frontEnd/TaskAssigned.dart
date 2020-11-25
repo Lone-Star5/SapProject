@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sapproject/Employee/backEnd/StringText.dart';
@@ -14,11 +16,12 @@ class TaskAssigned extends StatefulWidget {
 
 class _TaskAssignedState extends State<TaskAssigned> {
   final GlobalKey<ScaffoldState> _scaffoldkey;
-  final List<String> _justForDemo = ["Task1", "Task2", "Task3", "Task4"];
+  List<DocumentSnapshot> _listOfTasks;
   _TaskAssignedState(this._scaffoldkey);
   @override
   void initState() {
     super.initState();
+    _listOfTasks = List<DocumentSnapshot>();
   }
 
   @override
@@ -69,17 +72,28 @@ class _TaskAssignedState extends State<TaskAssigned> {
           //Parent Widget - Theme, so as to make the reorderable list view transparent when dragging the tasks.
           child: Theme(
             data: ThemeData(canvasColor: Colors.transparent),
-            child: ReorderableListView(
-              children: _justForDemo
-                  .map((e) => InkWell(
-                        key: ObjectKey(e),
-                        child: ViewHolderTaskAssigned(e),
-                        onTap: () => ShowTaskInfo().getCard(context),
-                      ))
-                  .toList(),
-              onReorder: (oldIndex, newIndex) =>
-                  TaskAssignedBackEnd().onReorder(oldIndex, newIndex),
-            ),
+            child: StreamBuilder(
+                stream:
+                    FirebaseFirestore.instance.collection("Task").snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return const Text("Loading!...");
+                  _listOfTasks = snapshot.data.documents;
+                  _listOfTasks.removeWhere((element) =>
+                      element['employee'] !=
+                          FirebaseAuth.instance.currentUser.email ||
+                      element['completed'] == true);
+                  return ReorderableListView(
+                    children: _listOfTasks
+                        .map((e) => InkWell(
+                              key: ObjectKey(e),
+                              child: ViewHolderTaskAssigned(e),
+                              onTap: () => ShowTaskInfo().getCard(context, e),
+                            ))
+                        .toList(),
+                    onReorder: (oldIndex, newIndex) =>
+                        TaskAssignedBackEnd().onReorder(oldIndex, newIndex),
+                  );
+                }),
           ),
         )
       ],

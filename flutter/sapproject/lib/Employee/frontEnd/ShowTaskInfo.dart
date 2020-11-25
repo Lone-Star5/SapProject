@@ -1,12 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sapproject/Employee/backEnd/ShowTaskBackEnd.dart';
 import 'package:sapproject/Employee/backEnd/StringText.dart';
 
 class ShowTaskInfo {
-  void getCard(BuildContext context) {
+  void getCard(BuildContext context, DocumentSnapshot documentSnapshot) {
     final _heightForCard = MediaQuery.of(context).size.height * 0.7;
     final _widthForCard = MediaQuery.of(context).size.width * 0.9;
+    final Timestamp timestamp = documentSnapshot['deadline'];
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -39,7 +41,7 @@ class ShowTaskInfo {
                       Container(
                         margin: EdgeInsets.only(top: 10, bottom: 10),
                         child: Text(
-                          "Some Random Title To Be Fixed",
+                          documentSnapshot['title'],
                           textAlign: TextAlign.center,
                           style: GoogleFonts.ubuntu(
                               fontWeight: FontWeight.bold, fontSize: 30),
@@ -65,7 +67,7 @@ class ShowTaskInfo {
                       Expanded(
                         child: SingleChildScrollView(
                           scrollDirection: Axis.vertical,
-                          child: Text(StringText.JUST_FOR_DEMO_DESC,
+                          child: Text(documentSnapshot['description'],
                               style: GoogleFonts.ubuntu(
                                 fontSize: 20,
                               )),
@@ -86,7 +88,7 @@ class ShowTaskInfo {
                             CustomPaint(
                                 painter: DrawCircle(),
                                 child: Text(
-                                  "35",
+                                  documentSnapshot['totalpoints'].toString(),
                                   style: GoogleFonts.ubuntu(
                                       textStyle: TextStyle(
                                           color: Colors.blue[100],
@@ -119,7 +121,11 @@ class ShowTaskInfo {
                             Expanded(
                               child: Center(
                                 child: Container(
-                                    child: Text("26-12-2020",
+                                    child: Text(
+                                        timestamp
+                                            .toDate()
+                                            .toString()
+                                            .substring(0, 10),
                                         style: GoogleFonts.ubuntu(
                                             textStyle:
                                                 TextStyle(fontSize: 25)))),
@@ -134,8 +140,8 @@ class ShowTaskInfo {
                         margin: const EdgeInsets.only(bottom: 30),
                         child: GestureDetector(
                           onTap: () {
-                            ShowTaskBackEnd().launchInBrowser(
-                                "https://en.wikipedia.org/wiki/Tiger");
+                            ShowTaskBackEnd()
+                                .launchInBrowser(documentSnapshot['link']);
                           },
                           child: Container(
                             padding: const EdgeInsets.all(3),

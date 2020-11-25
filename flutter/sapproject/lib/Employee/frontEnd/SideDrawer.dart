@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:sapproject/WelcomeScreen/SignIn/backEnd/AuthenticationClass.dart';
 
 class SideDrawer extends StatelessWidget {
   @override
@@ -27,11 +30,11 @@ class SideDrawer extends StatelessWidget {
                   ),
                 ),
                 decoration: new BoxDecoration(color: Colors.blueGrey[900]),
-                accountEmail: Text("somu18cs@cmrit.ac.in",
+                accountEmail: Text(FirebaseAuth.instance.currentUser.email,
                     style: GoogleFonts.ubuntu(
                       textStyle: TextStyle(color: Colors.white, fontSize: 18),
                     )),
-                accountName: Text("Sourish Mukherjee",
+                accountName: Text(FirebaseAuth.instance.currentUser.displayName,
                     style: GoogleFonts.ubuntu(
                       textStyle: TextStyle(color: Colors.white, fontSize: 18),
                     )),
@@ -51,10 +54,14 @@ class SideDrawer extends StatelessWidget {
                   Icons.power_settings_new,
                   color: Colors.white,
                 ),
-                title: new Text(
-                  "Sign- Out",
-                  style: GoogleFonts.ubuntu(
-                      textStyle: TextStyle(color: Colors.white, fontSize: 20)),
+                title: InkWell(
+                  onTap: () => context.read<AuthenticationService>().signOut(),
+                  child: new Text(
+                    "Sign- Out",
+                    style: GoogleFonts.ubuntu(
+                        textStyle:
+                            TextStyle(color: Colors.white, fontSize: 20)),
+                  ),
                 ),
                 onTap: () {
                   Navigator.of(context).pop();
