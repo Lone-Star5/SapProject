@@ -85,6 +85,8 @@ app.get('/manager/report', (req,res) => {
         }
     ]
     res.render('manager/report',{employee:employee})
+});
+
 
 // Creating Tasks
 app.post('/task/create', (req, res) => {
