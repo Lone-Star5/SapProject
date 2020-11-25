@@ -115,36 +115,37 @@
 
             <!-- This is for adding tasks -->
             <div style="display:none;" class="task-create">
-                <form>
+                <form method='post' action='/task/create'>
                     <h1 class="task-header"><strong>Add Task</strong></h1>
                     <hr>
                     <div class="form-group">
-                        <label for="task-name">Task Name</label>
-                        <input type="text" class="form-control" name="task-name" id="task-name">
+                        <label for="title">Task Name</label>
+                        <input type="text" class="form-control" name="title" id="task-name">
                     </div>
                     <div class="form-group">
-                        <label for="task-employee">Select Employee to Assign</label>
-                        <select class="custom-select" name="task-employee" id="task-employee">
-                            <option>Undertaker</option>
-                            <option>The Rock</option>
-                            <option>Rey Mysterio</option>
+                        <label for="employee">Select Employee to Assign</label>
+                        <select class="custom-select" name="employee" id="task-employee">
+                            <% employee.forEach((emp,i)=>{ %>
+                                <option id = <%=i%>><%=emp.name%></option>
+                            <% }) %>
                         </select>
+                        <input style="display:none;" type="text" name="email" id="email" value="<%=employee[0].email%>">
                     </div>
                     <div class="form-group">
-                        <label for="task-point">Task Points</label>
-                        <input type="number" class="form-control" name="task-point" id="task-point">
+                        <label for="totalpoints">Task Points</label>
+                        <input type="number" class="form-control" name="totalpoints" id="task-point">
                     </div>
                     <div class="form-group">
-                        <label for="task-deadline">Task Deadline</label>
-                        <input type="date" class="form-control" name="task-deadline" id="task-deadline">
+                        <label for="deadline">Task Deadline</label>
+                        <input type="date" class="form-control" name="deadline" id="task-deadline">
                     </div>
                     <div class="form-group">
-                        <label for="task-link">Task Link</label>
-                        <input type="text" class="form-control" name="task-link" id="task-link">
+                        <label for="link">Task Link</label>
+                        <input type="text" class="form-control" name="link" id="task-link">
                     </div>
                     <div class="form-group">
-                        <label for="task-desc">Task Description</label>
-                        <textarea class="form-control" name="task-desc" id="task-desc" rows="10"></textarea>
+                        <label for="description">Task Description</label>
+                        <textarea class="form-control" name="description" id="task-desc" rows="10"></textarea>
                     </div>
                     <button class = "btn btn-primary">Submit</button>
                 </form>
@@ -163,7 +164,7 @@
                             <li class="list-group-item">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <%= task.name %> 
+                                        <%= task.title %> 
                                     </div>
                                     <div class="col-md-8"></div>
                                     <div class="col-md-2">
@@ -171,10 +172,10 @@
                                     </div>
                                 </div>
                                 <div class="mt-4" style="display:none;" id="task-<%=i%>">
-                                    <h5 style="display:inline"> <%= task.employee %> </h1>
+                                    <h5 style="display:inline; margin-right:10px">Employee: <span data-id=<%=task.id%>><%= task.employee %></span> </h1>
                                     <label> Points </label>
-                                    <input class="points" type="number" data-task= "<%=task.totalPoints%>" >
-                                    <button style="float:right;" class="btn btn-danger submit">Update</button>
+                                    <input class="points" type="number" data-task= "<%=task.totalpoints%>" >
+                                    <button style="float:right;" class="btn btn-danger task-review-update">Update</button>
                                 </div>
                             </li>
                             <% }) %> 
@@ -195,7 +196,7 @@
                             <li class="list-group-item"> 
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <%= task.name %>
+                                        <%= task.title %>
                                     </div>
                                     <div class="col-md-8"></div>
                                     <div class="col-md-2">
@@ -210,7 +211,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label>Assign Points
-                                                <input class='reAssign-points' type="number" data-id="<%=i%>" data-task="<%=task.totalPoints%>">
+                                                <input class='reAssign-points' type="number" data-id="<%=i%>" data-task="<%=task.totalpoints%>">
                                             </label>
                                         </div>
                                     </div>
@@ -227,7 +228,7 @@
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <div id="reAssign-points-<%=i%>" class="col-md-10">
-                                                    Task Points: <%=task.totalPoints %>
+                                                    Task Points: <%=task.totalpoints %>
                                                 </div>
                                                 <div class="col-md-2">
                                                     <button style="float:right;" class="btn btn-danger">Update</button>
@@ -300,6 +301,44 @@
             document.querySelector(`#reAssign-points-${e.target.dataset.id}`).innerText=`Task Points: ${e.target.dataset.task-e.target.value}`;
         })});
 
+        // Set email of Employee selected in input tag
+        document.querySelector('#task-employee').addEventListener('change',(e)=>{
+            let index = e.target.options.selectedIndex;
+            document.querySelector('#email').value = <%- JSON.stringify(employee) %>[index].email;
+        })
+
+        // Submit task points for update
+        Array.from(document.querySelectorAll('.task-review-update')).forEach((item)=>{
+            item.addEventListener('click',async(e)=>{
+            let parent = e.target.parentElement.childNodes;
+            let employee = parent[1].childNodes[1].innerText;
+            let id = parent[1].childNodes[1].dataset.id;
+            let points =  parent[5].value;
+            obj = {
+                employee: employee,
+                id: id,
+                taskpoints: points
+            }
+            fetch(`/task/review`, {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                redirect: 'follow', 
+                referrerPolicy: 'no-referrer',
+                body: JSON.stringify(obj)
+            }).then(response => response.json()).then((data)=>{
+                if(data.message=='success'){
+                    location.reload();
+                }
+                else{
+                    alert(data.message);
+                }
+            })
+        })});
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
