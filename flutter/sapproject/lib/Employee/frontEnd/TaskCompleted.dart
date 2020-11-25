@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sapproject/Employee/backEnd/StringText.dart';
 import 'package:sapproject/Employee/backEnd/TaskAssignedBackEnd.dart';
 import 'package:sapproject/Employee/frontEnd/ShowTaskInfo.dart';
-import 'package:sapproject/Employee/frontEnd/ViewHolderTA.dart';
 import 'package:sapproject/Employee/frontEnd/ViewHolderTC.dart';
 
 class TaskCompleted extends StatefulWidget {
@@ -15,11 +16,12 @@ class TaskCompleted extends StatefulWidget {
 
 class _TaskCompletedState extends State<TaskCompleted> {
   final GlobalKey<ScaffoldState> _scaffoldkey;
-  final List<String> _justForDemo = ["Task7", "Task8", "Task9", "Task14"];
+  List<DocumentSnapshot> _listOfTasks;
   _TaskCompletedState(this._scaffoldkey);
   @override
   void initState() {
     super.initState();
+    _listOfTasks = List<DocumentSnapshot>();
   }
 
   @override
@@ -70,17 +72,28 @@ class _TaskCompletedState extends State<TaskCompleted> {
           //Parent Widget - Theme, so as to make the reorderable list view transparent when dragging the tasks.
           child: Theme(
             data: ThemeData(canvasColor: Colors.transparent),
-            child: ReorderableListView(
-              children: _justForDemo
-                  .map((e) => InkWell(
-                        key: ObjectKey(e),
-                        child: ViewHolderTaskCompleted(e),
-                        onTap: () => ShowTaskInfo().getCard(context),
-                      ))
-                  .toList(),
-              onReorder: (oldIndex, newIndex) =>
-                  TaskAssignedBackEnd().onReorder(oldIndex, newIndex),
-            ),
+            child: StreamBuilder(
+                stream:
+                    FirebaseFirestore.instance.collection("Task").snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return const Text("Loading!...");
+                  _listOfTasks = snapshot.data.documents;
+                  _listOfTasks.removeWhere((element) =>
+                      element['employee'] !=
+                          FirebaseAuth.instance.currentUser.email ||
+                      element['completed'] == false);
+                  return ReorderableListView(
+                    children: _listOfTasks
+                        .map((e) => InkWell(
+                              key: ObjectKey(e),
+                              child: ViewHolderTaskCompleted(e),
+                              onTap: () => ShowTaskInfo().getCard(context, e),
+                            ))
+                        .toList(),
+                    onReorder: (oldIndex, newIndex) =>
+                        TaskAssignedBackEnd().onReorder(oldIndex, newIndex),
+                  );
+                }),
           ),
         )
       ],

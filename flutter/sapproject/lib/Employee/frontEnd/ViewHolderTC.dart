@@ -1,11 +1,12 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ViewHolderTaskCompleted extends StatelessWidget {
-  final String _textToBeShown;
-  ViewHolderTaskCompleted(this._textToBeShown);
+  final DocumentSnapshot _documentSnapshot;
+  ViewHolderTaskCompleted(this._documentSnapshot);
   @override
   Widget build(BuildContext context) {
     final double _cotainerHeight = MediaQuery.of(context).size.height * 0.13;
@@ -27,7 +28,7 @@ class ViewHolderTaskCompleted extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(left: 10, top: 20, bottom: 20),
-            child: Text(_textToBeShown,
+            child: Text(_documentSnapshot['title'],
                 style: GoogleFonts.ubuntu(
                   textStyle: TextStyle(color: Colors.black, fontSize: 26),
                 )),
@@ -59,7 +60,7 @@ class ViewHolderTaskCompleted extends StatelessWidget {
                     children: <Widget>[
                       //Points Obtained
                       Text(
-                        "20",
+                        _documentSnapshot['taskpoints'].toString(),
                         style: GoogleFonts.ubuntu(
                             textStyle:
                                 TextStyle(color: Colors.white, fontSize: 10)),
@@ -70,7 +71,7 @@ class ViewHolderTaskCompleted extends StatelessWidget {
                       ),
                       //Total Points for The Task
                       Text(
-                        "20",
+                        _documentSnapshot['totalpoints'].toString(),
                         style: GoogleFonts.ubuntu(
                             textStyle:
                                 TextStyle(color: Colors.white, fontSize: 10)),

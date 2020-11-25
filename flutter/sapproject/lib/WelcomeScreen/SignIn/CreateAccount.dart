@@ -1,9 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'package:sapproject/WelcomeScreen/SignIn/backEnd/AuthenticationClass.dart';
 import 'package:sapproject/WelcomeScreen/SignIn/backEnd/CreateAccoutBackEnd.dart';
 import 'package:sapproject/WelcomeScreen/SignIn/backEnd/SignInText.dart';
 import 'package:sapproject/WelcomeScreen/SignIn/frontEnd/DarkBlueGreyClipper.dart';
