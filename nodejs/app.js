@@ -320,8 +320,8 @@ app.get('/manager/login',(req,res)=>{
     res.render('Manager_Login');
 });
 
-app.get('/employee/signup', (req, res) => {
-    res.render('Employee_Signup');
+app.get('/manager/signup', (req, res) => {
+    res.render('Manager_Signup');
 });
 
 app.post('/manager/signup', (req, res) => {
@@ -334,7 +334,7 @@ app.post('/manager/signup', (req, res) => {
     if (password == pass) {
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then((user) => {
-                res.redirect('/employee')
+                res.redirect('/manager')
             })
             .catch((error) => {
                 var errorCode = error.code;
