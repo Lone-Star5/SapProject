@@ -3,17 +3,20 @@ const ejs = require('ejs');
 const app = express();
 const admin=require('firebase-admin');
 const bodyParser = require('body-parser');
-// const serviceAccount=require('./sapproject-28227-firebase-adminsdk-hcmqw-6058543d99.json');
+const serviceAccount=require('./sapproject-28227-firebase-adminsdk-hcmqw-6058543d99.json');
 
 
-// admin.initializeApp({
-//     credential: admin.credential.cert(serviceAccount)
-//   });
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
 
-// const db=admin.firestore();
+const db=admin.firestore();
+
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.json())
+
 
 
 app.get('/', (req,res) => {
@@ -22,45 +25,71 @@ app.get('/', (req,res) => {
 
 // Manager Routes
 app.get('/manager', (req,res) => {
-    tasks = [
-        {
-            name: 'Task 1',
-            employee: 'Employee 1',
-            points: 0,
-            totalPoints: 10,
-            deadline: '2020-12-06',
-            link: 'www.google.com',
-            description: 'This is Task 1',
-            completed: true
-        },
-        {
-            name: 'Task 2',
-            employee: 'Employee 2',
-            points: 0,
-            totalPoints: 20,
-            deadline: '2020-12-06',
-            link: 'www.google.com',
-            description: 'This is Task 2',
-            completed: true   
-        },
-        {
-            name: 'Task 3',
-            employee: 'Employee 3',
-            points: 0,
-            totalPoints: 30,
-            deadline: '2020-12-06',
-            link: 'www.google.com',
-            description: 'This is Task 3',
-            completed: true
-        },
-
-    ]
-    res.render('manager/manager',tasks=tasks);
+    let tasks = []
+    db.collection('Task').get().then((response)=>{
+        response.forEach((data)=>{
+            if(data.data().reviewed==false){
+                let tempobj = data.data();
+                tempobj.id=data.id;
+                tasks.push(tempobj);
+            }
+        })
+    }).then(()=>{
+        console.log(tasks);
+        let employee = [
+            {
+                name: 'Employee 1',
+                email: '1@gmail.com'
+            },
+            {
+                name: 'Employee 2',
+                email: '2@gmail.com'
+            },
+            {
+                name: 'Employee 3',
+                email: '3@gmail.com'
+            }
+        ]
+        res.render('manager/manager',{tasks:tasks,employee:employee});
+    })
+    
 })
 
 app.get('/manager/report', (req,res) => {
     res.render('manager/report')
 })
+
+// Creating Tasks
+app.post('/task/create', (req,res) => {
+    let obj = req.body;
+    obj.completed = false;
+    obj.reviewed = false;
+    obj.completedate = null;
+    obj.taskpoints = 0;
+    obj.totalpoints = Number(obj.totalpoints)
+    obj.deadline=new Date(obj.deadline);
+    obj.manager = "Aman";
+    obj.employee=obj.email;
+    delete obj.email;
+    console.log(obj);
+    db.collection('Task').add(req.body).then(data => {
+        res.redirect('/manager');
+    }).catch(err => res.json({message: 'some error occured'}))
+})
+// Reviewing Tasks
+app.post('/task/review', (req,res) => {
+    console.log(req.body);
+    db.collection('Task').doc(req.body.id).set({
+        taskpoints: Number(req.body.taskpoints),
+        reviewed: true
+    },{merge:true}).then(()=>{
+        res.json({message: 'success'})
+    }).catch((err) => {
+        res.json({message:'error'})
+    })
+})
+
+
 
 // Employee Routes
 app.get('/employee',(req,res)=>{
@@ -86,7 +115,7 @@ app.get('/employee',(req,res)=>{
             completed: true   
         },
     ]
-    res.render('employee',tasks=tasks);
+    res.render('employee',{tasks:tasks});
 });
 
 app.get('/employee/formWellBeing',(req,res)=>{
@@ -100,6 +129,22 @@ app.get('/hr', (req,res) => {
 })
 
 app.post('/health/:id', (req,res)=>{
+    console.log(req.body);
+    let id = req.params.id;
+    data = [{
+        id: id,
+        date: new Date(),
+        status: 'sick'
+    },
+    {
+        id: id,
+        date: new Date(),
+        status: 'not sick'
+    }]
+    res.json(data);
+})
+
+app.post('/monthlyreport/:id', (req,res) => {
     let id = req.params.id;
     data = [{
         id: id,
