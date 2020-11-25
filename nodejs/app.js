@@ -46,8 +46,8 @@ app.get('/manager', (req, res) => {
                 tasks.push(tempobj);
             }
         })
-    }).then(() => {
-        console.log(tasks);
+    }).then(()=>{
+        // console.log(tasks);
         let employee = [
             {
                 name: 'Employee 1',
@@ -99,6 +99,38 @@ app.post('/task/review', (req, res) => {
     }).catch((err) => {
         res.json({ message: 'error' })
     })
+})
+
+app.post('/task/reassign', (req,res) =>{
+    // console.log(req.body);
+    db.collection('Task').doc(req.body.id).set({
+        taskpoints: Number(req.body.taskpoints),
+        reviewed:true,
+        completed:true,
+        completedate: new Date()
+    },{merge: true}).then(()=>{
+        db.collection('Task').get().then((response)=>{
+            let obj={};
+            response.forEach((data)=>{
+                if(data.id == req.body.id){
+                    obj = data.data();
+                }
+            })
+            obj.employee = req.body.newEmployeeEmail;
+            obj.totalpoints = obj.totalpoints - req.body.taskpoints;
+            obj.taskpoints = 0;
+            obj.deadline = new Date();
+            obj.completed = false;
+            obj.completedate = null;
+            obj.reviewed = false;
+            db.collection('Task').add(obj).then(data=>{
+                res.json({message:'success'});
+            }).catch(err=>{
+                res.json({message:'error'})
+            })
+        });
+    });
+    
 })
 
 
