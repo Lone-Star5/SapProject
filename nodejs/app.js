@@ -264,7 +264,7 @@ app.listen('3000', () => {
 
 
 app.get('/employee/signup', (req, res) => {
-    res.render('signup');
+    res.render('Employee_Signup');
 });
 
 app.post('/employee/signup', (req, res) => {
@@ -307,10 +307,57 @@ app.post('/employee/login', (req, res) => {
 
 app.get('/logout', (req, res) => {
     firebase.auth().signOut().then(() => {
-        res.redirect('/employee/login');
+        res.redirect('/');
     }).catch(function (error) {
         var errorCode = error.code;
         var errorMessage = error.message;
         console.log(errorCode + ": " + errorMessage);
     });
+});
+
+
+app.get('/manager/login',(req,res)=>{
+    res.render('Manager_Login');
+});
+
+app.get('/employee/signup', (req, res) => {
+    res.render('Employee_Signup');
+});
+
+app.post('/manager/signup', (req, res) => {
+    let email = req.body.username;
+    let password = req.body.password;
+    let pass = req.body.passcon;
+    let dept=req.body.dept;
+    let name=req.body.name;
+    let phno=req.body.phno;
+    if (password == pass) {
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+            .then((user) => {
+                res.redirect('/employee')
+            })
+            .catch((error) => {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.log(errorCode + ":" + errorMessage);
+            });
+        db.collection('Manager').add({Department:dept,Email:email,Phone:phno,Name:name});
+    }
+    else
+        console.log('Password Mismatch');
+});
+
+app.post('/manager/login', (req, res) => {
+    var email = req.body.username;
+    var password = req.body.password;
+    firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((user) => {
+            res.redirect('/manager');
+        })
+        .catch((error) => {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode + ": " + errorMessage);
+            res.redirect('/manager/login');
+        });
 });
