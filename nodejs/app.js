@@ -67,9 +67,26 @@ app.get('/manager', (req, res) => {
 
 })
 
-app.get('/manager/report', (req, res) => {
-    res.render('manager/report')
-})
+
+// Show Employee report of the month
+app.get('/manager/report', (req,res) => {
+    let employee = [
+        {
+            name: 'Employee 1',
+            email: '1@gmail.com'
+        },
+        {
+            name: 'Employee 2',
+            email: '2@gmail.com'
+        },
+        {
+            name: 'Employee 3',
+            email: '3@gmail.com'
+        }
+    ]
+    res.render('manager/report',{employee:employee})
+});
+
 
 // Creating Tasks
 app.post('/task/create', (req, res) => {
@@ -100,7 +117,7 @@ app.post('/task/review', (req, res) => {
         res.json({ message: 'error' })
     })
 })
-
+// Reassign task
 app.post('/task/reassign', (req,res) =>{
     // console.log(req.body);
     db.collection('Task').doc(req.body.id).set({
@@ -133,6 +150,27 @@ app.post('/task/reassign', (req,res) =>{
     
 })
 
+// Generate Report and send task data
+app.post('/employee/report', (req,res)=>{
+    let email = req.body.email;
+    let month = req.body.month;
+    let tasks = [];
+    let monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"
+    ];
+    db.collection('Task').get().then((response)=>{
+        response.forEach((data)=>{
+            let obj = data.data();
+            // console.log(obj);
+            if(obj.reviewed==true && obj.employee==email){
+                if((monthNames[new Date(obj.completedate._seconds*1000).getMonth()]==month) &&(new Date(obj.completedate._seconds*1000).getFullYear() == (new Date()).getFullYear()) ){
+                    tasks.push(obj);
+                }
+            }
+        })
+        console.log(tasks);
+        res.json(tasks);
+    })
+})
 
 
 // Employee Routes
