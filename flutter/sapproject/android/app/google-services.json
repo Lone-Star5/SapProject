@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "473051238037",
+    "firebase_url": "https://sapproject-28227.firebaseio.com",
+    "project_id": "sapproject-28227",
+    "storage_bucket": "sapproject-28227.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:473051238037:android:f422dc90f2f3b37313159c",
+        "android_client_info": {
+          "package_name": "com.example.sapproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "473051238037-eftjob3cj6fbo4egkof36361dqnb9j9p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCU4M0xuKXK0d6DNDidZLw89H31MmoRWBA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "473051238037-eftjob3cj6fbo4egkof36361dqnb9j9p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

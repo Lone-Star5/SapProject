@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sapproject/Employee/EmployeeTaskShow.dart';
+import 'package:provider/provider.dart';
+import 'package:sapproject/WelcomeScreen/SignIn/CreateAccount.dart';
+import 'package:sapproject/WelcomeScreen/SignIn/backEnd/AuthenticationClass.dart';
 import 'package:sapproject/WelcomeScreen/SignIn/backEnd/SignInText.dart';
 import 'package:sapproject/WelcomeScreen/SignIn/frontEnd/DarkBlueGreyClipper.dart';
 import 'package:sapproject/WelcomeScreen/SignIn/frontEnd/LightBlueGreyClipper.dart';
@@ -11,6 +14,8 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final double _passwordEntryWidth = MediaQuery.of(context).size.width * 0.55;
@@ -50,6 +55,14 @@ class _SignInState extends State<SignIn> {
                   margin: const EdgeInsets.only(top: 25),
                   width: _passwordEntryWidth,
                   child: TextFormField(
+                      controller: _emailController,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          Fluttertoast.showToast(msg: "Please enter Email-ID");
+                          return null;
+                        } else
+                          return null;
+                      },
                       cursorColor: Colors.blueGrey,
                       decoration: InputDecoration(
                           labelText: SignInText.EMAIL_ID,
@@ -80,6 +93,7 @@ class _SignInState extends State<SignIn> {
                 Container(
                   width: _passwordEntryWidth,
                   child: TextFormField(
+                      controller: _passController,
                       cursorColor: Colors.blueGrey,
                       decoration: InputDecoration(
                           labelText: SignInText.PASSWORD,
@@ -113,10 +127,11 @@ class _SignInState extends State<SignIn> {
                             end: Alignment.centerRight,
                             colors: [Colors.blueGrey, Colors.blueGrey[900]])),
                     child: TextButton(
-                      onPressed: () =>
-                          Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => EmployeeTaskShow(),
-                      )),
+                      onPressed: () {
+                        context.read<AuthenticationService>().signIn(
+                            email: _emailController.text.trim(),
+                            password: _passController.text.trim());
+                      },
                       child: Text(SignInText.HEADING_SIGN_IN,
                           style: GoogleFonts.ubuntu(
                               color: Colors.white, fontSize: 20)),
@@ -131,7 +146,10 @@ class _SignInState extends State<SignIn> {
                             end: Alignment.centerRight,
                             colors: [Colors.blueGrey, Colors.blueGrey[900]])),
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => CreateAccount()));
+                      },
                       child: Text(SignInText.NEW_USER,
                           style: GoogleFonts.ubuntu(
                               color: Colors.white, fontSize: 20)),
