@@ -92,9 +92,9 @@
                     <div class="form-group">
                         <label for="hr-health-employee">Select Employee</label>
                         <select name="id" class="custom-select" id="hr-health-employee">
-                            <option id='1'>Undertaker</option>
-                            <option id='2'>Rey Mysterio</option>
-                            <option id='3'>The Rock</option>
+                            <% employee.forEach((emp)=>{ %>
+                                <option id=<%=emp.email%>><%=emp.name%></option>
+                            <%})%>
                         </select>
                     </div>
                     <div style="display:none;" id="hr-health-employee-details">
@@ -124,9 +124,10 @@
             })
         }
 
-        // Show Employee Details
+        // Show Health Details of Selected Employee
         document.querySelector('#hr-health-employee').addEventListener('change',()=>{
             let id = document.querySelector('option:checked').id;
+            console.log(id);
             fetch(`/health/${id}`, {
                 method: 'POST',
                 mode: 'cors',
@@ -143,9 +144,11 @@
                 let ul = document.querySelector('#ul-hr-health')
                 ul.innerHTML='';
                 ul.style.cursor='pointer';
-                info.forEach((entry)=>{
+                // Generate each health report of employee
+                info.forEach((entry,i)=>{
                     let {date,status} = entry;
                     let listItem = document.createElement("li");
+                    listItem.id = i;
                     listItem.classList.add('list-group-item')
                     let div = document.createElement('div');
                     div.classList.add('row');
@@ -164,10 +167,43 @@
                     div.appendChild(div1);
                     div.appendChild(div2);
                     listItem.appendChild(div);
+                    
+                    // Generate extra message to show on hover
+                    let div3 = document.createElement('div');
+                    div3.style.display='none';
+                    div3.id = `div-${i}`;
+                    div3.innerText = "Description: ";
+                    let p1 = document.createElement('p');
+                    let text='';
+                    let name = document.querySelector('select').value;
+                    if(entry.travelling==true){
+                        text=`${name} has travelled internationally in the past two weeks. Her message is "${entry.description}"`
+                    }else{
+                        text=`${name} has not travelled internationally in the past two weeks. Her message is "${entry.description}"`
+                    }
+                    p1.innerText=text;
+                    div3.appendChild(p1);
+                    listItem.appendChild(div3);
+
+                    listItem.addEventListener('mouseover',(e)=>{
+                        document.querySelector(`#div-${e.target.id}`).style.display='block';
+                    })
+                    listItem.addEventListener('mouseout',(e)=>{
+                        document.querySelector(`#div-${e.target.id}`).style.display='none';
+                    })
+                    listItem.childNodes.forEach((item)=>{
+                        item.addEventListener('mouseover',(e)=>{
+                            document.querySelector(`#div-${item.parentElement.id}`).style.display='block';
+                        })
+                    });
                     ul.appendChild(listItem);
                 })
             }) 
         })
+
+        // document.querySelector('li').addEventListener('click',(e)=>{
+        //     document.querySelector(`div-${e.target.id}`).style.display='block';
+        // })
 
        
             

@@ -162,9 +162,25 @@ app.get('/employee', (req, res) => {
     res.render('employee', { tasks: tasks });
 });
 
+// Show Employee Health Form
 app.get('/employee/formWellBeing', (req, res) => {
     res.render('employeeHealth');
 });
+// Submit Employee Health Form
+app.post('/employee/formWellBeing', (req,res) => {
+    let email = firebase.auth().currentUser.email;
+    let obj = {};
+    obj.status = req.body.ques1;
+    obj.travelling = req.body.ques3;
+    obj.description = req.body.ques4;
+    obj.email = email;
+    obj.date = new Date();
+    db.collection('Health').add(obj).then(data=>{
+        res.json({message:'success'});
+    }).catch(err=>{
+        res.json({message:'error'});
+    })
+})
 
 
 // Show Employee report of the month
@@ -214,39 +230,47 @@ app.post('/employee/report', (req,res)=>{
 
 
 app.get('/hr', (req, res) => {
-    res.render('hr/hr');
+    let employee=[]
+    db.collection('Employee').get().then((response)=>{
+        response.forEach((data)=>{
+            employee.push(data.data());
+        })
+        res.render('hr/hr',{employee:employee});
+    }).catch(err=>{
+        res.redirect('/');
+    })
 })
 
 app.post('/health/:id', (req, res) => {
-    console.log(req.body);
     let id = req.params.id;
-    data = [{
-        id: id,
-        date: new Date(),
-        status: 'sick'
-    },
-    {
-        id: id,
-        date: new Date(),
-        status: 'not sick'
-    }]
-    res.json(data);
+    let data = []
+    db.collection('Health').get().then((response)=>{
+        response.forEach((info)=>{
+            if(info.data().email == id){
+                console.log(info.data().email,id);
+                let obj = info.data();
+                obj.date = new Date(obj.date._seconds*1000);
+                data.push(obj);
+            }
+        })
+        res.json(data);
+    }).catch({message:'error'});
 })
 
-app.post('/monthlyreport/:id', (req, res) => {
-    let id = req.params.id;
-    data = [{
-        id: id,
-        date: new Date(),
-        status: 'sick'
-    },
-    {
-        id: id,
-        date: new Date(),
-        status: 'not sick'
-    }]
-    res.json(data);
-})
+// app.post('/monthlyreport/:id', (req, res) => {
+//     let id = req.params.id;
+//     data = [{
+//         id: id,
+//         date: new Date(),
+//         status: 'sick'
+//     },
+//     {
+//         id: id,
+//         date: new Date(),
+//         status: 'not sick'
+//     }]
+//     res.json(data);
+// })
 
 app.get('/employee/login', (req, res) => {
     res.render('Employee_Login');
