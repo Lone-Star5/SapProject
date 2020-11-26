@@ -86,6 +86,7 @@
 
 <body>
     <a href="/logout">Logout</a>
+    <p><%= user.email %></p>
     <div class="row">
         <div class="col-md-3">
             <div class="sidenav">
@@ -211,7 +212,7 @@
                                 </div>
                                 <div id="commentBlock" style="display: none;">
                                     <label for="comment">Add comment:</label>
-                                    <input name="comment" type="text" /><br/>
+                                    <input name="comment" type="text" /><br />
                                     <button class="btn btn-primary">Comment</button>
                                 </div>
                             </li>
@@ -333,7 +334,7 @@
         x.addEventListener('click', () => {
             detailBlock.style.display = "block";
         });
-        document.getElementById('addComment').addEventListener('click',()=>{
+        document.getElementById('addComment').addEventListener('click', () => {
             commentBlock.style.display = "block";
         })
     </script>
