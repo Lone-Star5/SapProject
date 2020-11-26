@@ -198,7 +198,7 @@
             </div>
 
             <!-- This is for re-assigning tasks of sick employees -->
-            <div style="display:none;" class="task-sick">
+            <div style="display:block;" class="task-sick">
                 <div class="container">
                     <div class="reassign-task-header">
                         <h1><strong>Re-Assign Tasks</strong></h1>
@@ -218,47 +218,57 @@
                                 </div>
 
                                 <div class="mt-4" style="display:none;" id="task-assign-<%=i%>">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <h5> Employee Name: <span><%=task.employee%></span></h5>
+                                    <div style="padding:10px;">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h5> Employee Name: <span><%=task.employee%></span></h5>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Assign Points
+                                                    <input id="<%=i%>-task-reassign-points" class='reAssign-points' type="number" data-id="<%=i%>" data-task="<%=task.totalpoints%>">
+                                                </label>
+                                            </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <label>Assign Points
-                                                <input class='reAssign-points' type="number" data-id="<%=i%>" data-task="<%=task.totalpoints%>">
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label>Select New Employee
-                                                <select>
-                                                    <% employee.forEach((emp)=>{ %>
-                                                        <option><%= emp.email%></option>
-                                                    <% }) %>
-                                                </select>
-                                            </label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div id="reAssign-points-<%=i%>">
-                                                Task Points: <span><%=task.totalpoints %></span>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div>Add Comment</div>
+                                                <textarea id="<%=i%>-task-reassign-comment" style="width:90%;"></textarea>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div>
-                                                Deadline: <%=task.deadline %>
+                                    <div style="padding:10px;">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Select New Employee
+                                                    <select id="<%=i%>-task-reassign-email">
+                                                        <% employee.forEach((emp)=>{ %>
+                                                            <option><%= emp.email%></option>
+                                                        <% }) %>
+                                                    </select>
+                                                </label>
                                             </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <div class="col-md-10">
-                                                    <label>Reset Deadline: 
-                                                        <input type='date' required>
-                                                    </label>
+                                            <div class="col-md-6">
+                                                <div id="reAssign-points-<%=i%>">
+                                                    Task Points: <span><%=task.totalpoints %></span>
                                                 </div>
-                                                <div class="col-md-2">
-                                                    <button data-id = <%=task.id%> style="float:right;" class="btn btn-danger task-reassign-update">Update</button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div>
+                                                    Deadline: <%=task.deadline %>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <div class="col-md-10">
+                                                        <label>Reset Deadline: 
+                                                            <input id="<%=i%>-task-reassign-deadline" type='date' required>
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <button id=<%=i%> data-id = <%=task.id%> style="float:right;" class="btn btn-danger task-reassign-update">Update</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -368,17 +378,17 @@
         // Reassign tasks
         Array.from(document.querySelectorAll('.task-reassign-update')).forEach((item)=>{
             item.addEventListener('click',(e)=>{
-                let id = e.target.dataset.id;
-                let oldEmployeeEmail = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].childNodes[1].childNodes[1].childNodes[1].innerText;
-                let newEmployeeEmail = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[3].childNodes[3].childNodes[1].childNodes[1].childNodes[1].value;
-                let deadline = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[3].childNodes[5].childNodes[3].childNodes[1].childNodes[1].childNodes[1].childNodes[1].value;
-                let taskpoints = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].childNodes[3].childNodes[1].childNodes[1].value;
-                
-                taskpoints = Number(taskpoints);
+                let id = e.target.id;
+                console.log(id);
+                let taskpoints = document.getElementById(`${id}-task-reassign-points`).value;
+                let deadline = document.getElementById(`${id}-task-reassign-deadline`).value;
+                let comment = document.getElementById(`${id}-task-reassign-comment`).value;
+                let email = document.getElementById(`${id}-task-reassign-email`).value;
+                id = e.target.dataset.id;
                 let obj = {
                     id: id,
-                    newEmployeeEmail: newEmployeeEmail,
-                    oldEmployeeEmail: oldEmployeeEmail,
+                    email: email,
+                    comment: comment,
                     taskpoints: taskpoints,
                     deadline: deadline
                 }

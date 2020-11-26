@@ -125,7 +125,8 @@ app.post('/task/reassign', (req,res) =>{
         taskpoints: Number(req.body.taskpoints),
         reviewed:true,
         completed:true,
-        completedate: new Date(),
+        managerComment: req.body.comment,
+        completedate: new Date()
     },{merge: true}).then(()=>{
         db.collection('Task').get().then((response)=>{
             let obj={};
@@ -134,7 +135,7 @@ app.post('/task/reassign', (req,res) =>{
                     obj = data.data();
                 }
             })
-            obj.employee = req.body.newEmployeeEmail;
+            obj.employee = req.body.email;
             obj.totalpoints = obj.totalpoints - req.body.taskpoints;
             obj.taskpoints = 0;
             if(req.body.deadline != ''){
@@ -143,6 +144,7 @@ app.post('/task/reassign', (req,res) =>{
             obj.completed = false;
             obj.completedate = null;
             obj.reviewed = false;
+            obj.managerComment=null;
             db.collection('Task').add(obj).then(data=>{
                 res.json({message:'success'});
             }).catch(err=>{
