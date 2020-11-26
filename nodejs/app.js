@@ -106,15 +106,19 @@ app.post('/task/create', (req, res) => {
     obj.manager = "Aman";
     obj.employee = obj.email;
     delete obj.email;
+    obj.employeeComment = null;
+    obj.managerComment = null;
     db.collection('Task').add(req.body).then(data => {
         res.redirect('/manager');
     }).catch(err => res.json({ message: 'some error occured' }))
 })
 // Reviewing Tasks
 app.post('/task/review', (req, res) => {
+    console.log(req.body);
     db.collection('Task').doc(req.body.id).set({
         taskpoints: Number(req.body.taskpoints),
-        reviewed: true
+        reviewed: true,
+        managerComment: req.body.comment
     }, { merge: true }).then(() => {
         res.json({ message: 'success' })
     }).catch((err) => {
@@ -125,18 +129,19 @@ app.post('/task/review', (req, res) => {
 app.post('/task/reassign', (req, res) => {
     db.collection('Task').doc(req.body.id).set({
         taskpoints: Number(req.body.taskpoints),
-        reviewed: true,
-        completed: true,
-        completedate: new Date(),
-    }, { merge: true }).then(() => {
-        db.collection('Task').get().then((response) => {
-            let obj = {};
-            response.forEach((data) => {
-                if (data.id == req.body.id) {
+        reviewed:true,
+        completed:true,
+        managerComment: req.body.comment,
+        completedate: new Date()
+    },{merge: true}).then(()=>{
+        db.collection('Task').get().then((response)=>{
+            let obj={};
+            response.forEach((data)=>{
+                if(data.id == req.body.id){
                     obj = data.data();
                 }
             })
-            obj.employee = req.body.newEmployeeEmail;
+            obj.employee = req.body.email;
             obj.totalpoints = obj.totalpoints - req.body.taskpoints;
             obj.taskpoints = 0;
             if (req.body.deadline != '') {
@@ -145,10 +150,11 @@ app.post('/task/reassign', (req, res) => {
             obj.completed = false;
             obj.completedate = null;
             obj.reviewed = false;
-            db.collection('Task').add(obj).then(data => {
-                res.json({ message: 'success' });
-            }).catch(err => {
-                res.json({ message: 'error' })
+            obj.managerComment=null;
+            db.collection('Task').add(obj).then(data=>{
+                res.json({message:'success'});
+            }).catch(err=>{
+                res.json({message:'error'})
             })
         });
     });
