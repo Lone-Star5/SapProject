@@ -127,7 +127,6 @@
         // Show Health Details of Selected Employee
         document.querySelector('#hr-health-employee').addEventListener('change',()=>{
             let id = document.querySelector('option:checked').id;
-            console.log(id);
             fetch(`/health/${id}`, {
                 method: 'POST',
                 mode: 'cors',
@@ -185,17 +184,12 @@
                     div3.appendChild(p1);
                     listItem.appendChild(div3);
 
-                    listItem.addEventListener('mouseover',(e)=>{
+                    listItem.addEventListener('mouseenter',(e)=>{
                         document.querySelector(`#div-${e.target.id}`).style.display='block';
                     })
-                    listItem.addEventListener('mouseout',(e)=>{
+                    listItem.addEventListener('mouseleave',(e)=>{
                         document.querySelector(`#div-${e.target.id}`).style.display='none';
                     })
-                    listItem.childNodes.forEach((item)=>{
-                        item.addEventListener('mouseover',(e)=>{
-                            document.querySelector(`#div-${item.parentElement.id}`).style.display='block';
-                        })
-                    });
                     ul.appendChild(listItem);
                 })
             }) 

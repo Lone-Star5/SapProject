@@ -37,35 +37,54 @@ app.get('/', (req, res) => {
 
 
 app.get('/manager', (req, res) => {
-    let tasks = []
-    db.collection('Task').get().then((response) => {
-        response.forEach((data) => {
-            if ((data.data().reviewed == false) && (data.data().completed==true)) {
-                let tempobj = data.data();
-                tempobj.id = data.id;
-                tempobj.deadline = new Date(tempobj.deadline._seconds*1000).toDateString();
-                tasks.push(tempobj);
+    let reviewtasks = []
+    let reassigntasks = []
+    let sickemp = {};
+    db.collection('Health').get().then((response)=>{
+        response.forEach((data)=>{
+            if(data.data().status=='sick'){
+                if(sickemp[data.data().email]!=0)
+                    sickemp[data.data().email]=1;
+            }else{
+                if(sickemp[data.data().email]!=1)
+                    sickemp[data.data().email]=0;
             }
         })
     }).then(()=>{
-        // console.log(tasks);
-        let employee = [
-            {
-                name: 'Employee 1',
-                email: '1@gmail.com'
-            },
-            {
-                name: 'Employee 2',
-                email: '2@gmail.com'
-            },
-            {
-                name: 'Employee 3',
-                email: '3@gmail.com'
-            }
-        ]
-        res.render('manager/manager', { tasks: tasks, employee: employee });
+        db.collection('Task').get().then((response) => {
+            response.forEach((data) => {
+                if ((data.data().reviewed == false) && (data.data().completed==true)) {
+                    let tempobj = data.data();
+                    tempobj.id = data.id;
+                    tempobj.deadline = new Date(tempobj.deadline._seconds*1000).toDateString();
+                    reviewtasks.push(tempobj);
+                }
+                if((data.data().completed==false) && (sickemp[data.data().employee]==1)){
+                    let tempobj = data.data();
+                    tempobj.id = data.id;
+                    tempobj.deadline = new Date(tempobj.deadline._seconds*1000).toDateString();
+                    reassigntasks.push(tempobj);
+                }
+                
+            })
+        }).then(()=>{
+            let employee = [
+                {
+                    name: 'Employee 1',
+                    email: '1@gmail.com'
+                },
+                {
+                    name: 'Employee 2',
+                    email: '2@gmail.com'
+                },
+                {
+                    name: 'Employee 3',
+                    email: '3@gmail.com'
+                }
+            ]
+            res.render('manager/manager', { reviewtasks: reviewtasks,reassigntasks: reassigntasks, employee: employee });
+        })
     })
-
 })
 
 
@@ -81,14 +100,12 @@ app.post('/task/create', (req, res) => {
     obj.manager = "Aman";
     obj.employee = obj.email;
     delete obj.email;
-    console.log(obj);
     db.collection('Task').add(req.body).then(data => {
         res.redirect('/manager');
     }).catch(err => res.json({ message: 'some error occured' }))
 })
 // Reviewing Tasks
 app.post('/task/review', (req, res) => {
-    console.log(req.body);
     db.collection('Task').doc(req.body.id).set({
         taskpoints: Number(req.body.taskpoints),
         reviewed: true
@@ -100,7 +117,6 @@ app.post('/task/review', (req, res) => {
 })
 // Reassign task
 app.post('/task/reassign', (req,res) =>{
-    // console.log(req.body);
     db.collection('Task').doc(req.body.id).set({
         taskpoints: Number(req.body.taskpoints),
         reviewed:true,
@@ -212,7 +228,6 @@ app.post('/employee/report', (req,res)=>{
     db.collection('Task').get().then((response)=>{
         response.forEach((data)=>{
             let obj = data.data();
-            // console.log(obj);
             if(obj.reviewed==true && obj.employee==email){
                 obj.completedate = new Date(obj.completedate._seconds*1000);
                 obj.deadline = new Date(obj.deadline._seconds*1000);
@@ -221,7 +236,6 @@ app.post('/employee/report', (req,res)=>{
                 }
             }
         })
-        console.log(tasks);
         res.json(tasks);
     })
 })
@@ -247,7 +261,6 @@ app.post('/health/:id', (req, res) => {
     db.collection('Health').get().then((response)=>{
         response.forEach((info)=>{
             if(info.data().email == id){
-                console.log(info.data().email,id);
                 let obj = info.data();
                 obj.date = new Date(obj.date._seconds*1000);
                 data.push(obj);
