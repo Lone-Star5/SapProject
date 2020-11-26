@@ -139,23 +139,17 @@
                     <hr>
                     <div class="form-group">
                         <label for="task-name">Task Name</label>
-                        <!-- <input type="text" class="form-control" name="task-name" id="task-name"> -->
                         <select class="custom-select" name="task-name" id="task-name">
+                            <option>Select a task</option>
                             <% tasks.forEach((task,i)=>{ %>
-                            <option><%=task.name%></option>
+                            <option><%=task.title%></option>
                             <%});%>
                         </select>
-                        <button id="fetchDetails" class="btn btn-primary">Fetch details</button>
                     </div>
-                    <div id="detailBlock" style="display: none;">
+                    <div id="detailBlock" style="display:none;">
                         <div class="form-group">
                             <label for="task-employee">Employee Name</label>
                             <input type="text" class="form-control" name="task-employee" id="task-employee" disabled>
-                            <!-- <select class="custom-select" name="task-employee" id="task-employee">
-                            <option>Undertaker</option>
-                            <option>The Rock</option>
-                            <option>Rey Mysterio</option>
-                        </select> -->
                         </div>
                         <div class="form-group">
                             <label for="task-point">Task Points</label>
@@ -175,7 +169,6 @@
                             <textarea class="form-control" name="task-desc" id="task-desc" rows="10"
                                 disabled></textarea>
                         </div>
-                        <button class="btn btn-primary">Submit</button>
                     </div>
                 </form>
             </div>
@@ -183,17 +176,18 @@
 
             <!-- This is for reviewing tasks -->
             <div style="display:none;" class="task-update">
+                <form method="post" action="/employee/complete">
                 <div class="container">
                     <div class="review-task-header">
                         <h1><strong>Update Tasks Completed</strong></h1>
                     </div>
                     <div class="mb-5">
                         <ul class="list-group">
-                            <% tasks.forEach((task,i)=>{ %>
+                            <% notCompleted.forEach((task,i)=>{ %>
                             <li class="list-group-item">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <%= task.name %>
+                                        <%= task.title %>
                                     </div>
                                     <div class="col-md-8"></div>
                                     <div class="col-md-2">
@@ -203,22 +197,22 @@
                                 </div>
                                 <div class="mt-4" style="display:none;" id="task-<%=i%>">
                                     <h5 style="display:inline"> <%= task.employee %> </h1>
-                                        <!-- <label> Points </label>
-                                    <input class="points" type="number" data-task= "<%=task.totalPoints%>" > -->
-                                        <button style="float:right;" class="btn btn-secondary">Add Comment</button>
-                                        <button id="addComment" style="float:right" class="btn btn-success submit">Mark
-                                            as Complete</button>
-                                </div>
-                                <div id="commentBlock" style="display: none;">
-                                    <label for="comment">Add comment:</label>
-                                    <input name="comment" type="text" /><br/>
-                                    <button class="btn btn-primary">Comment</button>
+                                    <div style="float:right;" class="btn-group">    
+                                        <button  class="btn btn-success" onclick="markCompleted(task)">Mark as
+                                            Complete</button>
+                                        <button id="addComment" class="btn btn-info submit">Add
+                                            Comment</button>
+                                    </div>
+                                    <div style="display: none;">
+                                        <input name="employeeID" type="text" value="<%= task.id %>">
+                                    </div>
                                 </div>
                             </li>
                             <% }) %>
                         </ul>
                     </div>
                 </div>
+            </form>
             </div>
 
             <!-- This is for re-assigning tasks of sick employees -->
@@ -229,11 +223,11 @@
                     </div>
                     <div class="mb-5">
                         <ul class="list-group">
-                            <% tasks.forEach((task,i)=>{ %>
+                            <% reviewed.forEach((task,i)=>{ %>
                             <li class="list-group-item">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <%= task.name %>
+                                        <%= task.title %>
                                     </div>
                                     <div class="col-md-8"></div>
                                     <div class="col-md-2">
@@ -241,7 +235,6 @@
                                             class="btn btn-primary">Select</button>
                                     </div>
                                 </div>
-
                                 <div class="mt-4" style="display:none;" id="task-assign-<%=i%>">
                                     <div class="row">
                                         <div class="col-md-6">
@@ -254,7 +247,7 @@
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <div id="reAssign-points-<%=i%>" class="col-md-10">
-                                                    <strong>Task Points: <%=task.totalPoints %></strong>
+                                                    <strong>Task Points: <%=task.totalpoints %></strong>
                                                 </div><br>
                                                 <!-- <div class="col-md-2">
                                                     <button style="float:right;" class="btn btn-secondary">Add Comment</button>
@@ -278,6 +271,17 @@
 
 
     <script>
+        document.querySelector('#task-name').addEventListener('change', () => {
+            let id = document.querySelector('#task-name').selectedIndex;
+            let x=<%-JSON.stringify(tasks)%>;
+            detailBlock.style.display = 'block';
+            document.querySelector('#task-employee').value = x[id-1].employee;
+            document.querySelector('#task-point').value = x[id-1].taskpoints;
+            document.querySelector('#task-deadline').value = new Date(x[id-1].deadline._seconds*1000).toDateString();
+            document.querySelector('#task-link').value = x[id-1].link;
+            document.querySelector('#task-desc').value = x[id-1].description;
+        });
+        
         // Select which tasks to do for the manager
         Array.from(document.querySelectorAll('.anchor')).forEach((item) => {
             item.addEventListener('click', () => {
@@ -329,14 +333,6 @@
                 document.querySelector(`#reAssign-points-${e.target.dataset.id}`).innerText = `Task Points: ${e.target.dataset.task - e.target.value}`;
             })
         });
-
-        var x = document.getElementById('fetchDetails');
-        x.addEventListener('click', () => {
-            detailBlock.style.display = "block";
-        });
-        document.getElementById('addComment').addEventListener('click',()=>{
-            commentBlock.style.display = "block";
-        })
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
