@@ -172,37 +172,38 @@ app.post('/employee/report', (req, res) => {
     })
 })
 
-
 // Employee Routes
 app.get('/employee', (req, res) => {
-    if (firebase.auth().currentUser != null) {
-        console.log(firebase.auth().currentUser.email);
-        tasks = [
-            {
-                name: 'Task 1',
-                employee: 'Employee 1',
-                points: 0,
-                totalPoints: 10,
-                deadline: '2020-12-06',
-                link: 'www.google.com',
-                description: 'This is Task 1',
-                completed: true
-            },
-            {
-                name: 'Task 2',
-                employee: 'Employee 2',
-                points: 0,
-                totalPoints: 20,
-                deadline: '2020-12-06',
-                link: 'www.google.com',
-                description: 'This is Task 2',
-                completed: true
-            },
-        ]
-        res.render('employee', { tasks: tasks });
-    }
-    else
-        res.redirect('/employee/login');
+    firebase.auth().onAuthStateChanged((authenticate) => {
+        if (authenticate) {
+            console.log(firebase.auth().currentUser.email);
+            tasks = [
+                {
+                    name: 'Task 1',
+                    employee: 'Employee 1',
+                    points: 0,
+                    totalPoints: 10,
+                    deadline: '2020-12-06',
+                    link: 'www.google.com',
+                    description: 'This is Task 1',
+                    completed: true
+                },
+                {
+                    name: 'Task 2',
+                    employee: 'Employee 2',
+                    points: 0,
+                    totalPoints: 20,
+                    deadline: '2020-12-06',
+                    link: 'www.google.com',
+                    description: 'This is Task 2',
+                    completed: true
+                },
+            ]
+            res.render('employee', { tasks: tasks, user: firebase.auth().currentUser });
+        }
+        else
+            res.redirect('/employee/login');
+    })
 });
 
 app.get('/employee/formWellBeing', (req, res) => {
@@ -298,10 +299,12 @@ app.post('/employee/signup', (req, res) => {
 app.post('/employee/login', (req, res) => {
     var email = req.body.username;
     var password = req.body.password;
-    firebase.auth().signInWithEmailAndPassword(email, password)
-        .then((user) => {
-            res.redirect('/employee');
-        })
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE).then(() => {
+        return firebase.auth().signInWithEmailAndPassword(email, password)
+            .then((user) => {
+                res.redirect('/employee');
+            })
+    })
         .catch((error) => {
             var errorCode = error.code;
             var errorMessage = error.message;
