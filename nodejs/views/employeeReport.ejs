@@ -139,7 +139,7 @@
             divcol1.classList.add('col-md-6');
             divcol2.classList.add('col-md-6');
             divcol1.innerText =  'Name: '+document.querySelector('#employee-name').innerText;
-            divcol2.innerText = `Email: ${document.querySelector('#employee-name').innerText}`;
+            divcol2.innerText = `Email: ${document.querySelector('#employee-email').innerText}`;
             divrow1.appendChild(divcol1);
             divrow1.appendChild(divcol2);
             div.appendChild(divrow1);
@@ -185,7 +185,20 @@
                     divrow3.appendChild(divcol5);
                     divrow3.appendChild(divcol6);
                     diveachentry.appendChild(divrow3);
+
+                    let divrow4 = document.createElement('div');
+                    divrow4.classList.add('row');
+                    let divcol7 = document.createElement('div');
+                    let divcol8 = document.createElement('div');
+                    divcol7.classList.add('col-md-6');
+                    divcol8.classList.add('col-md-6');
+                    divcol7.innerText = `Employee Comment: ${task.employeeComment}`;
+                    divcol8.innerText = `Manager Comment: ${task.managerComment}`; 
+                    divrow3.appendChild(divcol7);
+                    divrow3.appendChild(divcol8);
+                    diveachentry.appendChild(divrow4);
                     entrydiv.appendChild(diveachentry);
+                    
                 })
             })
         })
