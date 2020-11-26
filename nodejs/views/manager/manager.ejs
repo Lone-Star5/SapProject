@@ -153,7 +153,7 @@
 
 
             <!-- This is for reviewing tasks -->
-            <div style="display:none;" class="task-review">
+            <div style="display:none;"class = "task-review">
                 <div class="container">
                     <div class="review-task-header">
                         <h1><strong>Review Tasks</strong></h1>
@@ -172,10 +172,23 @@
                                     </div>
                                 </div>
                                 <div class="mt-4" style="display:none;" id="task-<%=i%>">
-                                    <h5 style="display:inline; margin-right:10px">Employee: <span data-id=<%=task.id%>><%= task.employee %></span> </h1>
-                                    <label> Points </label>
-                                    <input class="points" type="number" data-task= "<%=task.totalpoints%>" >
-                                    <button style="float:right;" class="btn btn-danger task-review-update">Update</button>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            Employee: <span id='<%=i%>-task-review-email'><%=task.employee%></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Assign Points </label>
+                                            <input id='<%=i%>-task-review-points' class="points" type="number" data-task= "<%=task.totalpoints%>">        
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11">
+                                            <div>Add Comments</div><textarea id='<%=i%>-task-review-comment' style="width:95%;"></textarea>
+                                        </div>
+                                        <div class="col-md-1 mt-5">
+                                            <button id=<%=i%> style="float:right;" class="btn btn-danger task-review-update">Update</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </li>
                             <% }) %> 
@@ -185,7 +198,7 @@
             </div>
 
             <!-- This is for re-assigning tasks of sick employees -->
-            <div style="display:block;" class="task-sick">
+            <div style="display:none;" class="task-sick">
                 <div class="container">
                     <div class="reassign-task-header">
                         <h1><strong>Re-Assign Tasks</strong></h1>
@@ -322,14 +335,14 @@
         // Submit task points for update
         Array.from(document.querySelectorAll('.task-review-update')).forEach((item)=>{
             item.addEventListener('click',(e)=>{
-            let parent = e.target.parentElement.childNodes;
-            let employee = parent[1].childNodes[1].innerText;
-            let id = parent[1].childNodes[1].dataset.id;
-            let points =  parent[5].value;
-            obj = {
-                employee: employee,
-                id: id,
-                taskpoints: points
+            let id = e.target.id;
+            let taskpoints = document.getElementById(`${id}-task-review-points`).value
+            let comment = document.getElementById(`${id}-task-review-comment`).value;
+            id = <%-JSON.stringify(reviewtasks)%>[id].id;
+            let obj = {
+                taskpoints: taskpoints,
+                comment: comment,
+                id: id
             }
             fetch(`/task/review`, {
                 method: 'POST',

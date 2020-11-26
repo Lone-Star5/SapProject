@@ -100,15 +100,19 @@ app.post('/task/create', (req, res) => {
     obj.manager = "Aman";
     obj.employee = obj.email;
     delete obj.email;
+    obj.employeeComment = null;
+    obj.managerComment = null;
     db.collection('Task').add(req.body).then(data => {
         res.redirect('/manager');
     }).catch(err => res.json({ message: 'some error occured' }))
 })
 // Reviewing Tasks
 app.post('/task/review', (req, res) => {
+    console.log(req.body);
     db.collection('Task').doc(req.body.id).set({
         taskpoints: Number(req.body.taskpoints),
-        reviewed: true
+        reviewed: true,
+        managerComment: req.body.comment
     }, { merge: true }).then(() => {
         res.json({ message: 'success' })
     }).catch((err) => {
