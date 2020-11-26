@@ -40,9 +40,10 @@ app.get('/manager', (req, res) => {
     let tasks = []
     db.collection('Task').get().then((response) => {
         response.forEach((data) => {
-            if (data.data().reviewed == false) {
+            if ((data.data().reviewed == false) && (data.data().completed==true)) {
                 let tempobj = data.data();
                 tempobj.id = data.id;
+                tempobj.deadline = new Date(tempobj.deadline._seconds*1000).toDateString();
                 tasks.push(tempobj);
             }
         })
@@ -66,26 +67,6 @@ app.get('/manager', (req, res) => {
     })
 
 })
-
-
-// Show Employee report of the month
-app.get('/manager/report', (req,res) => {
-    let employee = [
-        {
-            name: 'Employee 1',
-            email: '1@gmail.com'
-        },
-        {
-            name: 'Employee 2',
-            email: '2@gmail.com'
-        },
-        {
-            name: 'Employee 3',
-            email: '3@gmail.com'
-        }
-    ]
-    res.render('manager/report',{employee:employee})
-});
 
 
 // Creating Tasks
@@ -137,7 +118,7 @@ app.post('/task/reassign', (req,res) =>{
             obj.totalpoints = obj.totalpoints - req.body.taskpoints;
             obj.taskpoints = 0;
             if(req.body.deadline != ''){
-                obj.deadline = req.body.deadline;
+                obj.deadline = new Date(req.body.deadline);
             }
             obj.completed = false;
             obj.completedate = null;
@@ -152,29 +133,6 @@ app.post('/task/reassign', (req,res) =>{
     
 })
 
-// Generate Report and send task data
-app.post('/employee/report', (req,res)=>{
-    let email = req.body.email;
-    let month = req.body.month;
-    let tasks = [];
-    let monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"
-    ];
-    db.collection('Task').get().then((response)=>{
-        response.forEach((data)=>{
-            let obj = data.data();
-            // console.log(obj);
-            if(obj.reviewed==true && obj.employee==email){
-                obj.completedate = new Date(obj.completedate._seconds*1000);
-                obj.deadline = new Date(obj.deadline._seconds*1000);
-                if((monthNames[obj.completedate.getMonth()]==month) &&(obj.completedate.getFullYear() == (new Date()).getFullYear()) ){
-                    tasks.push(obj);
-                }
-            }
-        })
-        console.log(tasks);
-        res.json(tasks);
-    })
-})
 
 
 // Employee Routes
@@ -207,6 +165,52 @@ app.get('/employee', (req, res) => {
 app.get('/employee/formWellBeing', (req, res) => {
     res.render('employeeHealth');
 });
+
+
+// Show Employee report of the month
+app.get('/employee/report', (req,res) => {
+    let employee = [
+        {
+            name: 'Employee 1',
+            email: '1@gmail.com'
+        },
+        {
+            name: 'Employee 2',
+            email: '2@gmail.com'
+        },
+        {
+            name: 'Employee 3',
+            email: '3@gmail.com'
+        }
+    ]
+    res.render('employeeReport',{employee:employee})
+});
+
+// Generate Report and send task data
+app.post('/employee/report', (req,res)=>{
+    let email = req.body.email;
+    let month = req.body.month;
+    let tasks = [];
+    let monthNames = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"
+    ];
+    db.collection('Task').get().then((response)=>{
+        response.forEach((data)=>{
+            let obj = data.data();
+            // console.log(obj);
+            if(obj.reviewed==true && obj.employee==email){
+                obj.completedate = new Date(obj.completedate._seconds*1000);
+                obj.deadline = new Date(obj.deadline._seconds*1000);
+                if((monthNames[obj.completedate.getMonth()]==month) &&(obj.completedate.getFullYear() == (new Date()).getFullYear()) ){
+                    tasks.push(obj);
+                }
+            }
+        })
+        console.log(tasks);
+        res.json(tasks);
+    })
+})
+
+
 
 
 app.get('/hr', (req, res) => {

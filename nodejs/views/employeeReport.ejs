@@ -100,7 +100,7 @@
             </div>
         </div>
     
-        <div id="report-data">
+        <div style='display:none;' id="report-data">
 
         </div>
 
@@ -114,7 +114,7 @@
         
         // Back Button
         document.querySelector('#back').addEventListener('click',()=>{
-            document.location = '/manager';
+            document.location = '/';
         })
 
         // Show Employee Details
@@ -130,6 +130,8 @@
             let email = document.querySelector('#employee-email').innerText;
             let month  = document.querySelector('#report-employee-month').value;
             let div = document.querySelector('#report-data');
+            div.style.display= 'block';
+            div.innerHTML = '';
             let divrow1 = document.createElement('div');
             divrow1.classList.add('row');
             let divcol1 = document.createElement('div');

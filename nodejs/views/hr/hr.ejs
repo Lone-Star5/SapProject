@@ -66,14 +66,14 @@
                     Human Resource
                 </div>
                 <hr style="background:white;">
-                <a class="hr-health" href="#">
+                <a class="anchor hr-health" href="#">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
                       </svg>
                     Health Report
                 </a>
 
-                <a class="hr-task" href="#">
+                <a class="" href="/employee/report">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
                       </svg>
@@ -107,46 +107,20 @@
                     </div>
                 </div>
             </div>
-
-
-            <!-- Employee Report of the Month -->
-            <div class="hr-task">
-                <div class="container">
-                    <div class="hr-header">
-                        <h1><strong>Employee Report</strong></h1>
-                    </div>
-                    <div class="form-group">
-                        <label for="hr-monthreport-employee">Select Employee</label>
-                        <select name="id" class="custom-select" id="hr-monthreport-employee">
-                            <option id='1'>Undertaker</option>
-                            <option id='2'>Rey Mysterio</option>
-                            <option id='3'>The Rock</option>
-                        </select>
-                    </div>
-                    <div style="display:none;" id="hr-monthreport-employee-details">
-                        <div>
-                            Employee Monthly Report
-                        </div>
-                        <ul class="list-group" id='ul-hr-monthreport'>
-
-                        </ul>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
     <script>
         // Select which tasks to do for the manager
-        Array.from(document.querySelectorAll('a')).forEach((item)=> {
-            document.querySelector(`a.${item.className}`).addEventListener('click', ()=>{
+        Array.from(document.querySelectorAll('.anchor')).forEach((item)=> {
+            item.addEventListener('click', ()=>{
                 displayOff();
-                document.querySelector(`div.${item.className}`).style.display="block";
+                document.querySelector(`div.${item.className.split(' ')[1]}`).style.display="block";
             })
         })
         let displayOff = () =>{
-            Array.from(document.querySelectorAll('a')).forEach((item)=>{
-                document.querySelector(`div.${item.className}`).style.display="none";
+            Array.from(document.querySelectorAll('.anchor')).forEach((item)=>{
+                document.querySelector(`div.${item.className.split(' ')[1]}`).style.display="none";
             })
         }
 
@@ -195,52 +169,7 @@
             }) 
         })
 
-        // Show Monthly Report
-        document.querySelector('#hr-monthreport-employee').addEventListener('change',()=>{
-            let id = document.querySelector('option:checked').id;
-            fetch(`/monthlyreport/${id}`, {
-                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, *cors, same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
-                headers: {
-                'Content-Type': 'application/json'
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                redirect: 'follow', // manual, *follow, error
-                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify({'empty':'data'}) // body data type must match "Content-Type" header
-            }).then(data => data.json()).then((info)=>{
-                document.querySelector('#hr-monthreport-employee-details').style.display='block';
-                let ul = document.querySelector('#ul-hr-monthreport')
-                ul.innerHTML='';
-                ul.style.cursor='pointer';
-                info.forEach((entry)=>{
-                    let {date,status} = entry;
-                    let listItem = document.createElement("li");
-                    listItem.classList.add('list-group-item')
-                    let div = document.createElement('div');
-                    div.classList.add('row');
-                    let div1 = document.createElement('div');
-                    div1.classList.add('col-md-10');
-                    let div2 = document.createElement('div');
-                    div2.classList.add('col-md-2');
-                    div1.innerText='Date: ';
-                    div2.innerText='Status: ';
-                    let span1 = document.createElement('span');
-                    span1.innerText=new Date(date).toDateString();
-                    div1.appendChild(span1);
-                    let span2 = document.createElement('span');
-                    span2.innerText=status;
-                    div2.appendChild(span2); 
-                    div.appendChild(div1);
-                    div.appendChild(div2);
-                    listItem.appendChild(div);
-                    ul.appendChild(listItem);
-                })
-            }) 
-        })
-
+       
             
     </script>
     
