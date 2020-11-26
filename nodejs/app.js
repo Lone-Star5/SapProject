@@ -124,7 +124,7 @@ app.post('/task/reassign', (req,res) =>{
         taskpoints: Number(req.body.taskpoints),
         reviewed:true,
         completed:true,
-        completedate: new Date()
+        completedate: new Date(),
     },{merge: true}).then(()=>{
         db.collection('Task').get().then((response)=>{
             let obj={};
@@ -136,7 +136,9 @@ app.post('/task/reassign', (req,res) =>{
             obj.employee = req.body.newEmployeeEmail;
             obj.totalpoints = obj.totalpoints - req.body.taskpoints;
             obj.taskpoints = 0;
-            obj.deadline = new Date();
+            if(req.body.deadline != ''){
+                obj.deadline = req.body.deadline;
+            }
             obj.completed = false;
             obj.completedate = null;
             obj.reviewed = false;
@@ -162,7 +164,9 @@ app.post('/employee/report', (req,res)=>{
             let obj = data.data();
             // console.log(obj);
             if(obj.reviewed==true && obj.employee==email){
-                if((monthNames[new Date(obj.completedate._seconds*1000).getMonth()]==month) &&(new Date(obj.completedate._seconds*1000).getFullYear() == (new Date()).getFullYear()) ){
+                obj.completedate = new Date(obj.completedate._seconds*1000);
+                obj.deadline = new Date(obj.deadline._seconds*1000);
+                if((monthNames[obj.completedate.getMonth()]==month) &&(obj.completedate.getFullYear() == (new Date()).getFullYear()) ){
                     tasks.push(obj);
                 }
             }

@@ -29,6 +29,15 @@
             padding: 25px;
             border: 1px solid #000;
         }
+        .task-report-data{
+            margin: 20px;
+            /* padding: 30px; */
+        }
+        .task-report-entry{
+            padding: 10px;
+            border: 2px solid #333333;
+            
+        }
     </style>
 </head>
 <body>
@@ -120,6 +129,21 @@
         document.querySelector('#report-generate').addEventListener('click',()=>{
             let email = document.querySelector('#employee-email').innerText;
             let month  = document.querySelector('#report-employee-month').value;
+            let div = document.querySelector('#report-data');
+            let divrow1 = document.createElement('div');
+            divrow1.classList.add('row');
+            let divcol1 = document.createElement('div');
+            let divcol2 = document.createElement('div');
+            divcol1.classList.add('col-md-6');
+            divcol2.classList.add('col-md-6');
+            divcol1.innerText =  'Name: '+document.querySelector('#employee-name').innerText;
+            divcol2.innerText = `Email: ${document.querySelector('#employee-name').innerText}`;
+            divrow1.appendChild(divcol1);
+            divrow1.appendChild(divcol2);
+            div.appendChild(divrow1);
+            let entrydiv = document.createElement('div');
+            div.appendChild(entrydiv);
+            entrydiv.classList.add('task-report-data');
             fetch(`/employee/report`,{
                 method: 'POST',
                 mode: 'cors',
@@ -133,19 +157,33 @@
                 body: JSON.stringify({email:email,month:month})
             }).then((response)=>response.json()).then((data)=>{
                 data.forEach((task)=>{
-                    let div = document.querySelector('#report-data');
-                    let divrow1 = document.createElement('div');
-                    divrow1.classList.add('row');
-                    let divcol1 = document.createElement('div');
-                    let divcol2 = document.createElement('div');
-                    divcol1.classList.add('col-md-6');
-                    divcol2.classList.add('col-md-6');
-                    divcol1.innerText =  'Name: '+document.querySelector('#employee-name').innerText;
-                    divcol2.innerText = `Email: ${task.employee}`;
-                    divrow1.appendChild(divcol1);
-                    divrow1.appendChild(divcol2);
-                    div.appendChild(divrow1);
+                    let diveachentry = document.createElement('div');
+                    diveachentry.classList.add('task-report-entry')
+                    let divrow2 = document.createElement('div');
+                    divrow2.classList.add('row');
+                    let divcol3 = document.createElement('div');
+                    let divcol4 = document.createElement('div');
+                    divcol3.classList.add('col-md-6');
+                    divcol4.classList.add('col-md-6');
+                    divcol3.innerText =  `Title: ${task.title}`;
+                    divcol4.innerText = `taskpoints: ${task.taskpoints}/${task.totalpoints}`;
+                    divrow2.appendChild(divcol3);
+                    divrow2.appendChild(divcol4);
+                    diveachentry.appendChild(divrow2);                    
 
+
+                    let divrow3 = document.createElement('div');
+                    divrow3.classList.add('row');
+                    let divcol5 = document.createElement('div');
+                    let divcol6 = document.createElement('div');
+                    divcol5.classList.add('col-md-6');
+                    divcol6.classList.add('col-md-6');
+                    divcol5.innerText =  `Complete Date: ${new Date(task.completedate).toDateString()}`;
+                    divcol6.innerText = `Deadline: ${new Date(task.deadline).toDateString()}`;
+                    divrow3.appendChild(divcol5);
+                    divrow3.appendChild(divcol6);
+                    diveachentry.appendChild(divrow3);
+                    entrydiv.appendChild(diveachentry);
                 })
             })
         })

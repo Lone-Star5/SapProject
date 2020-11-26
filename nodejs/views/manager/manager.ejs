@@ -226,17 +226,29 @@
                                             </label>
                                         </div>
                                         <div class="col-md-6">
+                                            <div id="reAssign-points-<%=i%>">
+                                                Task Points: <span><%=task.totalpoints %></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div>
+                                                Deadline: <%=task.deadline %>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
                                             <div class="row">
-                                                <div id="reAssign-points-<%=i%>" class="col-md-10">
-                                                    Task Points: <span><%=task.totalpoints %></span>
+                                                <div class="col-md-10">
+                                                    <label>Reset Deadline: 
+                                                        <input type='date' required>
+                                                    </label>
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <button data-id=<%=task.id%> style="float:right;" class="btn btn-danger task-reassign-update">Update</button>
+                                                    <button data-id = <%=task.id%> style="float:right;" class="btn btn-danger task-reassign-update">Update</button>
                                                 </div>
                                             </div>
-                                            
                                         </div>
-                                       
                                     </div>
                                 </div>
                             </li>
@@ -343,35 +355,46 @@
         Array.from(document.querySelectorAll('.task-reassign-update')).forEach((item)=>{
             item.addEventListener('click',(e)=>{
                 let id = e.target.dataset.id;
-                let newEmployeeEmail = e.target.parentElement.parentElement.parentElement.parentElement.childNodes[1].childNodes[1].childNodes[1].value;
+                
                 let oldEmployeeEmail = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].childNodes[1].childNodes[1].childNodes[1].innerText;
+
+                let newEmployeeEmail = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[3].childNodes[3].childNodes[1].childNodes[1].childNodes[1].value;
+
+
+                let deadline = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[3].childNodes[5].childNodes[3].childNodes[1].childNodes[1].childNodes[1].childNodes[1].value;
+
+                console.log(deadline);
                 let taskpoints = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].childNodes[3].childNodes[1].childNodes[1].value;
+                
+
                 taskpoints = Number(taskpoints);
                 let obj = {
                     id: id,
                     newEmployeeEmail: newEmployeeEmail,
                     oldEmployeeEmail: oldEmployeeEmail,
-                    taskpoints: taskpoints
+                    taskpoints: taskpoints,
+                    deadline: deadline
                 }
-                fetch(`/task/reassign`, {
-                    method: 'POST',
-                    mode: 'cors',
-                    cache: 'no-cache',
-                    credentials: 'same-origin',
-                    headers: {
-                    'Content-Type': 'application/json'
-                    },
-                    redirect: 'follow', 
-                    referrerPolicy: 'no-referrer',
-                    body: JSON.stringify(obj)
-                }).then(response => response.json()).then((data)=>{
-                    if(data.message=='success'){
-                        location.reload();
-                    }
-                    else{
-                        alert(data.message);
-                    }
-                })
+                console.log(obj);
+                // fetch(`/task/reassign`, {
+                //     method: 'POST',
+                //     mode: 'cors',
+                //     cache: 'no-cache',
+                //     credentials: 'same-origin',
+                //     headers: {
+                //     'Content-Type': 'application/json'
+                //     },
+                //     redirect: 'follow', 
+                //     referrerPolicy: 'no-referrer',
+                //     body: JSON.stringify(obj)
+                // }).then(response => response.json()).then((data)=>{
+                //     if(data.message=='success'){
+                //         location.reload();
+                //     }
+                //     else{
+                //         alert(data.message);
+                //     }
+                // })
             })
         })
     </script>
