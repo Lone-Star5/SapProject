@@ -93,7 +93,7 @@
                     Employee Zone
                 </div>
                 <hr style="background:white;">
-                <a class="task-view" href="#">
+                <a class="anchor task-view" href="#">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
@@ -102,7 +102,7 @@
                     View Tasks
                 </a>
 
-                <a class="task-update" href="#">
+                <a class="anchor task-update" href="#">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
@@ -111,7 +111,7 @@
                     Update Tasks Completed
                 </a>
 
-                <a class="task-review" href="#">
+                <a class="anchor task-review" href="#">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
@@ -279,15 +279,16 @@
 
     <script>
         // Select which tasks to do for the manager
-        Array.from(document.querySelectorAll('a')).forEach((item) => {
-            document.querySelector(`a.${item.className}`).addEventListener('click', () => {
+        Array.from(document.querySelectorAll('.anchor')).forEach((item) => {
+            item.addEventListener('click', () => {
+                let a = item.className.split(' ')[1];
                 displayOff();
-                document.querySelector(`div.${item.className}`).style.display = "block";
+                document.querySelector(`div.${a}`).style.display = "block";
             })
         })
         let displayOff = () => {
-            Array.from(document.querySelectorAll('a')).forEach((item) => {
-                document.querySelector(`div.${item.className}`).style.display = "none";
+            Array.from(document.querySelectorAll('.anchor')).forEach((item) => {
+                document.querySelector(`div.${item.className.split(' ')[1]}`).style.display = "none";
             })
         }
 
