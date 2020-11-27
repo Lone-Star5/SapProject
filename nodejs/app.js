@@ -30,66 +30,125 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json())
 
 
+isCorrectType = (req, res, next) => {
+    let email = req.body.username;
+    // let password = req.body.password;
+    let type = req.body.type;
+    db.collection(type).get().then((response) => {
+        response.forEach(data => {
+            if (data.data().email === email)
+                next();
+        })
+    }).catch((err) => {
+        console.log('Sorry! The designation is incorrect');
+    });
+}
+
+isEmployee = (req, res, next) => {
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            var email = firebase.auth().currentUser.email;
+            db.collection('Employee').get().then((response) => {
+                response.forEach(data => {
+                    if (data.data().email === email)
+                        next();
+                })
+            }).catch((err) => {
+                console.log('Sorry! The designation is incorrect');
+            });
+        }
+        else
+            res.redirect('/login');
+    })
+}
+
+isHR = (req, res, next) => {
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            var email = firebase.auth().currentUser.email;
+            db.collection('HR').get().then((response) => {
+                response.forEach(data => {
+                    if (data.data().email === email)
+                        next();
+                })
+            }).catch((err) => {
+                console.log('Sorry! The designation is incorrect');
+            });
+        }
+        else
+            res.redirect('/login');
+    })
+}
+
+isManager = (req, res, next) => {
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            var email = firebase.auth().currentUser.email;
+            db.collection('Manager').get().then((response) => {
+                response.forEach(data => {
+                    if (data.data().email === email)
+                        next();
+                })
+            }).catch((err) => {
+                console.log('Sorry! The designation is incorrect');
+            });
+        }
+        else{
+            res.redirect('/login');
+        }
+    })
+}
 
 app.get('/', (req, res) => {
     res.render('landing');
 })
 
 
-app.get('/manager', (req, res) => {
-    firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-            let reviewtasks = []
-            let reassigntasks = []
-            let sickemp = {};
-            db.collection('Health').orderBy("date","desc").get().then((response) => {
+app.get('/manager', isManager, (req, res) => {
+    let reviewtasks = []
+    let reassigntasks = []
+    let sickemp = {};
+    db.collection('Health').orderBy("date", "desc").get().then((response) => {
+        response.forEach((data) => {
+            if (data.data().status == 'sick') {
+                if (sickemp[data.data().email] != 0)
+                    sickemp[data.data().email] = 1;
+            } else {
+                if (sickemp[data.data().email] != 1)
+                    sickemp[data.data().email] = 0;
+            }
+        })
+    }).then(() => {
+        db.collection('Task').get().then((response) => {
+            response.forEach((data) => {
+                if ((data.data().reviewed == false) && (data.data().completed == true)) {
+                    let tempobj = data.data();
+                    tempobj.id = data.id;
+                    tempobj.deadline = new Date(tempobj.deadline._seconds * 1000).toDateString();
+                    reviewtasks.push(tempobj);
+                }
+                if ((data.data().completed == false) && (sickemp[data.data().employee] == 1)) {
+                    let tempobj = data.data();
+                    tempobj.id = data.id;
+                    tempobj.deadline = new Date(tempobj.deadline._seconds * 1000).toDateString();
+                    reassigntasks.push(tempobj);
+                }
+
+            })
+        }).then(() => {
+            let employee = []
+            db.collection('Employee').get().then((response) => {
                 response.forEach((data) => {
-                    if (data.data().status == 'sick') {
-                        if (sickemp[data.data().email] != 0)
-                            sickemp[data.data().email] = 1;
-                    } else {
-                        if (sickemp[data.data().email] != 1)
-                            sickemp[data.data().email] = 0;
-                    }
+                    employee.push(data.data());
                 })
             }).then(() => {
-                db.collection('Task').get().then((response) => {
-                    response.forEach((data) => {
-                        if ((data.data().reviewed == false) && (data.data().completed == true)) {
-                            let tempobj = data.data();
-                            tempobj.id = data.id;
-                            tempobj.deadline = new Date(tempobj.deadline._seconds * 1000).toDateString();
-                            reviewtasks.push(tempobj);
-                        }
-                        if ((data.data().completed == false) && (sickemp[data.data().employee] == 1)) {
-                            let tempobj = data.data();
-                            tempobj.id = data.id;
-                            tempobj.deadline = new Date(tempobj.deadline._seconds * 1000).toDateString();
-                            reassigntasks.push(tempobj);
-                        }
-
-                    })
-                }).then(() => {
-                    let employee = []
-                    db.collection('Employee').get().then((response)=>{
-                        response.forEach((data)=>{
-                            employee.push(data.data());
-                        })
-                    }).then(()=>{
-                        
-                        res.render('manager/manager', { email: firebase.auth().currentUser.email, reviewtasks: reviewtasks, reassigntasks: reassigntasks, employee: employee });
-                    }).catch((err)=>{
-                        res.json(err);
-                    })
-                })
+                res.render('manager/manager', { reviewtasks: reviewtasks, reassigntasks: reassigntasks, employee: employee });
+            }).catch((err) => {
+                res.json(err);
             })
-        }
-        else{
-            res.redirect('/login');
-        }
+        })
     })
-})
-
+});
 
 // Creating Tasks
 app.post('/task/create', (req, res) => {
@@ -111,7 +170,6 @@ app.post('/task/create', (req, res) => {
 })
 // Reviewing Tasks
 app.post('/task/review', (req, res) => {
-    console.log(req.body);
     db.collection('Task').doc(req.body.id).set({
         taskpoints: Number(req.body.taskpoints),
         reviewed: true,
@@ -161,40 +219,33 @@ app.post('/task/reassign', (req, res) => {
 
 
 // Employee Routes
-app.get('/employee', (req, res) => {
-    firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-            let tasks = [];
-            let reviewed = [];
-            let notCompleted = [];
-            db.collection('Task').get().then((response) => {
-                response.forEach(data => {
-                    let obj = {};
-                    if (data.data().employee === firebase.auth().currentUser.email) {
-                        obj = data.data();
-                        obj.id = data.id;
-                        tasks.push(obj);
-                        if (!data.data().completed) {
-                            obj = data.data();
-                            obj.id = data.id;
-                            notCompleted.push(obj);
-                        }
-                        if (data.data().reviewed) {
-                            obj = data.data();
-                            obj.id = data.id;
-                            reviewed.push(obj);
-                        }
-                    }
-                })
-            })
-                .then(() => {
-                    console.log(reviewed);
-                    res.render('employee', { tasks: tasks, reviewed: reviewed, notCompleted: notCompleted });
-                });
-        }
-        else
-            res.redirect('/login');
+app.get('/employee', isEmployee, (req, res) => {
+    let tasks = [];
+    let reviewed = [];
+    let notCompleted = [];
+    db.collection('Task').get().then((response) => {
+        response.forEach(data => {
+            let obj = {};
+            if (data.data().employee === firebase.auth().currentUser.email) {
+                obj = data.data();
+                obj.id = data.id;
+                tasks.push(obj);
+                if (!data.data().completed) {
+                    obj = data.data();
+                    obj.id = data.id;
+                    notCompleted.push(obj);
+                }
+                if (data.data().reviewed) {
+                    obj = data.data();
+                    obj.id = data.id;
+                    reviewed.push(obj);
+                }
+            }
+        })
     })
+        .then(() => {
+            res.render('employee', { tasks: tasks, reviewed: reviewed, notCompleted: notCompleted });
+        });
 });
 
 // Show Employee Health Form
@@ -210,7 +261,7 @@ app.get('/employee/formWellBeing', (req, res) => {
 app.post('/employee/formWellBeing', (req, res) => {
     let email = firebase.auth().currentUser.email;
     let obj = {};
-    obj.status = req.body.ques1==true?'sick':'healthy';
+    obj.status = req.body.ques1 == true ? 'sick' : 'healthy';
     obj.travelling = req.body.ques3;
     obj.description = req.body.ques4;
     obj.email = email;
@@ -226,12 +277,12 @@ app.post('/employee/formWellBeing', (req, res) => {
 // Show Employee report of the month
 app.get('/employee/report', (req, res) => {
     let employee = []
-    db.collection('Employee').get().then((response)=>{
-        response.forEach((data)=>{
+    db.collection('Employee').get().then((response) => {
+        response.forEach((data) => {
             employee.push(data.data());
         })
         res.render('employeeReport', { employee: employee })
-    }).catch((err)=>{
+    }).catch((err) => {
         res.json(err);
     })
 });
@@ -246,25 +297,23 @@ app.post('/employee/report', (req, res) => {
     db.collection('Task').get().then((response) => {
         response.forEach((data) => {
             let obj = data.data();
-            console.log(obj)
             if (obj.reviewed == true && obj.employee == email) {
                 obj.completedate = new Date(obj.completedate._seconds * 1000);
                 obj.deadline = new Date(obj.deadline._seconds * 1000);
                 if ((monthNames[obj.completedate.getMonth()] == month) && (obj.completedate.getFullYear() == (new Date()).getFullYear())) {
                     tasks.push(obj);
-                    console.log(tasks);
                 }
             }
         })
-        }).then(()=>{
-            res.json(tasks);
+    }).then(() => {
+        res.json(tasks);
     })
 })
 
 
 
 
-app.get('/hr', (req, res) => {
+app.get('/hr', isHR, (req, res) => {
     let employee = []
     db.collection('Employee').get().then((response) => {
         response.forEach((data) => {
@@ -279,7 +328,7 @@ app.get('/hr', (req, res) => {
 app.post('/health/:id', (req, res) => {
     let id = req.params.id;
     let data = []
-    db.collection('Health').orderBy("date","desc").get().then((response) => {
+    db.collection('Health').orderBy("date", "desc").get().then((response) => {
         response.forEach((info) => {
             if (info.data().email == id) {
                 let obj = info.data();
@@ -357,20 +406,6 @@ app.post('/signup', (req, res) => {
         console.log('Password Mismatch');
 });
 
-isCorrectType = (req,res,next) => {
-    let email = req.body.username;
-    // let password = req.body.password;
-    let type = req.body.type;
-    db.collection(type).get().then((response) => {
-        response.forEach(data => {
-            if (data.data().email === email)
-                next();
-        })
-    }).catch((err)=>{
-        console.log('Sorry! The designation is incorrect');
-    });
-}
-
 app.post('/login', isCorrectType, (req, res) => {
     var email = req.body.username;
     var password = req.body.password;
@@ -383,12 +418,14 @@ app.post('/login', isCorrectType, (req, res) => {
             var errorCode = error.code;
             var errorMessage = error.message;
             console.log(errorCode + ": " + errorMessage);
-            res.redirect('/login');
+            res.redirect('/');
         });
 });
 
 app.get('/logout', (req, res) => {
     firebase.auth().signOut().then(() => {
+        console.log('Logging out');
+    }).then(() => {
         res.redirect('/login');
     }).catch(function (error) {
         var errorCode = error.code;
@@ -397,31 +434,12 @@ app.get('/logout', (req, res) => {
     });
 });
 
-// isEmployee = (user) => {
-//     db.collection('Employee').get().then((response) => {
-//         response.forEach(data => {
-//             if (data.data().email === firebase.auth().currentUser.email)
-//                return next();
-//         })
-//         console.log('Sorry! You are not an Employee');
-//     });
-// }
-
-// isHR = (user) => {
-//     db.collection('HR').get().then((response) => {
-//         response.forEach(data => {
-//             if (data.data().email === firebase.auth().currentUser.email)
-//                return next();
-//         })
-//         console.log('Sorry! You are not a member of the HR');
-//     });
-// }
 
 app.post('/employee/complete', (req, res) => {
-    console.log(req.body.employeeID);
     db.collection('Task').doc(req.body.employeeID).set({
         completed: true,
-        completedate: new Date()
+        completedate: new Date(),
+        employeeComment: req.body.commentBox
     }, { merge: true }).then(() => {
         res.redirect('/employee');
     }).catch((err) => {
