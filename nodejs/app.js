@@ -355,6 +355,17 @@ app.post('/message',(req,res)=>{
     })
 })
 
+app.post('/employee/message', (req,res)=>{
+    let id = req.body.id;
+    db.collection('Message').doc(id).set({
+        read: true
+    },{merge:true}).then(()=>{
+        res.json({message:'success'});
+    }).catch((err)=>{
+        res.json({message:'error'})
+    })
+})
+
 
 app.post('/health/:id', (req, res) => {
     let id = req.params.id;

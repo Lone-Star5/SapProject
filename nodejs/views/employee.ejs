@@ -325,7 +325,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-10"><%=message.message%></div>
-                                            <div class="col-md-2"><button class="btn">Mark as Read</button></div>
+                                            <div class="col-md-2"><button id="<%=i%>" class="btn btn-mark-as-read">Mark as Read</button></div>
                                         </div>
                                     </li>
                                 <% }) %>
@@ -415,6 +415,35 @@
             else
                 document.querySelector('#markComplete').disabled = true;
         }  
+
+
+        // Mark message as read
+        Array.from(document.querySelectorAll('.btn-mark-as-read')).forEach((item)=>{
+            item.addEventListener('click',(e)=>{
+                let index = e.target.id;
+                let id = <%-JSON.stringify(messages)%>[index].id;
+                
+                fetch('/employee/message',{
+                    method: 'POST',
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    credentials: 'same-origin',
+                    headers: {
+                    'Content-Type': 'application/json'
+                    },
+                    redirect: 'follow', 
+                    referrerPolicy: 'no-referrer',
+                    body: JSON.stringify({id:id})
+                }).then(response => response.json()).then((data)=>{
+                    if(data.message=='success'){
+                        alert('Successful');
+                        location.reload();
+                    }else{
+                        alert(data.message);
+                    }
+                })
+            })
+        })
 
         // Logout button
         document.querySelector('#btn-logout').addEventListener('click',()=>{
