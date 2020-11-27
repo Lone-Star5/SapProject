@@ -262,7 +262,7 @@ app.get('/employee', isEmployee, (req, res) => {
 });
 
 // Show Employee Health Form
-app.get('/employee/formWellBeing', (req, res) => {
+app.get('/employee/formWellBeing',isEmployee, (req, res) => {
     firebase.auth().onAuthStateChanged(user => {
         if (user)
             res.render('employeeHealth');
