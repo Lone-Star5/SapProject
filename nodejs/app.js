@@ -42,7 +42,7 @@ app.get('/manager', (req, res) => {
             let reviewtasks = []
             let reassigntasks = []
             let sickemp = {};
-            db.collection('Health').get().then((response) => {
+            db.collection('Health').orderBy("date","desc").get().then((response) => {
                 response.forEach((data) => {
                     if (data.data().status == 'sick') {
                         if (sickemp[data.data().email] != 0)
@@ -208,7 +208,7 @@ app.get('/employee/formWellBeing', (req, res) => {
 app.post('/employee/formWellBeing', (req, res) => {
     let email = firebase.auth().currentUser.email;
     let obj = {};
-    obj.status = req.body.ques1;
+    obj.status = req.body.ques1==true?'sick':'healthy';
     obj.travelling = req.body.ques3;
     obj.description = req.body.ques4;
     obj.email = email;
@@ -277,7 +277,7 @@ app.get('/hr', (req, res) => {
 app.post('/health/:id', (req, res) => {
     let id = req.params.id;
     let data = []
-    db.collection('Health').get().then((response) => {
+    db.collection('Health').orderBy("date","desc").get().then((response) => {
         response.forEach((info) => {
             if (info.data().email == id) {
                 let obj = info.data();
