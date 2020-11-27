@@ -263,7 +263,7 @@ app.post('/employee/report', (req, res) => {
 
 
 
-
+// HR Routes
 app.get('/hr', (req, res) => {
     let employee = []
     db.collection('Employee').get().then((response) => {
@@ -272,9 +272,25 @@ app.get('/hr', (req, res) => {
         })
         res.render('hr/hr', {email: firebase.auth().currentUser.email, employee: employee });
     }).catch(err => {
+        console.log(err)
         res.redirect('/');
     })
 })
+
+app.post('/message',(req,res)=>{
+    db.collection('Message').add({
+        reciever: req.body.email,
+        message: req.body.message,
+        sender: firebase.auth().currentUser.email,
+        date: new Date(),
+        read: false
+    }).then(()=>{
+        res.json({message:'success'});
+    }).catch((err)=>{
+        res.json({message:'error'})
+    })
+})
+
 
 app.post('/health/:id', (req, res) => {
     let id = req.params.id;
