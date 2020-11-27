@@ -93,7 +93,7 @@ isManager = (req, res, next) => {
                 console.log('Sorry! The designation is incorrect');
             });
         }
-        else{
+        else {
             res.redirect('/login');
         }
     })
@@ -108,7 +108,7 @@ app.get('/manager', isManager, (req, res) => {
     let reviewtasks = []
     let reassigntasks = []
     let sickemp = {};
-    db.collection('Health').orderBy("date", "desc").get().then((response) => {
+    db.collection('Health').orderBy("date","desc").get().then((response) => {
         response.forEach((data) => {
             if (data.data().status == 'sick') {
                 if (sickemp[data.data().email] != 0)
@@ -137,13 +137,14 @@ app.get('/manager', isManager, (req, res) => {
             })
         }).then(() => {
             let employee = []
-            db.collection('Employee').get().then((response) => {
-                response.forEach((data) => {
+            db.collection('Employee').get().then((response)=>{
+                response.forEach((data)=>{
                     employee.push(data.data());
                 })
-            }).then(() => {
-                res.render('manager/manager', { reviewtasks: reviewtasks, reassigntasks: reassigntasks, employee: employee });
-            }).catch((err) => {
+            }).then(()=>{
+                
+                res.render('manager/manager', { email: firebase.auth().currentUser.email, reviewtasks: reviewtasks, reassigntasks: reassigntasks, employee: employee });
+            }).catch((err)=>{
                 res.json(err);
             })
         })
@@ -245,24 +246,24 @@ app.get('/employee', isEmployee, (req, res) => {
         })
     })
         .then(() => {
-            db.collection('Message').get().then((response)=>{
-                response.forEach((data)=>{
+            db.collection('Message').get().then((response) => {
+                response.forEach((data) => {
                     let tempobj = data.data();
-                    if((tempobj.read==false)&&(tempobj.reciever==firebase.auth().currentUser.email)){
+                    if ((tempobj.read == false) && (tempobj.reciever == firebase.auth().currentUser.email)) {
                         tempobj.id = data.id;
-                        tempobj.date = new Date(tempobj.date._seconds*1000).toDateString();
+                        tempobj.date = new Date(tempobj.date._seconds * 1000).toDateString();
                         messages.push(tempobj);
                     }
                 })
-            }).then(()=>{
-                res.render('employee', {email: firebase.auth().currentUser.email, tasks: tasks, reviewed: reviewed, notCompleted: notCompleted ,messages: messages});
+            }).then(() => {
+                res.render('employee', { email: firebase.auth().currentUser.email, tasks: tasks, reviewed: reviewed, notCompleted: notCompleted, messages: messages });
             })
-            
+
         });
 });
 
 // Show Employee Health Form
-app.get('/employee/formWellBeing',isEmployee, (req, res) => {
+app.get('/employee/formWellBeing', isEmployee, (req, res) => {
     firebase.auth().onAuthStateChanged(user => {
         if (user)
             res.render('employeeHealth');
@@ -334,24 +335,24 @@ app.get('/hr', isHR, (req, res) => {
         response.forEach((data) => {
             employee.push(data.data());
         })
-        res.render('hr/hr', {email: firebase.auth().currentUser.email, employee: employee });
+        res.render('hr/hr', { email: firebase.auth().currentUser.email, employee: employee });
     }).catch(err => {
         console.log(err)
         res.redirect('/');
     })
 })
 
-app.post('/message',(req,res)=>{
+app.post('/message', (req, res) => {
     db.collection('Message').add({
         reciever: req.body.email,
         message: req.body.message,
         sender: firebase.auth().currentUser.email,
         date: new Date(),
         read: false
-    }).then(()=>{
-        res.json({message:'success'});
-    }).catch((err)=>{
-        res.json({message:'error'})
+    }).then(() => {
+        res.json({ message: 'success' });
+    }).catch((err) => {
+        res.json({ message: 'error' })
     })
 })
 
