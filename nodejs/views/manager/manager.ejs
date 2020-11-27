@@ -125,6 +125,8 @@
               </div>
         </div>
         <div class="col-md-9">
+            
+            <!-- Logout button -->
             <div class="row">
                 <div class="col-8 col-md-10"></div>
                 <div class="col-4 col-md-2">
@@ -133,6 +135,7 @@
                     </div>
                 </div>
             </div>
+            
             <!-- This is for adding tasks -->
             <div style="display:block;" class="task-create">
                 <form method='post' action='/task/create'>
@@ -434,6 +437,7 @@
             })
         })
 
+        // Logout button
         document.querySelector('#btn-logout').addEventListener('click',()=>{
             window.location = '/logout';
         })

@@ -223,6 +223,7 @@ app.get('/employee', isEmployee, (req, res) => {
     let tasks = [];
     let reviewed = [];
     let notCompleted = [];
+    let messages = [];
     db.collection('Task').get().then((response) => {
         response.forEach(data => {
             let obj = {};
@@ -244,7 +245,19 @@ app.get('/employee', isEmployee, (req, res) => {
         })
     })
         .then(() => {
-            res.render('employee', { tasks: tasks, reviewed: reviewed, notCompleted: notCompleted });
+            db.collection('Message').get().then((response)=>{
+                response.forEach((data)=>{
+                    let tempobj = data.data();
+                    if((tempobj.read==false)&&(tempobj.reciever==firebase.auth().currentUser.email)){
+                        tempobj.id = data.id;
+                        tempobj.date = new Date(tempobj.date._seconds*1000).toDateString();
+                        messages.push(tempobj);
+                    }
+                })
+            }).then(()=>{
+                res.render('employee', {email: firebase.auth().currentUser.email, tasks: tasks, reviewed: reviewed, notCompleted: notCompleted ,messages: messages});
+            })
+            
         });
 });
 
