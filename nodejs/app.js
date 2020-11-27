@@ -124,15 +124,15 @@ app.post('/task/review', (req, res) => {
 app.post('/task/reassign', (req, res) => {
     db.collection('Task').doc(req.body.id).set({
         taskpoints: Number(req.body.taskpoints),
-        reviewed:true,
-        completed:true,
+        reviewed: true,
+        completed: true,
         managerComment: req.body.comment,
         completedate: new Date()
-    },{merge: true}).then(()=>{
-        db.collection('Task').get().then((response)=>{
-            let obj={};
-            response.forEach((data)=>{
-                if(data.id == req.body.id){
+    }, { merge: true }).then(() => {
+        db.collection('Task').get().then((response) => {
+            let obj = {};
+            response.forEach((data) => {
+                if (data.id == req.body.id) {
                     obj = data.data();
                 }
             })
@@ -145,11 +145,11 @@ app.post('/task/reassign', (req, res) => {
             obj.completed = false;
             obj.completedate = null;
             obj.reviewed = false;
-            obj.managerComment=null;
-            db.collection('Task').add(obj).then(data=>{
-                res.json({message:'success'});
-            }).catch(err=>{
-                res.json({message:'error'})
+            obj.managerComment = null;
+            db.collection('Task').add(obj).then(data => {
+                res.json({ message: 'success' });
+            }).catch(err => {
+                res.json({ message: 'error' })
             })
         });
     });
@@ -354,14 +354,14 @@ app.post('/signup', (req, res) => {
 
 isCorrectType = (req,res,next) => {
     let email = req.body.username;
-    let password = req.body.password;
+    // let password = req.body.password;
     let type = req.body.type;
     db.collection(type).get().then((response) => {
         response.forEach(data => {
             if (data.data().email === email)
                 next();
         })
-    }).then(()=>{
+    }).catch((err)=>{
         console.log('Sorry! The designation is incorrect');
     });
 }
@@ -391,9 +391,6 @@ app.get('/logout', (req, res) => {
         console.log(errorCode + ": " + errorMessage);
     });
 });
-
-
-
 
 // isEmployee = (user) => {
 //     db.collection('Employee').get().then((response) => {
