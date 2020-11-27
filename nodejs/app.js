@@ -246,7 +246,7 @@ app.get('/employee', isEmployee, (req, res) => {
         })
     })
         .then(() => {
-            db.collection('Message').get().then((response) => {
+            db.collection('Message').orderBy('date','desc').get().then((response) => {
                 response.forEach((data) => {
                     let tempobj = data.data();
                     if ((tempobj.read == false) && (tempobj.reciever == firebase.auth().currentUser.email)) {
@@ -256,7 +256,7 @@ app.get('/employee', isEmployee, (req, res) => {
                     }
                 })
             }).then(() => {
-                res.render('employee', { email: firebase.auth().currentUser.email, tasks: tasks, reviewed: reviewed, notCompleted: notCompleted, messages: messages });
+                res.render('employee', { email: firebase.auth().currentUser.displayName, tasks: tasks, reviewed: reviewed, notCompleted: notCompleted, messages: messages });
             })
 
         });
@@ -425,7 +425,8 @@ app.get('/signup', (req, res) => {
     res.render('signup');
 });
 
-app.post('/signup', (req, res) => {
+app.post('/signup',async (req, res) => {
+    // firebase.auth().currentUser
     let email = req.body.username;
     let password = req.body.password;
     let pass = req.body.passcon;
@@ -434,16 +435,15 @@ app.post('/signup', (req, res) => {
     let phno = req.body.phno;
     let type = req.body.type;
     if (password == pass) {
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-            .then((user) => {
-                res.redirect('/' + type);
-            })
-            .catch((error) => {
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                console.log(errorCode + ":" + errorMessage);
-            });
-        db.collection(type).add({ department: dept, email: email, phone: phno, name: name });
+        let userCredential = await firebase.auth().createUserWithEmailAndPassword(email,password);
+        //update the auth profile
+        await userCredential.user.updateProfile({
+            displayName: name// some displayName,
+         });
+        
+         db.collection(type).add({ searchKey:name[0].toUpperCase() ,department: dept, email: email, phone: phno, name: name }).then(()=>{
+            res.redirect('/'+type)
+        });
     }
     else
         console.log('Password Mismatch');
