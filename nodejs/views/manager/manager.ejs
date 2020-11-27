@@ -70,8 +70,21 @@
         .reassign-task-header h1{
             padding-top:50px;
         }
-       
-       
+        #btn-logout{
+            padding:10px;
+            width: 50%;
+            height:6vh;
+            border-radius:50%;
+            background: #922724;
+            color:white;
+            cursor: pointer;
+            margin-top: 5px;
+            text-align:center;
+            line-height:2vh;
+        }
+        #btn-logout:hover{
+            border: 1px solid black;
+        }
     </style>
 </head>
 <body>
@@ -112,7 +125,14 @@
               </div>
         </div>
         <div class="col-md-9">
-
+            <div class="row">
+                <div class="col-8 col-md-10"></div>
+                <div class="col-4 col-md-2">
+                    <div id ="btn-logout">
+                        Logout
+                    </div>
+                </div>
+            </div>
             <!-- This is for adding tasks -->
             <div style="display:none;" class="task-create">
                 <form method='post' action='/task/create'>
@@ -412,6 +432,10 @@
                     }
                 })
             })
+        })
+
+        document.querySelector('#btn-logout').addEventListener('click',()=>{
+            window.location = '/logout';
         })
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
