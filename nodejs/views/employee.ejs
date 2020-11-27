@@ -198,13 +198,17 @@
                                 <div class="mt-4" style="display:none;" id="task-<%=i%>">
                                     <h5 style="display:inline"> <%= task.employee %> </h1>
                                     <div style="float:right;" class="btn-group">    
-                                        <button  class="btn btn-success">Mark as
-                                            Complete</button>
                                         <button id="addComment" class="btn btn-info submit">Add
                                             Comment</button>
+                                        <button id="markComplete" class="btn btn-success" disabled>Mark as
+                                            Complete</button>
                                     </div>
                                     <div style="display: none;">
                                         <input name="employeeID" type="text" value="<%= task.id %>">
+                                    </div>
+                                    <div id="commentBlock" style="margin-top:2em; display:none;">
+                                        <label for="commentBox">Add your Comment:</label>
+                                        <textarea name="commentBox" id="commentBox" onchange="checkContent()" style="width:100%;"></textarea>
                                     </div>
                                 </div>
                             </li>
@@ -248,11 +252,11 @@
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <div id="reAssign-points-<%=i%>" class="col-md-10">
-                                                    <strong>Task Points: <%=task.totalpoints %></strong>
+                                                    <strong>Task Points: </strong><%=task.taskpoints%>/<%=task.totalpoints %>
                                                 </div><br>
-                                                <!-- <div class="col-md-2">
-                                                    <button style="float:right;" class="btn btn-secondary">Add Comment</button>
-                                                </div> -->
+                                                <div id="manager-comment-<%=i%>" class="col-md-10">
+                                                    <strong>Manager Comment: </strong><%=task.managerComment%>
+                                                </div>
                                             </div>
 
                                         </div>
@@ -337,8 +341,16 @@
         });
         document.querySelector('#addComment').addEventListener('click',(e)=>{
             e.preventDefault();
+            document.querySelector('#commentBlock').style.display = 'block';
             console.log('comment')
         })
+
+        checkContent = () => {
+            if(document.querySelector('#commentBox').value != '')
+                document.querySelector('#markComplete').disabled = false;
+            else
+                document.querySelector('#markComplete').disabled = true;
+        }  
         
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
