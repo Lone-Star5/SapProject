@@ -276,7 +276,7 @@
             let x=<%-JSON.stringify(tasks)%>;
             detailBlock.style.display = 'block';
             document.querySelector('#task-employee').value = x[id-1].employee;
-            document.querySelector('#task-point').value = x[id-1].taskpoints;
+            document.querySelector('#task-point').value = x[id-1].totalpoints;
             document.querySelector('#task-deadline').value = new Date(x[id-1].deadline._seconds*1000).toDateString();
             document.querySelector('#task-link').value = x[id-1].link;
             document.querySelector('#task-desc').value = x[id-1].description;

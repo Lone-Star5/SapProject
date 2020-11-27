@@ -70,21 +70,16 @@ app.get('/manager', (req, res) => {
 
                     })
                 }).then(() => {
-                    let employee = [
-                        {
-                            name: 'Employee 1',
-                            email: '1@gmail.com'
-                        },
-                        {
-                            name: 'Employee 2',
-                            email: '2@gmail.com'
-                        },
-                        {
-                            name: 'Employee 3',
-                            email: '3@gmail.com'
-                        }
-                    ]
-                    res.render('manager/manager', { reviewtasks: reviewtasks, reassigntasks: reassigntasks, employee: employee });
+                    let employee = []
+                    db.collection('Employee').get().then((response)=>{
+                        response.forEach((data)=>{
+                            employee.push(data.data());
+                        })
+                    }).then(()=>{
+                        res.render('manager/manager', { reviewtasks: reviewtasks, reassigntasks: reassigntasks, employee: employee });
+                    }).catch((err)=>{
+                        res.json(err);
+                    })
                 })
             })
         }
@@ -101,9 +96,9 @@ app.post('/task/create', (req, res) => {
     obj.reviewed = false;
     obj.completedate = null;
     obj.taskpoints = 0;
+    obj.manager = firebase.auth().currentUser.email;
     obj.totalpoints = Number(obj.totalpoints)
     obj.deadline = new Date(obj.deadline);
-    obj.manager = "Aman";
     obj.employee = obj.email;
     delete obj.email;
     obj.employeeComment = null;
@@ -167,9 +162,9 @@ app.post('/task/reassign', (req, res) => {
 app.get('/employee', (req, res) => {
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
-            tasks = [];
-            reviewed = [];
-            notCompleted = [];
+            let tasks = [];
+            let reviewed = [];
+            let notCompleted = [];
             db.collection('Task').get().then((response) => {
                 response.forEach(data => {
                     let obj = {};
@@ -191,6 +186,7 @@ app.get('/employee', (req, res) => {
                 })
             })
                 .then(() => {
+                    console.log(reviewed);
                     res.render('employee', { tasks: tasks, reviewed: reviewed, notCompleted: notCompleted });
                 });
         }
@@ -227,21 +223,15 @@ app.post('/employee/formWellBeing', (req, res) => {
 
 // Show Employee report of the month
 app.get('/employee/report', (req, res) => {
-    let employee = [
-        {
-            name: 'Employee 1',
-            email: '1@gmail.com'
-        },
-        {
-            name: 'Employee 2',
-            email: '2@gmail.com'
-        },
-        {
-            name: 'Employee 3',
-            email: '3@gmail.com'
-        }
-    ]
-    res.render('employeeReport', { employee: employee })
+    let employee = []
+    db.collection('Employee').get().then((response)=>{
+        response.forEach((data)=>{
+            employee.push(data.data());
+        })
+        res.render('employeeReport', { employee: employee })
+    }).catch((err)=>{
+        res.json(err);
+    })
 });
 
 // Generate Report and send task data
@@ -356,17 +346,30 @@ app.post('/signup', (req, res) => {
                 var errorMessage = error.message;
                 console.log(errorCode + ":" + errorMessage);
             });
-        db.collection(type).add({ Department: dept, Email: email, Phone: phno, Name: name });
+        db.collection(type).add({ department: dept, email: email, phone: phno, name: name });
     }
     else
         console.log('Password Mismatch');
 });
 
-app.post('/login', (req, res) => {
+isCorrectType = (req,res,next) => {
+    let email = req.body.username;
+    let password = req.body.password;
+    let type = req.body.type;
+    db.collection(type).get().then((response) => {
+        response.forEach(data => {
+            if (data.data().email === email)
+                next();
+        })
+    }).then(()=>{
+        console.log('Sorry! The designation is incorrect');
+    });
+}
+
+app.post('/login', isCorrectType, (req, res) => {
     var email = req.body.username;
     var password = req.body.password;
     var type = req.body.type;
-    isCorrectType(type, email);
     firebase.auth().signInWithEmailAndPassword(email, password)
         .then((user) => {
             res.redirect('/' + type);
@@ -390,15 +393,7 @@ app.get('/logout', (req, res) => {
 });
 
 
-isCorrectType = (type, email) => {
-    db.collection(type).get().then((response) => {
-        response.forEach(data => {
-            if (data.data().email === email)
-                return next();
-        })
-        console.log('Sorry! The designation is incorrect');
-    });
-}
+
 
 // isEmployee = (user) => {
 //     db.collection('Employee').get().then((response) => {
@@ -422,7 +417,8 @@ isCorrectType = (type, email) => {
 
 app.post('/employee/complete', (req, res) => {
     db.collection('Task').doc(req.body.employeeID).set({
-        completed: true
+        completed: true,
+        completedate: new Date()
     }, { merge: true }).then(() => {
         res.redirect('/employee');
     }).catch((err) => {
