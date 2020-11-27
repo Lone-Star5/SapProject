@@ -76,15 +76,17 @@ app.get('/manager', (req, res) => {
                             employee.push(data.data());
                         })
                     }).then(()=>{
-                        res.render('manager/manager', { reviewtasks: reviewtasks, reassigntasks: reassigntasks, employee: employee });
+                        
+                        res.render('manager/manager', { email: firebase.auth().currentUser.email, reviewtasks: reviewtasks, reassigntasks: reassigntasks, employee: employee });
                     }).catch((err)=>{
                         res.json(err);
                     })
                 })
             })
         }
-        else
+        else{
             res.redirect('/login');
+        }
     })
 })
 
@@ -268,7 +270,7 @@ app.get('/hr', (req, res) => {
         response.forEach((data) => {
             employee.push(data.data());
         })
-        res.render('hr/hr', { employee: employee });
+        res.render('hr/hr', {email: firebase.auth().currentUser.email, employee: employee });
     }).catch(err => {
         res.redirect('/');
     })

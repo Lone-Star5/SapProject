@@ -92,7 +92,7 @@
         <div class="col-md-3">
             <div class="sidenav">
                 <div class="nav-manager-heading">
-                    Manager Zone
+                    Welcome, <%=email%>
                 </div>
                 <hr style="background:white;">
                 <a class="anchor task-create" href="#">
@@ -134,7 +134,7 @@
                 </div>
             </div>
             <!-- This is for adding tasks -->
-            <div style="display:none;" class="task-create">
+            <div style="display:block;" class="task-create">
                 <form method='post' action='/task/create'>
                     <h1 class="task-header"><strong>Add Task</strong></h1>
                     <hr>
@@ -218,7 +218,7 @@
             </div>
 
             <!-- This is for re-assigning tasks of sick employees -->
-            <div style="display:block;" class="task-sick">
+            <div style="display:none;" class="task-sick">
                 <div class="container">
                     <div class="reassign-task-header">
                         <h1><strong>Re-Assign Tasks</strong></h1>
