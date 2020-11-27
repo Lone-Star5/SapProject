@@ -244,15 +244,18 @@ app.post('/employee/report', (req, res) => {
     db.collection('Task').get().then((response) => {
         response.forEach((data) => {
             let obj = data.data();
+            console.log(obj)
             if (obj.reviewed == true && obj.employee == email) {
                 obj.completedate = new Date(obj.completedate._seconds * 1000);
                 obj.deadline = new Date(obj.deadline._seconds * 1000);
                 if ((monthNames[obj.completedate.getMonth()] == month) && (obj.completedate.getFullYear() == (new Date()).getFullYear())) {
                     tasks.push(obj);
+                    console.log(tasks);
                 }
             }
         })
-        res.json(tasks);
+        }).then(()=>{
+            res.json(tasks);
     })
 })
 
@@ -413,6 +416,7 @@ app.get('/logout', (req, res) => {
 // }
 
 app.post('/employee/complete', (req, res) => {
+    console.log(req.body.employeeID);
     db.collection('Task').doc(req.body.employeeID).set({
         completed: true,
         completedate: new Date()

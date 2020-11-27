@@ -176,7 +176,6 @@
 
             <!-- This is for reviewing tasks -->
             <div style="display:none;" class="task-update">
-                <form method="post" action="/employee/complete">
                 <div class="container">
                     <div class="review-task-header">
                         <h1><strong>Update Tasks Completed</strong></h1>
@@ -184,6 +183,7 @@
                     <div class="mb-5">
                         <ul class="list-group">
                             <% notCompleted.forEach((task,i)=>{ %>
+                            <form method="post" action="/employee/complete">
                             <li class="list-group-item">
                                 <div class="row">
                                     <div class="col-md-2">
@@ -198,7 +198,7 @@
                                 <div class="mt-4" style="display:none;" id="task-<%=i%>">
                                     <h5 style="display:inline"> <%= task.employee %> </h1>
                                     <div style="float:right;" class="btn-group">    
-                                        <button  class="btn btn-success" onclick="markCompleted(task)">Mark as
+                                        <button  class="btn btn-success">Mark as
                                             Complete</button>
                                         <button id="addComment" class="btn btn-info submit">Add
                                             Comment</button>
@@ -208,11 +208,12 @@
                                     </div>
                                 </div>
                             </li>
+            </form>
+
                             <% }) %>
                         </ul>
                     </div>
                 </div>
-            </form>
             </div>
 
             <!-- This is for re-assigning tasks of sick employees -->
@@ -298,6 +299,7 @@
 
         // Toggle Select Button for Review task
         function taskReview(event) {
+            event.preventDefault();
             let element = document.querySelector(`div#task-${event.target.id}`);
             if (element.style.display == 'none')
                 element.style.display = 'block';
@@ -333,6 +335,11 @@
                 document.querySelector(`#reAssign-points-${e.target.dataset.id}`).innerText = `Task Points: ${e.target.dataset.task - e.target.value}`;
             })
         });
+        document.querySelector('#addComment').addEventListener('click',(e)=>{
+            e.preventDefault();
+            console.log('comment')
+        })
+        
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
