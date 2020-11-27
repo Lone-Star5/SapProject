@@ -75,7 +75,7 @@
             width: 50%;
             height:6vh;
             border-radius:50%;
-            background: #922724;
+            background: #ab2724;
             color:white;
             cursor: pointer;
             margin-top: 5px;
@@ -83,13 +83,41 @@
             line-height:2vh;
         }
         #btn-logout:hover{
-            border: 1px solid black;
+            border: 1px solid #000000;
+            width:55%;
+        }
+        input,select,textarea{
+            background: #ccccdd !important;
+            border-radius: 1rem;
+            border: 1.5px solid black;
+        }
+        select{
+            width:70%;
+            padding:5px;
+        }
+        input[type=number]{
+            text-align: center;
+        }
+        .active{
+            color: #f1f1f1 !important;
+        }
+        textarea{
+            padding: 10px;
+        }
+        label{
+            font-size:larger;
+        }
+        li{
+            background: #eeeeee !important;
+            color:#000000;
+            box-shadow: 10px 10px 50px #888888;
+            border: 2px solid white !important;
         }
     </style>
 </head>
 <body>
-    <div class="row">
-        <div class="col-md-3">
+    <div class="px-0 mx-0 row">
+        <div class=" px-0 mx-0 col-md-3">
             <div class="sidenav">
                 <div class="nav-manager-heading">
                     Welcome, <%=email%>
@@ -124,10 +152,13 @@
                 </a>
               </div>
         </div>
-        <div class="col-md-9">
+        <div style="background: #304352;  /* fallback for old browsers */
+        background: -webkit-linear-gradient(to right, #d7d2cc, #304352);  /* Chrome 10-25, Safari 5.1-6 */
+        background: linear-gradient(to right, #d7d2cc, #304352); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        " class="px-0 mx-0 col-md-9">
             
             <!-- Logout button -->
-            <div class="row">
+            <div class="mx-0 px-0 row">
                 <div class="col-8 col-md-10"></div>
                 <div class="col-4 col-md-2">
                     <div id ="btn-logout">
@@ -196,8 +227,8 @@
                                 </div>
                                 <div class="mt-4" style="display:none;" id="task-<%=i%>">
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            Employee: <span id='<%=i%>-task-review-email'><%=task.employee%></span>
+                                        <div style="font-size: larger;" class="col-md-6">
+                                            <h5>Employee: <span id='<%=i%>-task-review-email'><%=task.employee%></span></h5>
                                         </div>
                                         <div class="col-md-6">
                                             <label>Assign Points </label>
@@ -244,7 +275,7 @@
                                     <div style="padding:10px;">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <h5> Employee Name: <span><%=task.employee%></span></h5>
+                                                <h5> Employee: <span><%=task.employee%></span></h5>
                                             </div>
                                             <div class="col-md-6">
                                                 <label>Assign Points
@@ -271,28 +302,26 @@
                                                 </label>
                                             </div>
                                             <div class="col-md-6">
-                                                <div id="reAssign-points-<%=i%>">
+                                                <div style="height: 10vh; line-height: 10vh; font-size: 1.3rem;" id="reAssign-points-<%=i%>">
                                                     Task Points: <span><%=task.totalpoints %></span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <div>
+                                                <div style="height: 10vh; line-height: 10vh; font-size: 1.3rem;">
                                                     Deadline: <%=task.deadline %>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
-                                                <div class="row">
-                                                    <div class="col-md-10">
-                                                        <label>Reset Deadline: 
-                                                            <input id="<%=i%>-task-reassign-deadline" type='date' required>
-                                                        </label>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <button id=<%=i%> data-id = <%=task.id%> style="float:right;" class="btn btn-danger task-reassign-update">Update</button>
-                                                    </div>
-                                                </div>
+                                                <label>Reset Deadline: 
+                                                    <input id="<%=i%>-task-reassign-deadline" type='date' required>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <button style="width:100%;" id=<%=i%> data-id=<%=task.id%> class="btn btn-danger task-reassign-update">Update</button>
                                             </div>
                                         </div>
                                     </div>
@@ -315,11 +344,13 @@
                 item.addEventListener('click', ()=>{
                 displayOff();
                 document.querySelector(`div.${item.className.split(' ')[1]}`).style.display="block";
+                item.classList.add('active')
             })
         })
         let displayOff = () =>{
             Array.from(document.querySelectorAll('.anchor')).forEach((item)=>{
                 document.querySelector(`div.${item.className.split(' ')[1]}`).style.display="none";
+                item.classList.remove('active');
             })
         }
         
