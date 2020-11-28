@@ -75,7 +75,7 @@
             opacity: 1;
         }
         input,select,textarea{
-            background: #ccccdd !important;
+            background: #eeeeee !important;
             border-radius: 1rem;
             border: 1.5px solid black;
         }
@@ -158,6 +158,7 @@
                     <div class="form-group">
                         <label for="hr-health-employee">Select Employee</label>
                         <select name="id" class="custom-select" id="hr-health-employee">
+                            <option>Select...</option>
                             <% employee.forEach((emp)=>{ %>
                                 <option id=<%=emp.email%>><%=emp.name%></option>
                             <%})%>
@@ -183,6 +184,7 @@
                     <div class="form-group">
                         <label for="hr-message-employee">Select Employee</label>
                         <select name="hr-message-employee" class="custom-select" id="hr-message-employee">
+                           <option>Select...</option>
                             <% employee.forEach((emp)=>{ %>
                                 <option><%=emp.name%></option>
                             <%})%>
@@ -277,9 +279,9 @@
                     let text='';
                     let name = document.querySelector('select').value;
                     if(entry.travelling==true){
-                        text=`${name} has travelled internationally in the past two weeks. Her message is "${entry.description}"`
+                        text=`${name} has travelled internationally in the past two weeks. Their message is "${entry.description}"`
                     }else{
-                        text=`${name} has not travelled internationally in the past two weeks. Her message is "${entry.description}"`
+                        text=`${name} has not travelled internationally in the past two weeks. Their message is "${entry.description}"`
                     }
                     p1.innerText=text;
                     div3.appendChild(p1);
@@ -298,6 +300,7 @@
 
         document.querySelector('#hr-message-employee').addEventListener('change',(e)=>{
             let index = e.target.selectedIndex;
+            index--;
             let email = <%-JSON.stringify(employee)%>[index].email;
             let department = <%- JSON.stringify(employee)%>[index].department;
             document.querySelector('#hr-message-email').innerText=email;

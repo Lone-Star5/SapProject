@@ -108,6 +108,7 @@ app.get('/manager', isManager, (req, res) => {
     let reviewtasks = []
     let reassigntasks = []
     let sickemp = {};
+    let alltasks = [];
     db.collection('Health').orderBy("date","desc").get().then((response) => {
         response.forEach((data) => {
             if (data.data().status == 'sick') {
@@ -121,17 +122,21 @@ app.get('/manager', isManager, (req, res) => {
     }).then(() => {
         db.collection('Task').get().then((response) => {
             response.forEach((data) => {
-                if ((data.data().reviewed == false) && (data.data().completed == true)) {
+                if ((data.data().reviewed == false) && (data.data().completed == true) && (data.data().manager==firebase.auth().currentUser.email)) {
                     let tempobj = data.data();
                     tempobj.id = data.id;
                     tempobj.deadline = new Date(tempobj.deadline._seconds * 1000).toDateString();
                     reviewtasks.push(tempobj);
                 }
-                if ((data.data().completed == false) && (sickemp[data.data().employee] == 1)) {
+                if ((data.data().completed == false) && (sickemp[data.data().employee] == 1) && (data.data().manager==firebase.auth().currentUser.email)) {
                     let tempobj = data.data();
                     tempobj.id = data.id;
                     tempobj.deadline = new Date(tempobj.deadline._seconds * 1000).toDateString();
                     reassigntasks.push(tempobj);
+                }
+                if((data.data().manager==firebase.auth().currentUser.email)){
+                    let tempobj = data.data();
+                    alltasks.push(tempobj);
                 }
 
             })
@@ -143,7 +148,7 @@ app.get('/manager', isManager, (req, res) => {
                 })
             }).then(()=>{
                 
-                res.render('manager/manager', { email: firebase.auth().currentUser.email, reviewtasks: reviewtasks, reassigntasks: reassigntasks, employee: employee });
+                res.render('manager/manager', { email: firebase.auth().currentUser.email, reviewtasks: reviewtasks, reassigntasks: reassigntasks, employee: employee, alltasks: alltasks});
             }).catch((err)=>{
                 res.json(err);
             })

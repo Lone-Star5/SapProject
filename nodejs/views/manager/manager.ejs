@@ -133,6 +133,13 @@
                     Create Tasks
                 </a>
 
+                <a class="anchor task-all" href="#">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
+                      </svg>
+                    All Tasks
+                </a>
+
                 <a class="anchor task-review" href="#">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
@@ -206,6 +213,62 @@
                     </div>
                     <button class = "btn btn-primary">Submit</button>
                 </form>
+            </div>
+
+            <div style="font-size: 1.25rem;" style="display:none;" class ="task-all">
+                <div class="container">
+                    <div class="review-task-header">
+                        <h1><strong>All Tasks</strong></h1>
+                    </div>
+                    <div class="mb-5">
+                        <ul class="list-group">
+                            <% alltasks.forEach((task,i)=>{ %>
+                                <li style="
+                                        background: <%= task.completedate==undefined ? 'rgba(255,0,0,0.5)'  :  'rgba(0,255,0,0.4)' %> !important;
+                                " class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <%= task.title %> 
+                                        </div>
+                                        <div class="col-md-8"></div>
+                                        <div class="col-md-2">
+                                            <button style="float:right;" onclick="taskAll(event)" id="<%=i%>" class="btn btn-primary">Select</button> 
+                                        </div>
+                                    </div>
+                                    <div style="display:none;" id="<%=i%>-task-all">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                Employee: <%=task.employee%>
+                                            </div>
+                                            <div class="col-md-6">
+                                                Points: <%=task.taskpoints%>/<%=task.totalpoints%>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                Complete Date: 
+                                                <% if(task.completedate == undefined){ %> 
+                                                    N/A
+                                                <% }else {  %>
+                                                    <%= new Date(task.completedate._seconds*1000).toDateString() %>
+                                                <% } %>
+                                            </div>
+                                            <div class="col-md-6">
+                                                Deadline: <%= new Date(task.deadline._seconds*1000).toDateString() %>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2 row">
+                                            <div class="col-md-12">
+                                                Task Description
+                                                <p><%= task.description %></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            <% }) %>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
 
@@ -371,6 +434,17 @@
                 element.style.display='none';
             // document.querySelector(`div#task-${event.target.id}`).style.display="block";
         }
+
+        function taskAll(event){
+            let id = event.target.id;
+            let element = document.getElementById(`${id}-task-all`);
+            if(element.style.display=='none'){
+                element.style.display='block';
+            }else{
+                element.style.display='none';
+            }
+        }
+
         // Toggle Select Button for ReAssign task
         function taskAssign(event){
             let element = document.querySelector(`div#task-${event.target.id}`);
