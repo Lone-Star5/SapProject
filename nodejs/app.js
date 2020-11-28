@@ -163,8 +163,8 @@ app.post('/task/create', (req, res) => {
     obj.deadline = new Date(obj.deadline);
     obj.employee = obj.email;
     delete obj.email;
-    obj.employeeComment = null;
-    obj.managerComment = null;
+    obj.employeeComment = "N/A";
+    obj.managerComment = "N/A";
     db.collection('Task').add(req.body).then(data => {
         res.redirect('/manager');
     }).catch(err => res.json({ message: 'some error occured' }))
