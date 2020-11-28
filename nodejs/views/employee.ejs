@@ -176,6 +176,15 @@
                     Review Tasks Completed
                 </a>
 
+                <a class="anchor task-courses" href="#">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z" />
+                    </svg>
+                    Courses
+                </a>
+
                 <a class="task-review" href="/employee/formWellBeing">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
@@ -343,8 +352,83 @@
                 </div>
             </div>
 
+            <div style="display:block;" class="task-courses">
+                <div class="container">
+                    <div class="reassign-task-header">
+                        <h1><strong>Courses</strong></h1>
+                    </div>
+
+                    <!-- adding courses -->
+                    <div>
+                        <form method="post" action="/course/add">
+                            <div class="form-group">
+                                <label for="course-name">
+                                    Course Name
+                                </label>
+                                <input name="course-name" id="course-name" type="text" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="course-link">Course Link</label>
+                                <input name="course-link" id="course-name" type="text" class="form-control">
+                            </div>
+                            <button style="float:right;" class="btn btn-info">Submit</button>
+                        </form>
+                    </div>
+
+                    <!-- Displaying ongoing courses -->
+                    <div>
+                        <h4>Ongoing Courses</h4><hr>
+                        <ul class = "list-group">
+                            <% courses.forEach((course,i)=>{ %>
+                                <% if(course.completed == false) { %>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                Course Title: <%= course.courseName %>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <button style="float:right;" id="<%=i%>" onclick="coursesShow(event)" class="btn btn-primary">Select</button>
+                                            </div>
+                                        </div>
+                                        <div style="display:none;" id="<%=i%>-courses-display">
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <div>Add Comment</div>
+                                                    <textarea style="width:100%;" id="<%=i%>-courses-comment"></textarea>
+                                                </div>
+                                                <div class="col-md-4 mt-5">
+                                                    <button id="<%=i%>" onclick = "coursesComplete(event)" style="float:right;" class="btn btn-danger">Mark as Complete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                       
+                                    </li>
+                                <% } %>
+                            <% }) %>
+                        </ul>
+                        <h4>Completed Courses</h4><hr>
+                        <ul class = "list-group">
+                            <% courses.forEach((course,i)=>{ %>
+                                <% if(course.approved == true) { %>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                Course Title: <%= course.courseName %>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <button style="float:right;" id="<%=i%>" class="btn btn-danger">select</button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                <% } %>
+                            <% }) %>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
             <!-- Message -->
-            <div style="display:block;" class="hr-message">
+            <div style="display:none;" class="hr-message">
                 <div class="container">
                     <div class="employee-header">
                         <h1><strong>Message Corner</strong></h1>
@@ -374,6 +458,39 @@
 
 
     <script>
+
+        function coursesShow(event){
+            let id = event.target.id;
+            let element = document.getElementById(`${id}-courses-display`);
+            element.style.display =  element.style.display == 'none'? "block" : "none";
+        }
+
+        function coursesComplete(event){
+            let id = event.target.id;
+            let comment = document.getElementById(`${id}-courses-comment`).value;
+            id = <%- JSON.stringify(courses)%>[id].id;
+
+            fetch('/courses/complete', {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                redirect: 'follow', 
+                referrerPolicy: 'no-referrer',
+                body: JSON.stringify({id:id, comment: comment})
+            }).then(response => response.json()).then((data)=>{
+                if(data.message=='success'){
+                    location.reload();
+                }else{
+                    alert(data.message);
+                }
+            })
+
+        }
+
         document.querySelector('#task-name').addEventListener('change', () => {
             let id = document.querySelector('#task-name').selectedIndex;
             let x=<%-JSON.stringify(tasks)%>;

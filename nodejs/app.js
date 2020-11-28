@@ -230,6 +230,7 @@ app.get('/employee', isEmployee, (req, res) => {
     let reviewed = [];
     let notCompleted = [];
     let messages = [];
+    let courses = [];
     db.collection('Task').get().then((response) => {
         response.forEach(data => {
             let obj = {};
@@ -261,7 +262,17 @@ app.get('/employee', isEmployee, (req, res) => {
                     }
                 })
             }).then(() => {
-                res.render('employee', { email: firebase.auth().currentUser.displayName, tasks: tasks, reviewed: reviewed, notCompleted: notCompleted, messages: messages });
+                db.collection('Course').get().then((response)=>{
+                    response.forEach((data)=>{
+                        if(data.data().employee == firebase.auth().currentUser.email){
+                            let tempobj = data.data();
+                            tempobj.id = data.id;
+                            courses.push(tempobj);
+                        }
+                    })
+                }).then(()=>{
+                    res.render('employee', { email: firebase.auth().currentUser.displayName, tasks: tasks, reviewed: reviewed, notCompleted: notCompleted, messages: messages ,courses: courses});
+                })
             })
 
         });
@@ -372,6 +383,36 @@ app.post('/employee/message', (req,res)=>{
     })
 })
 
+app.post('/course/add',(req,res)=>{
+    let name = req.body['course-name'];
+    let link = req.body['course-link'];
+    let obj = {}
+    obj.courseName = name;
+    obj.courseLink = link;
+    obj.employee = firebase.auth().currentUser.email;
+    obj.hr = "N/A";
+    obj.approved = false;
+    obj.completed = false;
+    obj.employeeComment = "N/A";
+    obj.hrComment = "N/A";
+    obj.certificateLink = "N/A";
+    db.collection('Course').add(obj).then((data)=>{
+        res.redirect('/employee');
+    }).catch(()=>{
+        res.json({message: 'Some Error Occured'});
+    })
+})
+
+app.post('/courses/complete',(req,res)=>{
+    db.collection('Course').doc(req.body.id).set({
+        employeeComment: req.body.comment,
+        completed: true
+    },{merge:true}).then(()=>{
+        res.json({message:'success'});
+    }).catch((err)=>{
+        res.json({message:'error'})
+    })
+})
 
 app.post('/health/:id', (req, res) => {
     let id = req.params.id;
