@@ -62,6 +62,20 @@ isEmployee = (req, res, next) => {
     })
 }
 
+isSick = (req, res, next) => {
+    var email= firebase.auth().currentUser.email;
+    db.collection('isCurrentHealth').doc(email).onSnapshot(response => {
+        let date=response.get('date');
+        let sick=response.get('isSick');
+        var a=(new Date(date._seconds*1000).toDateString());
+        var b=(new Date(Date.now()).toDateString());
+        if(a===b)
+            next();
+        else
+            res.redirect('/employee/formWellBeing');
+    })
+}
+
 isHR = (req, res, next) => {
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
@@ -109,7 +123,7 @@ app.get('/manager', isManager, (req, res) => {
     let reassigntasks = []
     let sickemp = {};
     let alltasks = [];
-    db.collection('Health').orderBy("date","desc").get().then((response) => {
+    db.collection('Health').orderBy("date", "desc").get().then((response) => {
         response.forEach((data) => {
             if (data.data().status == 'sick') {
                 if (sickemp[data.data().email] != 0)
@@ -122,19 +136,19 @@ app.get('/manager', isManager, (req, res) => {
     }).then(() => {
         db.collection('Task').get().then((response) => {
             response.forEach((data) => {
-                if ((data.data().reviewed == false) && (data.data().completed == true) && (data.data().manager==firebase.auth().currentUser.email)) {
+                if ((data.data().reviewed == false) && (data.data().completed == true) && (data.data().manager == firebase.auth().currentUser.email)) {
                     let tempobj = data.data();
                     tempobj.id = data.id;
                     tempobj.deadline = new Date(tempobj.deadline._seconds * 1000).toDateString();
                     reviewtasks.push(tempobj);
                 }
-                if ((data.data().completed == false) && (sickemp[data.data().employee] == 1) && (data.data().manager==firebase.auth().currentUser.email)) {
+                if ((data.data().completed == false) && (sickemp[data.data().employee] == 1) && (data.data().manager == firebase.auth().currentUser.email)) {
                     let tempobj = data.data();
                     tempobj.id = data.id;
                     tempobj.deadline = new Date(tempobj.deadline._seconds * 1000).toDateString();
                     reassigntasks.push(tempobj);
                 }
-                if((data.data().manager==firebase.auth().currentUser.email)){
+                if ((data.data().manager == firebase.auth().currentUser.email)) {
                     let tempobj = data.data();
                     alltasks.push(tempobj);
                 }
@@ -142,14 +156,14 @@ app.get('/manager', isManager, (req, res) => {
             })
         }).then(() => {
             let employee = []
-            db.collection('Employee').get().then((response)=>{
-                response.forEach((data)=>{
+            db.collection('Employee').get().then((response) => {
+                response.forEach((data) => {
                     employee.push(data.data());
                 })
-            }).then(()=>{
-                
-                res.render('manager/manager', { email: firebase.auth().currentUser.email, reviewtasks: reviewtasks, reassigntasks: reassigntasks, employee: employee, alltasks: alltasks});
-            }).catch((err)=>{
+            }).then(() => {
+
+                res.render('manager/manager', { email: firebase.auth().currentUser.email, reviewtasks: reviewtasks, reassigntasks: reassigntasks, employee: employee, alltasks: alltasks });
+            }).catch((err) => {
                 res.json(err);
             })
         })
@@ -225,7 +239,7 @@ app.post('/task/reassign', (req, res) => {
 
 
 // Employee Routes
-app.get('/employee', isEmployee, (req, res) => {
+app.get('/employee', isEmployee, isSick, (req, res) => {
     let tasks = [];
     let reviewed = [];
     let notCompleted = [];
@@ -252,7 +266,7 @@ app.get('/employee', isEmployee, (req, res) => {
         })
     })
         .then(() => {
-            db.collection('Message').orderBy('date','desc').get().then((response) => {
+            db.collection('Message').orderBy('date', 'desc').get().then((response) => {
                 response.forEach((data) => {
                     let tempobj = data.data();
                     if ((tempobj.read == false) && (tempobj.reciever == firebase.auth().currentUser.email)) {
@@ -262,16 +276,16 @@ app.get('/employee', isEmployee, (req, res) => {
                     }
                 })
             }).then(() => {
-                db.collection('Course').get().then((response)=>{
-                    response.forEach((data)=>{
-                        if(data.data().employee == firebase.auth().currentUser.email){
+                db.collection('Course').get().then((response) => {
+                    response.forEach((data) => {
+                        if (data.data().employee == firebase.auth().currentUser.email) {
                             let tempobj = data.data();
                             tempobj.id = data.id;
                             courses.push(tempobj);
                         }
                     })
-                }).then(()=>{
-                    res.render('employee', { email: firebase.auth().currentUser.displayName, tasks: tasks, reviewed: reviewed, notCompleted: notCompleted, messages: messages ,courses: courses});
+                }).then(() => {
+                    res.render('employee', { email: firebase.auth().currentUser.displayName, tasks: tasks, reviewed: reviewed, notCompleted: notCompleted, messages: messages, courses: courses });
                 })
             })
 
@@ -280,12 +294,7 @@ app.get('/employee', isEmployee, (req, res) => {
 
 // Show Employee Health Form
 app.get('/employee/formWellBeing', isEmployee, (req, res) => {
-    firebase.auth().onAuthStateChanged(user => {
-        if (user)
             res.render('employeeHealth');
-        else
-            res.redirect('/login');
-    });
 });
 // Submit Employee Health Form
 app.post('/employee/formWellBeing', (req, res) => {
@@ -296,6 +305,14 @@ app.post('/employee/formWellBeing', (req, res) => {
     obj.description = req.body.ques4;
     obj.email = email;
     obj.date = new Date();
+    db.collection('isCurrentHealth').doc(email).set({
+        date:new Date(),
+        status:obj.status
+    }, { merge: true }).then(() => {
+        res.json({ message: 'success' });
+    }).catch((err) => {
+        res.json({ message: 'error' })
+    })
     db.collection('Health').add(obj).then(data => {
         res.json({ message: 'success' });
     }).catch(err => {
@@ -372,18 +389,18 @@ app.post('/message', (req, res) => {
     })
 })
 
-app.post('/employee/message', (req,res)=>{
+app.post('/employee/message', (req, res) => {
     let id = req.body.id;
     db.collection('Message').doc(id).set({
         read: true
-    },{merge:true}).then(()=>{
-        res.json({message:'success'});
-    }).catch((err)=>{
-        res.json({message:'error'})
+    }, { merge: true }).then(() => {
+        res.json({ message: 'success' });
+    }).catch((err) => {
+        res.json({ message: 'error' })
     })
 })
 
-app.post('/course/add',(req,res)=>{
+app.post('/course/add', (req, res) => {
     let name = req.body['course-name'];
     let link = req.body['course-link'];
     let obj = {}
@@ -396,14 +413,14 @@ app.post('/course/add',(req,res)=>{
     obj.employeeComment = "N/A";
     obj.hrComment = "N/A";
     obj.certificateLink = "N/A";
-    db.collection('Course').add(obj).then((data)=>{
+    db.collection('Course').add(obj).then((data) => {
         res.redirect('/employee');
-    }).catch(()=>{
-        res.json({message: 'Some Error Occured'});
+    }).catch(() => {
+        res.json({ message: 'Some Error Occured' });
     })
 })
 
-app.post('/courses/complete',(req,res)=>{
+app.post('/courses/complete', (req, res) => {
     db.collection('Course').doc(req.body.id).set({
         employeeComment: req.body.comment,
         completed: true,
@@ -472,7 +489,7 @@ app.get('/signup', (req, res) => {
     res.render('signup');
 });
 
-app.post('/signup',async (req, res) => {
+app.post('/signup', async (req, res) => {
     // firebase.auth().currentUser
     let email = req.body.username;
     let password = req.body.password;
@@ -482,14 +499,17 @@ app.post('/signup',async (req, res) => {
     let phno = req.body.phno;
     let type = req.body.type;
     if (password == pass) {
-        let userCredential = await firebase.auth().createUserWithEmailAndPassword(email,password);
+        let userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
         //update the auth profile
         await userCredential.user.updateProfile({
             displayName: name// some displayName,
-         });
-        
-         db.collection(type).add({ searchKey:name[0].toUpperCase() ,department: dept, email: email, phone: phno, name: name }).then(()=>{
-            res.redirect('/'+type)
+        });
+
+        if(type=='Employee')
+        db.collection('isCurrentHealth').doc(email).set({date:new Date(),status:'not sick'})
+
+        db.collection(type).add({ searchKey: name[0].toUpperCase(), department: dept, email: email, phone: phno, name: name }).then(() => {
+            res.redirect('/' + type)
         });
     }
     else
