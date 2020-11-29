@@ -406,7 +406,8 @@ app.post('/course/add',(req,res)=>{
 app.post('/courses/complete',(req,res)=>{
     db.collection('Course').doc(req.body.id).set({
         employeeComment: req.body.comment,
-        completed: true
+        completed: true,
+        certificateLink: req.body.certificateLink
     },{merge:true}).then(()=>{
         res.json({message:'success'});
     }).catch((err)=>{

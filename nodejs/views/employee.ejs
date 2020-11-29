@@ -392,14 +392,21 @@
                                         </div>
                                         <div style="display:none;" id="<%=i%>-courses-display">
                                             <div class="row">
-                                                <div class="col-md-8">
+                                                <div class="col-md-6">
                                                     <div>Add Comment</div>
                                                     <textarea style="width:100%;" id="<%=i%>-courses-comment"></textarea>
                                                 </div>
-                                                <div class="col-md-4 mt-5">
-                                                    <button id="<%=i%>" onclick = "coursesComplete(event)" style="float:right;" class="btn btn-danger">Mark as Complete</button>
+                                                <div class="col-md-6">
+                                                    <label for="<%=i%>-courses-link">Certification Link: </label>
+                                                    <input type="text" class="form-control" id="<%=i%>-courses-link" >
                                                 </div>
                                             </div>
+                                            <div class="row">
+                                                <div class="col-md-12 mt-4">
+                                                    <button id="<%=i%>" onclick = "coursesComplete(event)" style="width:100%;" class="btn btn-danger">Mark as Complete</button>
+                                                </div>
+                                            </div>
+                                                
                                         </div>
                                        
                                     </li>
@@ -468,6 +475,7 @@
         function coursesComplete(event){
             let id = event.target.id;
             let comment = document.getElementById(`${id}-courses-comment`).value;
+            let certificateLink = document.getElementById(`${id}-courses-link`).value;
             id = <%- JSON.stringify(courses)%>[id].id;
 
             fetch('/courses/complete', {
@@ -480,7 +488,7 @@
                 },
                 redirect: 'follow', 
                 referrerPolicy: 'no-referrer',
-                body: JSON.stringify({id:id, comment: comment})
+                body: JSON.stringify({id:id, comment: comment, certificateLink:certificateLink})
             }).then(response => response.json()).then((data)=>{
                 if(data.message=='success'){
                     location.reload();
