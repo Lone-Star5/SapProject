@@ -581,6 +581,14 @@ app.post('/employee/complete', (req, res) => {
     })
 })
 
-app.get('/employee/confirmation', isEmployee, (req, res) => {
+canAccessConfirmation = (req, res, next) => {
+    var email= firebase.auth().currentUser.email;
+    db.collection('isCurrentHealth').doc(email).onSnapshot(response=>{
+        if(response.sick === 'sick')
+            next();
+    })
+}
+
+app.get('/employee/confirmation', isEmployee, canAccessConfirmation, (req, res) => {
     res.render('Confirmation');
 })
