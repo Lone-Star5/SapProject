@@ -186,7 +186,7 @@
             <div style="display:block;" class="hr-course">
                 <div class="container">
                     <div class="hr-header">
-                        <h1><strong>Health Report</strong></h1>
+                        <h1><strong>Approve Courses</strong></h1>
                     </div>
                     <!-- <div class = "form-group">
                         <label>Select Employee</label>
@@ -207,6 +207,56 @@
                         </div>
                     </div> -->
                     
+                    <div>
+                        <ul class = "list-group">
+                            <% courses.forEach((course,i)=>{ %>
+                                <li class = "list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <%= course.courseName %>
+                                        </div>
+                                        <div class="col-md-8"></div>
+                                        <div class="col-md-2">
+                                            <button onclick="coursesShow(event)" id="<%=i%>" style="float:right;" class="btn btn-primary">Select</button>
+                                        </div>
+                                    </div>
+                                    <div id = "<%=i%>-course-details">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                Employee: <%=course.employee%>
+                                            </div>
+                                            <div class="col-md-6">
+                                                Course Name: <%=course.courseName%>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                Course Link: <%=course.courseLink%>
+                                            </div>
+                                            <div class="col-md-6">
+                                                Certificate Link: <%=course.certificateLink %>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div style="border-style: inset;" class="my-3 col-md-10">
+                                                Comment from <%=course.employee%><hr class="my-1"> <p><%=course.employeeComment%></p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-11">
+                                                <div >Add Comments</div>
+                                                <textarea id="<%=i%>-course-approve-comment" style="width:95%;"></textarea>
+                                            </div>
+                                            <div class="col-md-1 mt-5">
+                                                <button id="<%=i%>" onclick="courseApprove(event)" style="float:right;" class="btn btn-info">Approve</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            <% }) %>
+                            
+                        </ul>
+                    </div>
                 </div>
             </div>
 
@@ -247,6 +297,41 @@
     </div>
 
     <script>
+
+        function coursesShow(event){
+            let id = event.target.id;
+            let element = document.getElementById(`${id}-course-details`);
+            if(element.style.display == 'none')
+                element.style.display ='block';
+            else
+                element.style.display='none';
+        }
+
+        function courseApprove(event){
+            let id = event.target.id;
+            let comment = document.getElementById(`${id}-course-approve-comment`).value;
+            id = <%- JSON.stringify(courses)%>[id].id;
+            console.log(id);
+            fetch('/courses/approve',{
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                redirect: 'follow', 
+                referrerPolicy: 'no-referrer',
+                body: JSON.stringify({id:id,comment:comment})
+            }).then(response => response.json()).then((data)=>{
+                if(data.message=='success'){
+                    alert(data.message);
+                    location.reload();
+                }else{
+                    alert(data.message);
+                }
+            })
+        }
 
         // document.querySelector('#course-select').addEventListener('change',(e)=>{
         //     let id = e.target.selectedIndex;
