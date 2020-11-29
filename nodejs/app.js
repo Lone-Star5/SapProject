@@ -66,7 +66,7 @@ isSick = (req, res, next) => {
     var email= firebase.auth().currentUser.email;
     db.collection('isCurrentHealth').doc(email).onSnapshot(response => {
         let date=response.get('date');
-        let sick=response.get('isSick');
+        let status=response.get('status');
         var a=(new Date(date._seconds*1000).toDateString());
         var b=(new Date(Date.now()).toDateString());
         if(a===b)
@@ -506,7 +506,7 @@ app.post('/signup', async (req, res) => {
         });
 
         if(type=='Employee')
-        db.collection('isCurrentHealth').doc(email).set({date:new Date(),status:'not sick'})
+        db.collection('isCurrentHealth').doc(email).set({date:new Date(),status:'healthy'})
 
         db.collection(type).add({ searchKey: name[0].toUpperCase(), department: dept, email: email, phone: phno, name: name }).then(() => {
             res.redirect('/' + type)
@@ -555,4 +555,8 @@ app.post('/employee/complete', (req, res) => {
     }).catch((err) => {
         res.json({ message: 'error' })
     })
+})
+
+app.get('/employee/confirmation', (req, res) => {
+    res.render('Confirmation');
 })
