@@ -363,15 +363,27 @@ app.post('/employee/report', (req, res) => {
 
 
 app.get('/hr', isHR, (req, res) => {
-    let employee = []
+    let employee = [];
+    let courses = [];
     db.collection('Employee').get().then((response) => {
         response.forEach((data) => {
             employee.push(data.data());
         })
-        res.render('hr/hr', { email: firebase.auth().currentUser.displayName, employee: employee });
-    }).catch(err => {
-        console.log(err)
-        res.redirect('/');
+        }).then(()=>{
+            db.collection('Course').get().then((response)=>{
+                response.forEach((data)=>{
+                    let tempobj = data.data();
+                    tempobj.id = data.id;
+                    if((tempobj.approved == false)&&(tempobj.completed == true)){
+                        courses.push(tempobj);
+                    }
+                })
+            }).then(()=>{
+                res.render('hr/hr', { email: firebase.auth().currentUser.displayName, employee: employee ,courses: courses});
+            }).catch(err => {
+                console.log(err)
+                res.redirect('/');
+        })
     })
 })
 
@@ -425,6 +437,18 @@ app.post('/courses/complete', (req, res) => {
         employeeComment: req.body.comment,
         completed: true,
         certificateLink: req.body.certificateLink
+    },{merge:true}).then(()=>{
+        res.json({message:'success'});
+    }).catch((err)=>{
+        res.json({message:'error'})
+    })
+})
+
+app.post('/courses/approve', (req,res)=>{
+    db.collection("Course").doc(req.body.id).set({
+        approved: true,
+        hrComment: req.body.comment,
+        hr: firebase.auth().currentUser.email
     },{merge:true}).then(()=>{
         res.json({message:'success'});
     }).catch((err)=>{
