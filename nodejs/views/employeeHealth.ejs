@@ -228,7 +228,7 @@
                 body: JSON.stringify(obj)
 			}).then((response)=>response.json()).then((data)=>{
 				if(data.message=='success'){
-					window.location='/employee';
+					window.location=(ques1)?'/employee/confirmation':'/employee';
 				}else{
 					alert(data.message);
 				}
