@@ -55,25 +55,95 @@
         #hr-monthreport-employee-details{
             margin-top:30px;
         }
+        #btn-logout{
+            padding:10px;
+            width: 55%;
+            height:6vh;
+            border-radius:50%;
+            background: #ab2724;
+            color:white;
+            cursor: pointer;
+            margin-top: 5px;
+            text-align:center;
+            border: 1px solid #000000;
+            line-height:2vh;
+            opacity: 0.4;
+        }
+        #btn-logout:hover{
+            background: #ff2724;
+            width:55%;
+            opacity: 1;
+        }
+        .sick-days{
+            background: rgba(255,0,0,0.4) !important;
+        }
+        .healthy-days{
+            background: rgba(255,255,0,0.4) !important;
+        }
+        input,select,textarea{
+            background: #eeeeee !important;
+            border-radius: 1rem;
+            border: 1.5px solid black;
+        }
+        select{
+            width:70%;
+            padding:5px;
+        }
+        input[type=number]{
+            text-align: center;
+        }
+        .active{
+            color: #f1f1f1 !important;
+        }
+        textarea{
+            padding: 10px;
+        }
+        label{
+            font-size:larger;
+        }
+        li{
+            background: #eeeeee !important;
+            color:#000000;
+            box-shadow: 10px 10px 50px #888888;
+            border: 2px solid white !important;
+        }
+        
     </style>
 </head>
 <body>
     
-    <div class="row">
-        <div class="col-md-3">
+    <div class="px-0 mx-0 row">
+        <div class="px-0 mx-0 col-md-3">
             <div class="sidenav">
                 <div class="nav-hr-heading">
-                    Human Resource
+                    Welcome, <%=email%>
                 </div>
                 <hr style="background:white;">
-                <a class="hr-health" href="#">
+
+                <a class="anchor hr-health active" href="#">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
                       </svg>
                     Health Report
                 </a>
 
-                <a class="hr-task" href="#">
+
+                <a class="anchor hr-message" href="#">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
+                      </svg>
+                    Message
+                </a>
+
+                <a class="anchor hr-course" href="#">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
+                      </svg>
+                    Courses
+                </a>
+
+                
+                <a class="" href="/employee/report">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
                       </svg>
@@ -81,10 +151,23 @@
                 </a>
             </div>
         </div>
-        <div class="col-md-9">
+        <div style="background: #304352;  /* fallback for old browsers */
+        background: -webkit-linear-gradient(to right, #d7d2cc, #304352);  /* Chrome 10-25, Safari 5.1-6 */
+        background: linear-gradient(to right, #d7d2cc, #304352); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        " class="px-0 mx-0 col-md-9">
+
+            <!-- Logout Button -->
+            <div class="px-0 mx-0 row">
+                <div class="col-8 col-md-10"></div>
+                <div class="col-4 col-md-2">
+                    <div id ="btn-logout">
+                        Logout
+                    </div>
+                </div>
+            </div>
 
             <!-- Employee Health Report -->
-            <div style="display:none;" class="hr-health">
+            <div style="display:block;" class="hr-health">
                 <div class="container">
                     <div class="hr-header">
                         <h1><strong>Health Report</strong></h1>
@@ -92,9 +175,10 @@
                     <div class="form-group">
                         <label for="hr-health-employee">Select Employee</label>
                         <select name="id" class="custom-select" id="hr-health-employee">
-                            <option id='1'>Undertaker</option>
-                            <option id='2'>Rey Mysterio</option>
-                            <option id='3'>The Rock</option>
+                            <option>Select...</option>
+                            <% employee.forEach((emp)=>{ %>
+                                <option id=<%=emp.email%>><%=emp.name%></option>
+                            <%})%>
                         </select>
                     </div>
                     <div style="display:none;" id="hr-health-employee-details">
@@ -108,28 +192,95 @@
                 </div>
             </div>
 
-
-            <!-- Employee Report of the Month -->
-            <div class="hr-task">
+            <!-- Employee Courses -->
+            <div style="display:none;" class="hr-course">
                 <div class="container">
                     <div class="hr-header">
-                        <h1><strong>Employee Report</strong></h1>
+                        <h1><strong>Approve Courses</strong></h1>
+                    </div>
+                    <div>
+                        <ul class = "list-group">
+                            <% courses.forEach((course,i)=>{ %>
+                                <li class = "list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <%= course.courseName %>
+                                        </div>
+                                        <div class="col-md-8"></div>
+                                        <div class="col-md-2">
+                                            <button onclick="coursesShow(event)" id="<%=i%>" style="float:right;" class="btn btn-primary">Select</button>
+                                        </div>
+                                    </div>
+                                    <div style="display:none;" id = "<%=i%>-course-details">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                Employee: <%=course.employee%>
+                                            </div>
+                                            <div class="col-md-6">
+                                                Course Name: <%=course.courseName%>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                Course Link: <%=course.courseLink%>
+                                            </div>
+                                            <div class="col-md-6">
+                                                Certificate Link: <%=course.certificateLink %>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div style="border-style: inset;" class="my-3 col-md-10">
+                                                Comment from <%=course.employee%><hr class="my-1"> <p><%=course.employeeComment%></p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-11">
+                                                <div >Add Comments</div>
+                                                <textarea id="<%=i%>-course-approve-comment" style="width:95%;"></textarea>
+                                            </div>
+                                            <div class="col-md-1 mt-5">
+                                                <button id="<%=i%>" onclick="courseApprove(event)" style="float:right;" class="btn btn-info">Approve</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            <% }) %>
+                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emplyee Message -->
+            <div style="display:none;" class = "hr-message">
+                <div class="container">
+                    <div class="hr-header">
+                        <h1><strong>Message Corner</strong></h1>
                     </div>
                     <div class="form-group">
-                        <label for="hr-monthreport-employee">Select Employee</label>
-                        <select name="id" class="custom-select" id="hr-monthreport-employee">
-                            <option id='1'>Undertaker</option>
-                            <option id='2'>Rey Mysterio</option>
-                            <option id='3'>The Rock</option>
+                        <label for="hr-message-employee">Select Employee</label>
+                        <select name="hr-message-employee" class="custom-select" id="hr-message-employee">
+                           <option>Select...</option>
+                            <% employee.forEach((emp)=>{ %>
+                                <option><%=emp.name%></option>
+                            <%})%>
                         </select>
                     </div>
-                    <div style="display:none;" id="hr-monthreport-employee-details">
-                        <div>
-                            Employee Monthly Report
+                    <div class="row my-3">
+                        <div class="col-md-6">
+                            Employee Email: <span id="hr-message-email"></span>
                         </div>
-                        <ul class="list-group" id='ul-hr-monthreport'>
-
-                        </ul>
+                        <div class="col-md-6">
+                            Department: <span id="hr-message-department"></span>
+                        </div>
+                    </div>
+                    <input style="display:none;" type="text" name="email" id="email">
+                    <div class="form-group">
+                        <label for="hr-message">Add Your Message</label>
+                        <textarea id="hr-message" name="hr-message" class="form-control" rows="7"></textarea>
+                    </div>
+                    <div class="pb-5">
+                        <button id="btn-message-submit" style="float:right;" class="btn btn-info">Submit</button>
                     </div>
                 </div>
             </div>
@@ -137,20 +288,60 @@
     </div>
 
     <script>
-        // Select which tasks to do for the manager
-        Array.from(document.querySelectorAll('a')).forEach((item)=> {
-            document.querySelector(`a.${item.className}`).addEventListener('click', ()=>{
-                displayOff();
-                document.querySelector(`div.${item.className}`).style.display="block";
-            })
-        })
-        let displayOff = () =>{
-            Array.from(document.querySelectorAll('a')).forEach((item)=>{
-                document.querySelector(`div.${item.className}`).style.display="none";
+
+        // Show courses for approval
+        function coursesShow(event){
+            let id = event.target.id;
+            let element = document.getElementById(`${id}-course-details`);
+            if(element.style.display == 'none')
+                element.style.display ='block';
+            else
+                element.style.display='none';
+        }
+
+        // Approve Courses after checking
+        function courseApprove(event){
+            let id = event.target.id;
+            let comment = document.getElementById(`${id}-course-approve-comment`).value;
+            id = <%- JSON.stringify(courses)%>[id].id;
+            console.log(id);
+            fetch('/courses/approve',{
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                redirect: 'follow', 
+                referrerPolicy: 'no-referrer',
+                body: JSON.stringify({id:id,comment:comment})
+            }).then(response => response.json()).then((data)=>{
+                if(data.message=='success'){
+                    alert(data.message);
+                    location.reload();
+                }else{
+                    alert(data.message);
+                }
             })
         }
 
-        // Show Employee Details
+        // Select which tasks to do for the manager
+        Array.from(document.querySelectorAll('.anchor')).forEach((item)=> {
+            item.addEventListener('click', ()=>{
+                displayOff();
+                document.querySelector(`div.${item.className.split(' ')[1]}`).style.display="block";
+                item.classList.add('active')
+            })
+        })
+        let displayOff = () =>{
+            Array.from(document.querySelectorAll('.anchor')).forEach((item)=>{
+                document.querySelector(`div.${item.className.split(' ')[1]}`).style.display="none";
+                item.classList.remove('active');
+            })
+        }
+
+        // Show Health Details of Selected Employee
         document.querySelector('#hr-health-employee').addEventListener('change',()=>{
             let id = document.querySelector('option:checked').id;
             fetch(`/health/${id}`, {
@@ -169,9 +360,11 @@
                 let ul = document.querySelector('#ul-hr-health')
                 ul.innerHTML='';
                 ul.style.cursor='pointer';
-                info.forEach((entry)=>{
+                // Generate each health report of employee
+                info.forEach((entry,i)=>{
                     let {date,status} = entry;
                     let listItem = document.createElement("li");
+                    listItem.id = i;
                     listItem.classList.add('list-group-item')
                     let div = document.createElement('div');
                     div.classList.add('row');
@@ -190,57 +383,96 @@
                     div.appendChild(div1);
                     div.appendChild(div2);
                     listItem.appendChild(div);
+                    
+                    // Check for sick or healthy for 3 days
+                    if(i==0){
+                        let healthdate = new Date(date);
+                        console.log(healthdate);
+                        let currentdate = new Date();
+                        console.log(currentdate)
+                        let timediff = currentdate - healthdate;
+                        let days =(timediff / (1000 * 3600 * 24));
+                        if(days>2){
+                            if(status == 'sick'){
+                                listItem.classList.add('sick-days');
+                            }else{
+                                listItem.classList.add('healthy-days') ;
+                            }
+                        }
+                    }
+
+                    // Generate extra message to show on hover
+                    let div3 = document.createElement('div');
+                    div3.style.display='none';
+                    div3.id = `div-${i}`;
+                    div3.innerText = "Description: ";
+                    let p1 = document.createElement('p');
+                    let text='';
+                    let name = document.querySelector('select').value;
+                    if(entry.travelling==true){
+                        text=`${name} has travelled internationally in the past two weeks. Their message is "${entry.description}"`
+                    }else{
+                        text=`${name} has not travelled internationally in the past two weeks. Their message is "${entry.description}"`
+                    }
+                    p1.innerText=text;
+                    div3.appendChild(p1);
+                    listItem.appendChild(div3);
+
+                    listItem.addEventListener('mouseenter',(e)=>{
+                        document.querySelector(`#div-${e.target.id}`).style.display='block';
+                    })
+                    listItem.addEventListener('mouseleave',(e)=>{
+                        document.querySelector(`#div-${e.target.id}`).style.display='none';
+                    })
                     ul.appendChild(listItem);
                 })
             }) 
         })
 
-        // Show Monthly Report
-        document.querySelector('#hr-monthreport-employee').addEventListener('change',()=>{
-            let id = document.querySelector('option:checked').id;
-            fetch(`/monthlyreport/${id}`, {
-                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, *cors, same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
+        document.querySelector('#hr-message-employee').addEventListener('change',(e)=>{
+            let index = e.target.selectedIndex;
+            index--;
+            let email = <%-JSON.stringify(employee)%>[index].email;
+            let department = <%- JSON.stringify(employee)%>[index].department;
+            document.querySelector('#hr-message-email').innerText=email;
+            document.querySelector('#hr-message-department').innerText=department;
+            console.log(email,department);
+        })
+
+        document.querySelector('#btn-message-submit').addEventListener('click',()=>{
+            
+            let email = document.querySelector('#hr-message-email').innerText;
+            let message = document.querySelector('#hr-message').value;
+            let obj = {
+                email: email,
+                message: message
+            }
+            // console.log(obj);
+            fetch(`/message`, {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
                 headers: {
                 'Content-Type': 'application/json'
-                // 'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                redirect: 'follow', // manual, *follow, error
-                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                body: JSON.stringify({'empty':'data'}) // body data type must match "Content-Type" header
-            }).then(data => data.json()).then((info)=>{
-                document.querySelector('#hr-monthreport-employee-details').style.display='block';
-                let ul = document.querySelector('#ul-hr-monthreport')
-                ul.innerHTML='';
-                ul.style.cursor='pointer';
-                info.forEach((entry)=>{
-                    let {date,status} = entry;
-                    let listItem = document.createElement("li");
-                    listItem.classList.add('list-group-item')
-                    let div = document.createElement('div');
-                    div.classList.add('row');
-                    let div1 = document.createElement('div');
-                    div1.classList.add('col-md-10');
-                    let div2 = document.createElement('div');
-                    div2.classList.add('col-md-2');
-                    div1.innerText='Date: ';
-                    div2.innerText='Status: ';
-                    let span1 = document.createElement('span');
-                    span1.innerText=new Date(date).toDateString();
-                    div1.appendChild(span1);
-                    let span2 = document.createElement('span');
-                    span2.innerText=status;
-                    div2.appendChild(span2); 
-                    div.appendChild(div1);
-                    div.appendChild(div2);
-                    listItem.appendChild(div);
-                    ul.appendChild(listItem);
-                })
-            }) 
-        })
+                redirect: 'follow', 
+                referrerPolicy: 'no-referrer',
+                body: JSON.stringify(obj)
+            }).then(response => response.json()).then((data)=>{
+                if(data.message=='success'){
+                    alert('message sent successfully');
+                    location.reload();
+                }else{
+                    alert(data.message);
+                }
+            })
+        })        
 
+       // Logout button
+       document.querySelector('#btn-logout').addEventListener('click',()=>{
+            window.location = '/logout';
+        })
             
     </script>
     

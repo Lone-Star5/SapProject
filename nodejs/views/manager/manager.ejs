@@ -70,40 +70,91 @@
         .reassign-task-header h1{
             padding-top:50px;
         }
-       
-       
+        #btn-logout{
+            padding:10px;
+            width: 55%;
+            height:6vh;
+            border-radius:50%;
+            background: #ab2724;
+            color:white;
+            cursor: pointer;
+            margin-top: 5px;
+            text-align:center;
+            border: 1px solid #000000;
+            line-height:2vh;
+            opacity: 0.4;
+        }
+        #btn-logout:hover{
+            background: #ff2724;
+            width:55%;
+            opacity: 1;
+        }
+        input,select,textarea{
+            background: #ccccdd !important;
+            border-radius: 1rem;
+            border: 1.5px solid black;
+        }
+        select{
+            width:70%;
+            padding:5px;
+        }
+        input[type=number]{
+            text-align: center;
+        }
+        .active{
+            color: #f1f1f1 !important;
+        }
+        textarea{
+            padding: 10px;
+        }
+        label{
+            font-size:larger;
+        }
+        li{
+            background: #eeeeee !important;
+            color:#000000;
+            box-shadow: 10px 10px 50px #888888;
+            border: 2px solid white !important;
+        }
     </style>
 </head>
 <body>
-    <div class="row">
-        <div class="col-md-3">
+    <div class="px-0 mx-0 row">
+        <div class=" px-0 mx-0 col-md-3">
             <div class="sidenav">
                 <div class="nav-manager-heading">
-                    Manager Zone
+                    Welcome, <%=email%>
                 </div>
                 <hr style="background:white;">
-                <a class="task-create" href="#">
+                <a class="anchor task-create active" href="#">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
                       </svg>
                     Create Tasks
                 </a>
 
-                <a class="task-review" href="#">
+                <a class="anchor task-all" href="#">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
+                      </svg>
+                    All Tasks
+                </a>
+
+                <a class="anchor task-review" href="#">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
                       </svg>
                       Review Tasks
                 </a>
 
-                <a class="task-sick" href="#">
+                <a class="anchor task-sick" href="#">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
                       </svg>
                       Reassign Tasks
                 </a>
 
-                <a class="task-sick" href="manager/report">
+                <a class="task-report" href="/employee/report">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
                       </svg>
@@ -111,10 +162,23 @@
                 </a>
               </div>
         </div>
-        <div class="col-md-9">
-
+        <div style="background: #304352;  /* fallback for old browsers */
+        background: -webkit-linear-gradient(to right, #d7d2cc, #304352);  /* Chrome 10-25, Safari 5.1-6 */
+        background: linear-gradient(to right, #d7d2cc, #304352); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        " class="px-0 mx-0 col-md-9">
+            
+            <!-- Logout button -->
+            <div class="mx-0 px-0 row">
+                <div class="col-8 col-md-10"></div>
+                <div class="col-4 col-md-2">
+                    <div id ="btn-logout">
+                        Logout
+                    </div>
+                </div>
+            </div>
+            
             <!-- This is for adding tasks -->
-            <div style="display:none;" class="task-create">
+            <div style="display:block;" class="task-create">
                 <form method='post' action='/task/create'>
                     <h1 class="task-header"><strong>Add Task</strong></h1>
                     <hr>
@@ -151,16 +215,73 @@
                 </form>
             </div>
 
+            <!-- This is for Displaying all tasks -->
+            <div style="font-size: 1.25rem;display:none;" class ="task-all">
+                <div class="container">
+                    <div class="review-task-header">
+                        <h1><strong>All Tasks</strong></h1>
+                    </div>
+                    <div class="mb-5">
+                        <ul class="list-group">
+                            <% alltasks.forEach((task,i)=>{ %>
+                                <li style="
+                                        background: <%= task.completedate==undefined ? 'rgba(255,0,0,0.5)'  :  'rgba(0,255,0,0.4)' %> !important;
+                                " class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <%= task.title %> 
+                                        </div>
+                                        <div class="col-md-8"></div>
+                                        <div class="col-md-2">
+                                            <button style="float:right;" onclick="taskAll(event)" id="<%=i%>" class="btn btn-primary">Select</button> 
+                                        </div>
+                                    </div>
+                                    <div style="display:none;" id="<%=i%>-task-all">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                Employee: <%=task.employee%>
+                                            </div>
+                                            <div class="col-md-6">
+                                                Points: <%=task.taskpoints%>/<%=task.totalpoints%>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                Complete Date: 
+                                                <% if(task.completedate == undefined){ %> 
+                                                    N/A
+                                                <% }else {  %>
+                                                    <%= new Date(task.completedate._seconds*1000).toDateString() %>
+                                                <% } %>
+                                            </div>
+                                            <div class="col-md-6">
+                                                Deadline: <%= new Date(task.deadline._seconds*1000).toDateString() %>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2 row">
+                                            <div class="col-md-12">
+                                                Task Description
+                                                <p><%= task.description %></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            <% }) %>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
 
             <!-- This is for reviewing tasks -->
-            <div style="display:none;" class="task-review">
+            <div style="display:none;"class = "task-review">
                 <div class="container">
                     <div class="review-task-header">
                         <h1><strong>Review Tasks</strong></h1>
                     </div>
                     <div class="mb-5">
                         <ul class="list-group">
-                            <% tasks.forEach((task,i)=>{ %>
+                            <% reviewtasks.forEach((task,i)=>{ %>
                             <li class="list-group-item">
                                 <div class="row">
                                     <div class="col-md-2">
@@ -172,10 +293,28 @@
                                     </div>
                                 </div>
                                 <div class="mt-4" style="display:none;" id="task-<%=i%>">
-                                    <h5 style="display:inline; margin-right:10px">Employee: <span data-id=<%=task.id%>><%= task.employee %></span> </h1>
-                                    <label> Points </label>
-                                    <input class="points" type="number" data-task= "<%=task.totalpoints%>" >
-                                    <button style="float:right;" class="btn btn-danger task-review-update">Update</button>
+                                    <div class="row">
+                                        <div style="font-size: larger;" class="col-md-6">
+                                            <h5>Employee: <span id='<%=i%>-task-review-email'><%=task.employee%></span></h5>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Assign Points </label>
+                                            <input id='<%=i%>-task-review-points' class="points" type="number" data-task= "<%=task.totalpoints%>">        
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div style="border-style: inset;" class="my-3 col-md-10">
+                                            Comment from <%=task.employee%><hr class="my-1"> <p><%=task.employeeComment%></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-11">
+                                            <div>Add Comments</div><textarea id='<%=i%>-task-review-comment' style="width:95%;"></textarea>
+                                        </div>
+                                        <div class="col-md-1 mt-5">
+                                            <button id=<%=i%> style="float:right;" class="btn btn-danger task-review-update">Update</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </li>
                             <% }) %> 
@@ -185,14 +324,14 @@
             </div>
 
             <!-- This is for re-assigning tasks of sick employees -->
-            <div style="display:block;" class="task-sick">
+            <div style="display:none;" class="task-sick">
                 <div class="container">
                     <div class="reassign-task-header">
                         <h1><strong>Re-Assign Tasks</strong></h1>
                     </div>
                     <div class="mb-5">
                         <ul class="list-group">
-                            <% tasks.forEach((task,i)=>{ %>
+                            <% reassigntasks.forEach((task,i)=>{ %>
                             <li class="list-group-item"> 
                                 <div class="row">
                                     <div class="col-md-2">
@@ -205,38 +344,58 @@
                                 </div>
 
                                 <div class="mt-4" style="display:none;" id="task-assign-<%=i%>">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <h5> Employee Name: <span><%=task.employee%></span></h5>
+                                    <div style="padding:10px;">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h5> Employee: <span><%=task.employee%></span></h5>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Assign Points
+                                                    <input id="<%=i%>-task-reassign-points" class='reAssign-points' type="number" data-id="<%=i%>" data-task="<%=task.totalpoints%>">
+                                                </label>
+                                            </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <label>Assign Points
-                                                <input class='reAssign-points' type="number" data-id="<%=i%>" data-task="<%=task.totalpoints%>">
-                                            </label>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div>Add Comment</div>
+                                                <textarea id="<%=i%>-task-reassign-comment" style="width:90%;"></textarea>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label>Select New Employee
-                                                <select>
-                                                    <% employee.forEach((emp)=>{ %>
-                                                        <option><%= emp.email%></option>
-                                                    <% }) %>
-                                                </select>
-                                            </label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <div id="reAssign-points-<%=i%>" class="col-md-10">
+                                    <div style="padding:10px;">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Select New Employee
+                                                    <select id="<%=i%>-task-reassign-email">
+                                                        <% employee.forEach((emp)=>{ %>
+                                                            <option><%= emp.email%></option>
+                                                        <% }) %>
+                                                    </select>
+                                                </label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div style="height: 10vh; line-height: 10vh; font-size: 1.3rem;" id="reAssign-points-<%=i%>">
                                                     Task Points: <span><%=task.totalpoints %></span>
                                                 </div>
-                                                <div class="col-md-2">
-                                                    <button data-id=<%=task.id%> style="float:right;" class="btn btn-danger task-reassign-update">Update</button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div style="height: 10vh; line-height: 10vh; font-size: 1.3rem;">
+                                                    Deadline: <%=task.deadline %>
                                                 </div>
                                             </div>
-                                            
+                                            <div class="col-md-6">
+                                                <label>Reset Deadline: 
+                                                    <input id="<%=i%>-task-reassign-deadline" type='date' required>
+                                                </label>
+                                            </div>
                                         </div>
-                                       
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <button style="width:100%;" id=<%=i%> data-id=<%=task.id%> class="btn btn-danger task-reassign-update">Update</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </li>
@@ -253,15 +412,17 @@
     
     <script>
         // Select which tasks to do for the manager
-        Array.from(document.querySelectorAll('a')).forEach((item)=> {
-                document.querySelector(`a.${item.className}`).addEventListener('click', ()=>{
+        Array.from(document.querySelectorAll('.anchor')).forEach((item)=> {
+                item.addEventListener('click', ()=>{
                 displayOff();
-                document.querySelector(`div.${item.className}`).style.display="block";
+                document.querySelector(`div.${item.className.split(' ')[1]}`).style.display="block";
+                item.classList.add('active')
             })
         })
         let displayOff = () =>{
-            Array.from(document.querySelectorAll('a')).forEach((item)=>{
-                document.querySelector(`div.${item.className}`).style.display="none";
+            Array.from(document.querySelectorAll('.anchor')).forEach((item)=>{
+                document.querySelector(`div.${item.className.split(' ')[1]}`).style.display="none";
+                item.classList.remove('active');
             })
         }
         
@@ -274,6 +435,17 @@
                 element.style.display='none';
             // document.querySelector(`div#task-${event.target.id}`).style.display="block";
         }
+
+        function taskAll(event){
+            let id = event.target.id;
+            let element = document.getElementById(`${id}-task-all`);
+            if(element.style.display=='none'){
+                element.style.display='block';
+            }else{
+                element.style.display='none';
+            }
+        }
+
         // Toggle Select Button for ReAssign task
         function taskAssign(event){
             let element = document.querySelector(`div#task-${event.target.id}`);
@@ -310,14 +482,14 @@
         // Submit task points for update
         Array.from(document.querySelectorAll('.task-review-update')).forEach((item)=>{
             item.addEventListener('click',(e)=>{
-            let parent = e.target.parentElement.childNodes;
-            let employee = parent[1].childNodes[1].innerText;
-            let id = parent[1].childNodes[1].dataset.id;
-            let points =  parent[5].value;
-            obj = {
-                employee: employee,
-                id: id,
-                taskpoints: points
+            let id = e.target.id;
+            let taskpoints = document.getElementById(`${id}-task-review-points`).value
+            let comment = document.getElementById(`${id}-task-review-comment`).value;
+            id = <%-JSON.stringify(reviewtasks)%>[id].id;
+            let obj = {
+                taskpoints: taskpoints,
+                comment: comment,
+                id: id
             }
             fetch(`/task/review`, {
                 method: 'POST',
@@ -340,18 +512,22 @@
             })
         })});
 
+        // Reassign tasks
         Array.from(document.querySelectorAll('.task-reassign-update')).forEach((item)=>{
             item.addEventListener('click',(e)=>{
-                let id = e.target.dataset.id;
-                let newEmployeeEmail = e.target.parentElement.parentElement.parentElement.parentElement.childNodes[1].childNodes[1].childNodes[1].value;
-                let oldEmployeeEmail = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].childNodes[1].childNodes[1].childNodes[1].innerText;
-                let taskpoints = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.childNodes[1].childNodes[3].childNodes[1].childNodes[1].value;
-                taskpoints = Number(taskpoints);
+                let id = e.target.id;
+                console.log(id);
+                let taskpoints = document.getElementById(`${id}-task-reassign-points`).value;
+                let deadline = document.getElementById(`${id}-task-reassign-deadline`).value;
+                let comment = document.getElementById(`${id}-task-reassign-comment`).value;
+                let email = document.getElementById(`${id}-task-reassign-email`).value;
+                id = e.target.dataset.id;
                 let obj = {
                     id: id,
-                    newEmployeeEmail: newEmployeeEmail,
-                    oldEmployeeEmail: oldEmployeeEmail,
-                    taskpoints: taskpoints
+                    email: email,
+                    comment: comment,
+                    taskpoints: taskpoints,
+                    deadline: deadline
                 }
                 fetch(`/task/reassign`, {
                     method: 'POST',
@@ -373,6 +549,11 @@
                     }
                 })
             })
+        })
+
+        // Logout button
+        document.querySelector('#btn-logout').addEventListener('click',()=>{
+            window.location = '/logout';
         })
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

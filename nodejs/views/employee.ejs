@@ -81,27 +81,84 @@
         .reassign-task-header h1 {
             padding-top: 50px;
         }
+        .employee-header{
+            height:150px;
+            text-align:center;
+        }
+        .employee-header h1{
+            padding-top:30px;
+        }
+        #btn-logout{
+            padding:10px;
+            width: 55%;
+            height:6vh;
+            border-radius:50%;
+            background: #ab2724;
+            color:white;
+            cursor: pointer;
+            margin-top: 5px;
+            text-align:center;
+            border: 1px solid #000000;
+            line-height:2vh;
+            opacity: 0.4;
+        }
+        #btn-logout:hover{
+            background: #ff2724;
+            width:55%;
+            opacity: 1;
+        }
+        input,select,textarea{
+            background: #ccccdd !important;
+            border-radius: 1rem;
+            border: 1.5px solid black;
+        }
+        select{
+            width:70%;
+            padding:5px;
+        }
+        .active{
+            color: #f1f1f1 !important;
+        }
+        textarea{
+            padding: 10px;
+        }
+        label{
+            font-size:larger;
+        }
+        li{
+            background: #eeeeee !important;
+            color:#000000;
+            box-shadow: 10px 10px 50px #888888;
+            border: 2px solid white !important;
+        }
     </style>
 </head>
 
 <body>
-    <div class="row">
-        <div class="col-md-3">
+    <div class="px-0 mx-0 row">
+        <div class="px-0 mx-0 col-md-3">
             <div class="sidenav">
                 <div class="nav-manager-heading">
-                    Employee Zone
+                    Welcome, <%=email%>
                 </div>
                 <hr style="background:white;">
-                <a class="task-view" href="#">
+                <a class="anchor hr-message active" href="#">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
+                      </svg>
+                    Messages
+                </a>
+
+                <a class="anchor task-view" href="#">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
                             d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z" />
                     </svg>
-                    View Tasks
+                    View All Tasks
                 </a>
 
-                <a class="task-update" href="#">
+                <a class="anchor task-update" href="#">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
@@ -110,7 +167,7 @@
                     Update Tasks Completed
                 </a>
 
-                <a class="task-review" href="#">
+                <a class="anchor task-review" href="#">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
@@ -119,64 +176,83 @@
                     Review Tasks Completed
                 </a>
 
-                <a class="task-review" href="/employee/formWellBeing">
+                <a class="anchor task-courses" href="#">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
                             d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z" />
                     </svg>
-                    Survey Form
+                    Courses
                 </a>
+
+                <!-- <a class="task-review" href="/employee/formWellBeing">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z" />
+                    </svg>
+                    Medical Form
+                </a> -->
             </div>
         </div>
-        <div class="col-md-9">
+        <div style="background: #304352;  /* fallback for old browsers */
+        background: -webkit-linear-gradient(to right, #d7d2cc, #304352);  /* Chrome 10-25, Safari 5.1-6 */
+        background: linear-gradient(to right, #d7d2cc, #304352); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        "  class="px-0 mx-0 pb-5 col-md-9">
+
+            <!-- Logout button -->
+            <div class="mx-0 px-0 row">
+                <div class="col-8 col-md-10"></div>
+                <div class="col-4 col-md-2">
+                    <div id ="btn-logout">
+                        Logout
+                    </div>
+                </div>
+            </div>
+
 
             <!-- This is for adding tasks -->
             <div style="display:none;" class="task-view">
-                <form>
-                    <h1 class="task-header"><strong>View Task</strong></h1>
-                    <hr>
-                    <div class="form-group">
-                        <label for="task-name">Task Name</label>
-                        <!-- <input type="text" class="form-control" name="task-name" id="task-name"> -->
-                        <select class="custom-select" name="task-name" id="task-name">
-                            <% tasks.forEach((task,i)=>{ %>
-                            <option><%=task.name%></option>
-                            <%});%>
-                        </select>
-                        <button id="fetchDetails" class="btn btn-primary">Fetch details</button>
-                    </div>
-                    <div id="detailBlock" style="display: none;">
+                <div class="container">
+                    <form>
+                        <h1 class="task-header"><strong>View Task</strong></h1>
+                        <hr>
                         <div class="form-group">
-                            <label for="task-employee">Employee Name</label>
-                            <input type="text" class="form-control" name="task-employee" id="task-employee" disabled>
-                            <!-- <select class="custom-select" name="task-employee" id="task-employee">
-                            <option>Undertaker</option>
-                            <option>The Rock</option>
-                            <option>Rey Mysterio</option>
-                        </select> -->
+                            <label for="task-name">Task Name</label>
+                            <select class="custom-select" name="task-name" id="task-name">
+                                <option>Select a task</option>
+                                <% tasks.forEach((task,i)=>{ %>
+                                <option><%=task.title%></option>
+                                <%});%>
+                            </select>
                         </div>
-                        <div class="form-group">
-                            <label for="task-point">Task Points</label>
-                            <input type="number" class="form-control" name="task-point" id="task-point" disabled>
+                        <div id="detailBlock" style="display:none;">
+                            <div class="form-group">
+                                <label for="task-employee">Employee Name</label>
+                                <input type="text" class="form-control" name="task-employee" id="task-employee" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="task-point">Task Points</label>
+                                <input type="number" class="form-control" name="task-point" id="task-point" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="task-deadline">Task Deadline</label>
+                                <!-- <input type="date" class="form-control" name="task-deadline" id="task-deadline" disabled> -->
+                                <input type="text" class="form-control" name="task-deadline" id="task-deadline" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="task-link">Task Link</label>
+                                <input type="text" class="form-control" name="task-link" id="task-link" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="task-desc">Task Description</label>
+                                <textarea class="form-control" name="task-desc" id="task-desc" rows="10"
+                                    disabled></textarea>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="task-deadline">Task Deadline</label>
-                            <!-- <input type="date" class="form-control" name="task-deadline" id="task-deadline" disabled> -->
-                            <input type="text" class="form-control" name="task-deadline" id="task-deadline" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label for="task-link">Task Link</label>
-                            <input type="text" class="form-control" name="task-link" id="task-link" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label for="task-desc">Task Description</label>
-                            <textarea class="form-control" name="task-desc" id="task-desc" rows="10"
-                                disabled></textarea>
-                        </div>
-                        <button class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
+                
             </div>
 
 
@@ -188,11 +264,12 @@
                     </div>
                     <div class="mb-5">
                         <ul class="list-group">
-                            <% tasks.forEach((task,i)=>{ %>
+                            <% notCompleted.forEach((task,i)=>{ %>
+                            <form method="post" action="/employee/complete">
                             <li class="list-group-item">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <%= task.name %>
+                                        <%= task.title %>
                                     </div>
                                     <div class="col-md-8"></div>
                                     <div class="col-md-2">
@@ -202,18 +279,23 @@
                                 </div>
                                 <div class="mt-4" style="display:none;" id="task-<%=i%>">
                                     <h5 style="display:inline"> <%= task.employee %> </h1>
-                                        <!-- <label> Points </label>
-                                    <input class="points" type="number" data-task= "<%=task.totalPoints%>" > -->
-                                        <button style="float:right;" class="btn btn-secondary">Add Comment</button>
-                                        <button id="addComment" style="float:right" class="btn btn-success submit">Mark
-                                            as Complete</button>
-                                </div>
-                                <div id="commentBlock" style="display: none;">
-                                    <label for="comment">Add comment:</label>
-                                    <input name="comment" type="text" /><br/>
-                                    <button class="btn btn-primary">Comment</button>
+                                    <div style="float:right;" class="btn-group">    
+                                        <button data-index="<%=i%>" id="addComment" class="btn btn-info submit">Add
+                                            Comment</button>
+                                        <button id="markComplete" class="btn btn-success" disabled>Mark as
+                                            Complete</button>
+                                    </div>
+                                    <div style="display: none;">
+                                        <input name="employeeID" type="text" value="<%= task.id %>">
+                                    </div>
+                                    <div id="<%=i%>-commentBlock" style="margin-top:2em; display:none;">
+                                        <label for="commentBox">Add your Comment:</label>
+                                        <textarea data-comp="<%=i%>" name="commentBox" id="commentBox" style="width:100%;"></textarea>
+                                    </div>
                                 </div>
                             </li>
+            </form>
+
                             <% }) %>
                         </ul>
                     </div>
@@ -228,11 +310,11 @@
                     </div>
                     <div class="mb-5">
                         <ul class="list-group">
-                            <% tasks.forEach((task,i)=>{ %>
+                            <% reviewed.forEach((task,i)=>{ %>
                             <li class="list-group-item">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <%= task.name %>
+                                        <%= task.title %>
                                     </div>
                                     <div class="col-md-8"></div>
                                     <div class="col-md-2">
@@ -240,7 +322,6 @@
                                             class="btn btn-primary">Select</button>
                                     </div>
                                 </div>
-
                                 <div class="mt-4" style="display:none;" id="task-assign-<%=i%>">
                                     <div class="row">
                                         <div class="col-md-6">
@@ -253,11 +334,11 @@
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <div id="reAssign-points-<%=i%>" class="col-md-10">
-                                                    <strong>Task Points: <%=task.totalPoints %></strong>
+                                                    <strong>Task Points: </strong><%=task.taskpoints%>/<%=task.totalpoints %>
                                                 </div><br>
-                                                <!-- <div class="col-md-2">
-                                                    <button style="float:right;" class="btn btn-secondary">Add Comment</button>
-                                                </div> -->
+                                                <div id="manager-comment-<%=i%>" class="col-md-10">
+                                                    <strong>Manager Comment: </strong><%=task.managerComment%>
+                                                </div>
                                             </div>
 
                                         </div>
@@ -270,6 +351,129 @@
                     </div>
                 </div>
             </div>
+
+            <!-- This is for Courses -->
+            <div style="display:block;" class="task-courses">
+                <div class="container">
+                    <div class="reassign-task-header">
+                        <h1><strong>Courses</strong></h1>
+                    </div>
+
+                    <!-- adding courses -->
+                    <div>
+                        <form method="post" action="/course/add">
+                            <div class="form-group">
+                                <label for="course-name">
+                                    Course Name
+                                </label>
+                                <input name="course-name" id="course-name" type="text" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="course-link">Course Link</label>
+                                <input name="course-link" id="course-name" type="text" class="form-control">
+                            </div>
+                            <button style="float:right;" class="btn btn-info">Submit</button>
+                        </form>
+                    </div>
+
+                    <!-- Displaying ongoing courses -->
+                    <div class="mt-5">
+                        <h4 class="mt-5">Ongoing Courses</h4><hr>
+                        <ul class = "list-group">
+                            <% courses.forEach((course,i)=>{ %>
+                                <% if(course.completed == false) { %>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                Course Title: <%= course.courseName %>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <button style="float:right;" id="<%=i%>" onclick="coursesShow(event)" class="btn btn-primary">Select</button>
+                                            </div>
+                                        </div>
+                                        <div style="display:none;" id="<%=i%>-courses-display">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div>Add Comment</div>
+                                                    <textarea style="width:100%;" id="<%=i%>-courses-comment"></textarea>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="<%=i%>-courses-link">Certification Link: </label>
+                                                    <input type="text" class="form-control" id="<%=i%>-courses-link" >
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 mt-4">
+                                                    <button id="<%=i%>" onclick = "coursesComplete(event)" style="width:100%;" class="btn btn-danger">Mark as Complete</button>
+                                                </div>
+                                            </div>
+                                                
+                                        </div>
+                                       
+                                    </li>
+                                <% } %>
+                            <% }) %>
+                        </ul>
+                        <h4 class="mt-5">Completed Courses</h4><hr>
+                        <ul class = "list-group">
+                            <% courses.forEach((course,i)=>{ %>
+                                <% if(course.approved == true) { %>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                Course Title: <%= course.courseName %>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <button onclick = "completedShowDetails(event)" style="float:right;" id="<%=i%>" class="btn btn-primary">Select</button>
+                                            </div>
+                                        </div>
+                                        <div style="display:none;" id="<%=i%>-course-completed-show-details">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    Course Link: <a href="<%=course.courseLink%>"><%=course.courseLink%></a>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    Certification Link: <a href="<%=course.certificateLink%>"><%=course.certificateLink%></a>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div style="border-style: inset;" class="my-3 col-md-10">
+                                                    Comment from HR: <%=course.hr%><hr class="my-1"> <p><%=course.hrComment%></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                <% } %>
+                            <% }) %>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message -->
+            <div style="display:none;" class="hr-message">
+                <div class="container">
+                    <div class="employee-header">
+                        <h1><strong>Message Corner</strong></h1>
+                    </div>
+                    <div id="employee-message">
+                            <ul class="list-group">
+                                <% messages.forEach((message,i)=>{ %>
+                                    <li style="cursor:pointer;" class="list-group-item li-message">
+                                        <div class="row my-2">
+                                            <div class="col-md-6">Sender: <span><%=message.sender%></span></div>
+                                            <div class="col-md-6">Date: <span><%=message.date%></span></div>
+                                        </div>
+                                        <div style="display:none;" id="<%=i%>-li-message" class="row">
+                                            <div class="col-md-10"><%=message.message%></div>
+                                            <div class="col-md-2"><button id="<%=i%>" class="btn btn-danger btn-mark-as-read">Mark as Read</button></div>
+                                        </div>
+                                    </li>
+                                <% }) %>
+                            </ul>
+                    </div>
+                </div>   
+            </div>
         </div>
     </div>
 
@@ -277,21 +481,37 @@
 
 
     <script>
+
+        document.querySelector('#task-name').addEventListener('change', () => {
+            let id = document.querySelector('#task-name').selectedIndex;
+            let x=<%-JSON.stringify(tasks)%>;
+            detailBlock.style.display = 'block';
+            document.querySelector('#task-employee').value = x[id-1].employee;
+            document.querySelector('#task-point').value = x[id-1].totalpoints;
+            document.querySelector('#task-deadline').value = new Date(x[id-1].deadline._seconds*1000).toDateString();
+            document.querySelector('#task-link').value = x[id-1].link;
+            document.querySelector('#task-desc').value = x[id-1].description;
+        });
+        
         // Select which tasks to do for the manager
-        Array.from(document.querySelectorAll('a')).forEach((item) => {
-            document.querySelector(`a.${item.className}`).addEventListener('click', () => {
+        Array.from(document.querySelectorAll('.anchor')).forEach((item) => {
+            item.addEventListener('click', () => {
+                let a = item.className.split(' ')[1];
                 displayOff();
-                document.querySelector(`div.${item.className}`).style.display = "block";
+                document.querySelector(`div.${a}`).style.display = "block";
+                item.classList.add('active')
             })
         })
         let displayOff = () => {
-            Array.from(document.querySelectorAll('a')).forEach((item) => {
-                document.querySelector(`div.${item.className}`).style.display = "none";
+            Array.from(document.querySelectorAll('.anchor')).forEach((item) => {
+                document.querySelector(`div.${item.className.split(' ')[1]}`).style.display = "none";
+                item.classList.remove('active');
             })
         }
 
         // Toggle Select Button for Review task
         function taskReview(event) {
+            event.preventDefault();
             let element = document.querySelector(`div#task-${event.target.id}`);
             if (element.style.display == 'none')
                 element.style.display = 'block';
@@ -327,14 +547,116 @@
                 document.querySelector(`#reAssign-points-${e.target.dataset.id}`).innerText = `Task Points: ${e.target.dataset.task - e.target.value}`;
             })
         });
-
-        var x = document.getElementById('fetchDetails');
-        x.addEventListener('click', () => {
-            detailBlock.style.display = "block";
-        });
-        document.getElementById('addComment').addEventListener('click',()=>{
-            commentBlock.style.display = "block";
+        Array.from(document.querySelectorAll('#addComment')).forEach((item)=>{
+            item.addEventListener('click',(e)=>{
+                let index = e.target.dataset.index;
+                e.preventDefault();
+                document.getElementById(`${index}-commentBlock`).style.display = 'block';
+                console.log('comment')
+            })
         })
+
+        Array.from(document.querySelectorAll('#commentBox')).forEach((e)=>{
+            e.addEventListener('change',()=>{
+                if(e.value != ''){
+                Array.from(document.querySelectorAll('#markComplete')).forEach((item,i)=>{
+                    if(i==e.dataset.comp){
+                        item.disabled=false;
+                    }else{
+                        item.disabled=true;
+                    }
+                })
+            }
+            })
+            
+        }) 
+
+
+        // Mark message as read
+        Array.from(document.querySelectorAll('.btn-mark-as-read')).forEach((item)=>{
+            item.addEventListener('click',(e)=>{
+                let index = e.target.id;
+                let id = <%-JSON.stringify(messages)%>[index].id;
+                
+                fetch('/employee/message',{
+                    method: 'POST',
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    credentials: 'same-origin',
+                    headers: {
+                    'Content-Type': 'application/json'
+                    },
+                    redirect: 'follow', 
+                    referrerPolicy: 'no-referrer',
+                    body: JSON.stringify({id:id})
+                }).then(response => response.json()).then((data)=>{
+                    if(data.message=='success'){
+                        alert('Successful');
+                        location.reload();
+                    }else{
+                        alert(data.message);
+                    }
+                })
+            })
+        })
+
+        Array.from(document.querySelectorAll('.li-message')).forEach((item,i)=>{
+            item.addEventListener('click',()=>{
+                let ele = document.getElementById(`${i}-li-message`);
+                if(ele.style.display=='none')
+                    ele.style.display='flex';
+                else
+                    ele.style.display='none';
+            })
+        })
+
+        // Logout button
+        document.querySelector('#btn-logout').addEventListener('click',()=>{
+            window.location = '/logout';
+        })
+
+         // Show details of Ongoing courses.
+         function coursesShow(event){
+            let id = event.target.id;
+            let element = document.getElementById(`${id}-courses-display`);
+            element.style.display =  element.style.display == 'none'? "block" : "none";
+        }
+
+        // Mark course as complete
+        function coursesComplete(event){
+            let id = event.target.id;
+            let comment = document.getElementById(`${id}-courses-comment`).value;
+            let certificateLink = document.getElementById(`${id}-courses-link`).value;
+            id = <%- JSON.stringify(courses)%>[id].id;
+
+            fetch('/courses/complete', {
+                method: 'POST',
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                redirect: 'follow', 
+                referrerPolicy: 'no-referrer',
+                body: JSON.stringify({id:id, comment: comment, certificateLink:certificateLink})
+            }).then(response => response.json()).then((data)=>{
+                if(data.message=='success'){
+                    location.reload();
+                }else{
+                    alert(data.message);
+                }
+            })
+
+        }
+        // Show Details of completed courses
+        function completedShowDetails(event){
+            let id = event.target.id;
+            console.log(id);
+            let element = document.getElementById(`${id}-course-completed-show-details`);
+            element.style.display =  element.style.display == 'none'? "block" : "none";
+        }
+        
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
