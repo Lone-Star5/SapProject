@@ -12,6 +12,7 @@ class ViewHolderTaskAssigned extends StatelessWidget {
     final double _cotainerHeight = MediaQuery.of(context).size.height * 0.13;
     final double _clipperWidth = MediaQuery.of(context).size.width * 0.3;
     final double _clipperHeight = MediaQuery.of(context).size.height * 0.13;
+    Timestamp timestamp = _documentSnapshot['deadline'];
     //ViewHolder Container
     return Container(
       height: _cotainerHeight,
@@ -34,7 +35,10 @@ class ViewHolderTaskAssigned extends StatelessWidget {
                 )),
           ),
           //Divider between the Task heading and the dates inside each ViewHolder
-          Expanded(child: Divider()),
+          Expanded(
+              child: Divider(
+            color: Colors.transparent,
+          )),
           //ClipPath used for drawing the curve with linear gradient.
           ClipPath(
             clipper: BackGroundClipper(),
@@ -54,7 +58,7 @@ class ViewHolderTaskAssigned extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 15.0),
                   child: Text(
-                    "25/10/2020",
+                    timestamp.toDate().toString().substring(0, 10),
                     style: GoogleFonts.ubuntu(
                         textStyle:
                             TextStyle(color: Colors.blue[800], fontSize: 20)),

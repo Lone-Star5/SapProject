@@ -3,8 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sapproject/Employee/EmployeeTaskShow.dart';
-import 'package:sapproject/WelcomeScreen/SignIn/SignIn.dart';
-import 'package:sapproject/WelcomeScreen/SignIn/backEnd/AuthenticationClass.dart';
+import 'package:sapproject/HR/frontEnd/HRHealthScreen.dart';
+import 'package:sapproject/WelcomeScreen/SignInRegister/SignIn.dart';
+import 'package:sapproject/WelcomeScreen/SignInRegister/backEnd/AuthenticationClass.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,17 +24,20 @@ class SAPapp extends StatelessWidget {
       StreamProvider(
         create: (context) =>
             context.read<AuthenticationService>().getauthStateChanges,
-      )
+      ),
     ], child: MaterialApp(home: AuthenticationWrapper()));
   }
 }
 
 class AuthenticationWrapper extends StatelessWidget {
+  static int field = 0;
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User>();
     if (firebaseUser != null) {
-      return EmployeeTaskShow();
+      if (field == 1) {
+        return HRHealthScreen();
+      } else if (field == 2) return EmployeeTaskShow();
     }
     return SignIn();
   }

@@ -27,6 +27,24 @@ class ShowTaskInfo {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
+                      Row(children: [
+                        Text(
+                          StringText.SHOWINFO_AUTHOR,
+                          style: GoogleFonts.ubuntu(
+                            fontSize: 15,
+                          ),
+                        ),
+                        Expanded(child: Divider(color: Colors.transparent))
+                      ]),
+                      Container(
+                        margin: EdgeInsets.only(top: 10, bottom: 10),
+                        child: Text(
+                          documentSnapshot['manager'],
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.ubuntu(
+                              fontWeight: FontWeight.bold, fontSize: 30),
+                        ),
+                      ),
                       // The Row widget here is responsible for the Title and the space after it horizontally.
                       Row(children: [
                         Text(

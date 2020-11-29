@@ -1,10 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sapproject/WelcomeScreen/SignIn/backEnd/CreateAccoutBackEnd.dart';
-import 'package:sapproject/WelcomeScreen/SignIn/backEnd/SignInText.dart';
-import 'package:sapproject/WelcomeScreen/SignIn/frontEnd/DarkBlueGreyClipper.dart';
-import 'package:sapproject/WelcomeScreen/SignIn/frontEnd/LightBlueGreyClipper.dart';
+import 'package:sapproject/WelcomeScreen/SignInRegister/SignIn.dart';
+import 'package:sapproject/WelcomeScreen/SignInRegister/backEnd/CreateAccoutBackEnd.dart';
+import 'package:sapproject/WelcomeScreen/SignInRegister/backEnd/SignInText.dart';
+import 'package:sapproject/WelcomeScreen/SignInRegister/frontEnd/DarkBlueGreyClipper.dart';
+import 'package:sapproject/WelcomeScreen/SignInRegister/frontEnd/LightBlueGreyClipper.dart';
 
 class CreateAccount extends StatefulWidget {
   @override
@@ -18,8 +20,13 @@ class _CreateAccountState extends State<CreateAccount> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
   final TextEditingController _repassController = TextEditingController();
+  String _chosenCategory = "";
   @override
   Widget build(BuildContext context) {
+    final double _categoryContainerHeight =
+        MediaQuery.of(context).size.height * 0.2;
+    final double _categoryContainerWidth =
+        MediaQuery.of(context).size.width * 0.5;
     final double _passwordEntryWidth = MediaQuery.of(context).size.width * 0.6;
     final double _designContainerHeight =
         MediaQuery.of(context).size.height * 0.35;
@@ -267,17 +274,94 @@ class _CreateAccountState extends State<CreateAccount> {
                             colors: [Colors.blueGrey, Colors.blueGrey[900]])),
                     child: TextButton(
                       onPressed: () {
-                        if (_passController.text == _repassController.text) {
-                          CreateAccountBackEnd().createAccount(
-                              context: context,
-                              name: _nameController.text,
-                              phone: _phoneController.text,
-                              dept: _departController.text,
-                              email: _emailController.text,
-                              pass: _passController.text);
-                        } else
-                          Fluttertoast.showToast(
-                              msg: "Password did not match with Re Passsword!");
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return Dialog(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15))),
+                              child: SizedBox(
+                                  height: _categoryContainerHeight,
+                                  width: _categoryContainerWidth,
+                                  child: Container(
+                                    color: Colors.white,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                            margin: const EdgeInsets.only(
+                                                bottom: 15),
+                                            child: Text(SignInText.TYPE,
+                                                style: GoogleFonts.ubuntu(
+                                                    textStyle: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 20)))),
+                                        Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              GestureDetector(
+                                                  onTap: () {
+                                                    _chosenCategory =
+                                                        "Employee";
+                                                    validation();
+                                                  },
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            15),
+                                                    decoration: BoxDecoration(
+                                                        gradient: LinearGradient(
+                                                            begin: Alignment
+                                                                .centerLeft,
+                                                            end: Alignment
+                                                                .centerRight,
+                                                            colors: [
+                                                          Colors.blueGrey,
+                                                          Colors.blueGrey[900]
+                                                        ])),
+                                                    child: Text(
+                                                      "Employee",
+                                                      style: GoogleFonts.ubuntu(
+                                                          color: Colors.white,
+                                                          fontSize: 20),
+                                                    ),
+                                                  )),
+                                              GestureDetector(
+                                                  onTap: () {
+                                                    _chosenCategory = "HR";
+                                                    validation();
+                                                  },
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            15),
+                                                    decoration: BoxDecoration(
+                                                        gradient: LinearGradient(
+                                                            begin: Alignment
+                                                                .centerLeft,
+                                                            end: Alignment
+                                                                .centerRight,
+                                                            colors: [
+                                                          Colors.blueGrey,
+                                                          Colors.blueGrey[900]
+                                                        ])),
+                                                    child: Text("HR",
+                                                        style:
+                                                            GoogleFonts.ubuntu(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 20)),
+                                                  )),
+                                            ]),
+                                      ],
+                                    ),
+                                  )),
+                            );
+                          },
+                        );
                       },
                       child: Text(SignInText.HEADING_CREATE_ACCOUNT,
                           style: GoogleFonts.ubuntu(
@@ -289,5 +373,19 @@ class _CreateAccountState extends State<CreateAccount> {
         ),
       ],
     ));
+  }
+
+  void validation() {
+    if (_passController.text == _repassController.text) {
+      CreateAccountBackEnd().createAccount(
+          context: context,
+          name: _nameController.text,
+          phone: _phoneController.text,
+          dept: _departController.text,
+          email: _emailController.text,
+          pass: _passController.text,
+          category: _chosenCategory);
+    } else
+      Fluttertoast.showToast(msg: "Password did not match with Re Passsword!");
   }
 }
