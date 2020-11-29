@@ -351,7 +351,7 @@ app.get('/hr', isHR, (req, res) => {
         response.forEach((data) => {
             employee.push(data.data());
         })
-        res.render('hr/hr', { email: firebase.auth().currentUser.email, employee: employee });
+        res.render('hr/hr', { email: firebase.auth().currentUser.displayName, employee: employee });
     }).catch(err => {
         console.log(err)
         res.redirect('/');
@@ -461,7 +461,7 @@ app.listen('3000', () => {
 
 // app.post('/', (req, res) => {
 //     let name=req.body.name;
-//     var temp=db.collection('users').doc(name);
+//     var temp=db.collection('users').doc(name);hr
 //     return temp.set({complaint: req.body.complaint, department: req.body.dept}).then(()=>
 //     console.log('Entered')
 //     );

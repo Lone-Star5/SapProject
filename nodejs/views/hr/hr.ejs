@@ -119,6 +119,13 @@
                     Message
                 </a>
 
+                <a class="anchor hr-course" href="#">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
+                      </svg>
+                    Courses
+                </a>
+
                 <a class="anchor hr-health" href="#">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cursor" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103zM2.25 8.184l3.897 1.67a.5.5 0 0 1 .262.263l1.67 3.897L12.743 3.52 2.25 8.184z"/>
@@ -175,8 +182,36 @@
                 </div>
             </div>
 
+            <!-- Employee Courses -->
+            <div style="display:block;" class="hr-course">
+                <div class="container">
+                    <div class="hr-header">
+                        <h1><strong>Health Report</strong></h1>
+                    </div>
+                    <div class = "form-group">
+                        <label>Select Employee</label>
+                        <select id="course-select" class="custom-select">
+                            <option>Select...</option>
+                            <% employee.forEach((employee,i)=>{ %>
+                                <option><%=employee.name%></option>
+                                <% }) %>
+                        </select>
+                    </div>
+                   
+                    <div class="row">
+                        <div class="col-md-6">
+                            Employe Email: <span id="course-info-email"></span>
+                        </div>
+                        <div class="col-md-6">
+                            Employee Department: <span id="course-info-dept"></span>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
             <!-- Emplyee Message -->
-            <div class = "hr-message">
+            <div style="display:none;" class = "hr-message">
                 <div class="container">
                     <div class="hr-header">
                         <h1><strong>Message Corner</strong></h1>
@@ -212,6 +247,15 @@
     </div>
 
     <script>
+
+        document.querySelector('#course-select').addEventListener('change',(e)=>{
+            let id = e.target.selectedIndex;
+            id--;
+            document.getElementById(`course-info-email`).innerText = <%- JSON.stringify(employee)%>[id].email;
+            document.getElementById(`course-info-dept`).innerText = <%- JSON.stringify(employee)%>[id].department;
+
+        })
+
         // Select which tasks to do for the manager
         Array.from(document.querySelectorAll('.anchor')).forEach((item)=> {
             item.addEventListener('click', ()=>{
