@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:sapproject/WelcomeScreen/SignIn/CreateAccount.dart';
-import 'package:sapproject/WelcomeScreen/SignIn/backEnd/AuthenticationClass.dart';
-import 'package:sapproject/WelcomeScreen/SignIn/backEnd/SignInText.dart';
-import 'package:sapproject/WelcomeScreen/SignIn/frontEnd/DarkBlueGreyClipper.dart';
-import 'package:sapproject/WelcomeScreen/SignIn/frontEnd/LightBlueGreyClipper.dart';
+import 'package:sapproject/WelcomeScreen/SignInRegister/CreateAccount.dart';
+import 'package:sapproject/WelcomeScreen/SignInRegister/backEnd/AuthenticationClass.dart';
+import 'package:sapproject/WelcomeScreen/SignInRegister/backEnd/SignInText.dart';
+import 'package:sapproject/WelcomeScreen/SignInRegister/frontEnd/DarkBlueGreyClipper.dart';
+import 'package:sapproject/WelcomeScreen/SignInRegister/frontEnd/LightBlueGreyClipper.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -22,6 +22,7 @@ class _SignInState extends State<SignIn> {
     final double _designContainerHeight =
         MediaQuery.of(context).size.height * 0.4;
     return Scaffold(
+        //Responsible for showing the style of sign in page at the top with two different colors.
         body: Column(
       children: [
         Container(
@@ -51,6 +52,7 @@ class _SignInState extends State<SignIn> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                //Widget for Email ID Field
                 Container(
                   margin: const EdgeInsets.only(top: 25),
                   width: _passwordEntryWidth,
@@ -90,6 +92,7 @@ class _SignInState extends State<SignIn> {
                   color: Colors.transparent,
                   thickness: 2,
                 ),
+                //Widget for Password Field
                 Container(
                   width: _passwordEntryWidth,
                   child: TextFormField(
@@ -117,6 +120,7 @@ class _SignInState extends State<SignIn> {
                             color: Colors.black,
                           ))),
                 ),
+                //Widget responsible for showing the Sign In button on the screen
                 Container(
                     margin: const EdgeInsets.only(top: 20),
                     width: _passwordEntryWidth,
@@ -136,6 +140,7 @@ class _SignInState extends State<SignIn> {
                           style: GoogleFonts.ubuntu(
                               color: Colors.white, fontSize: 20)),
                     )),
+                // Widget responsible for showing the New User button SignIn Page.
                 Container(
                     margin: const EdgeInsets.only(top: 20),
                     width: _passwordEntryWidth,

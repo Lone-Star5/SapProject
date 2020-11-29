@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sapproject/Employee/backEnd/StringText.dart';
 import 'package:sapproject/Employee/backEnd/TaskAssignedBackEnd.dart';
+import 'package:sapproject/Employee/frontEnd/MessageCard.dart';
 import 'package:sapproject/Employee/frontEnd/ShowTaskInfo.dart';
 import 'package:sapproject/Employee/frontEnd/ViewHolderTA.dart';
 
@@ -16,18 +18,21 @@ class TaskAssigned extends StatefulWidget {
 
 class _TaskAssignedState extends State<TaskAssigned> {
   final GlobalKey<ScaffoldState> _scaffoldkey;
-  List<DocumentSnapshot> _listOfTasks;
+  List<DocumentSnapshot> _listOfTasks, _listOfMessages;
   _TaskAssignedState(this._scaffoldkey);
   @override
   void initState() {
     super.initState();
+    _listOfMessages = List<DocumentSnapshot>();
     _listOfTasks = List<DocumentSnapshot>();
   }
 
   @override
   Widget build(BuildContext context) {
     final _heightForHeading = MediaQuery.of(context).size.height * 0.17;
+    final _heightForMessageCard = MediaQuery.of(context).size.height * 0.14;
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         //Heading for the Task Assigned Page
         Container(
@@ -48,9 +53,9 @@ class _TaskAssignedState extends State<TaskAssigned> {
               ),
               //Text For Heading
               Container(
-                margin: const EdgeInsets.only(left: 15),
-                child: Text(StringText.HEADING_TASK_ASSIGNED,
-                    textAlign: TextAlign.left,
+                margin: const EdgeInsets.only(left: 75),
+                child: Text(StringText.DASHBOARD_HEADING,
+                    textAlign: TextAlign.center,
                     style: GoogleFonts.montserrat(
                         textStyle:
                             TextStyle(color: Colors.white, fontSize: 40))),
@@ -62,6 +67,63 @@ class _TaskAssignedState extends State<TaskAssigned> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [Colors.black, Colors.blueGrey])),
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: Text(StringText.SHOWINFO_MESSAGE,
+                  style: GoogleFonts.montserrat(
+                    color: Colors.black,
+                    fontSize: 35,
+                  )),
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 30, right: 30),
+              child: Divider(
+                color: Colors.grey,
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 10, left: 20),
+              width: double.infinity,
+              height: _heightForMessageCard,
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection("Message")
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Text("No Messages");
+                  }
+                  _listOfMessages = snapshot.data.documents;
+                  _listOfMessages.removeWhere((element) =>
+                      element['reciever'] !=
+                      FirebaseAuth.instance.currentUser.email);
+                  return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _listOfMessages.length,
+                      itemBuilder: (context, index) =>
+                          MessageCard(_listOfMessages[index]));
+                },
+              ),
+            ),
+          ],
+        ),
+        Container(
+            margin:
+                const EdgeInsets.only(right: 10, top: 10, bottom: 10, left: 15),
+            child: Text(StringText.HEADING_TASK_ASSIGNED,
+                style: GoogleFonts.montserrat(
+                  color: Colors.black,
+                  fontSize: 35,
+                ))),
+        Container(
+          margin: const EdgeInsets.only(left: 30, right: 30),
+          child: Divider(
+            color: Colors.grey,
+          ),
         ),
         /*
             ReOrderable ListView 
@@ -76,23 +138,26 @@ class _TaskAssignedState extends State<TaskAssigned> {
                 stream:
                     FirebaseFirestore.instance.collection("Task").snapshots(),
                 builder: (context, snapshot) {
-                  if (!snapshot.hasData) return const Text("Loading!...");
-                  _listOfTasks = snapshot.data.documents;
-                  _listOfTasks.removeWhere((element) =>
-                      element['employee'] !=
-                          FirebaseAuth.instance.currentUser.email ||
-                      element['completed'] == true);
-                  return ReorderableListView(
-                    children: _listOfTasks
-                        .map((e) => InkWell(
-                              key: ObjectKey(e),
-                              child: ViewHolderTaskAssigned(e),
-                              onTap: () => ShowTaskInfo().getCard(context, e),
-                            ))
-                        .toList(),
-                    onReorder: (oldIndex, newIndex) =>
-                        TaskAssignedBackEnd().onReorder(oldIndex, newIndex),
-                  );
+                  if (!snapshot.hasData)
+                    return const Text("Loading!...");
+                  else {
+                    _listOfTasks = snapshot.data.documents;
+                    _listOfTasks.removeWhere((element) =>
+                        element['employee'] !=
+                            FirebaseAuth.instance.currentUser.email ||
+                        element['completed'] == true);
+                    return ReorderableListView(
+                      children: _listOfTasks
+                          .map((e) => InkWell(
+                                key: ObjectKey(e),
+                                child: ViewHolderTaskAssigned(e),
+                                onTap: () => ShowTaskInfo().getCard(context, e),
+                              ))
+                          .toList(),
+                      onReorder: (oldIndex, newIndex) =>
+                          TaskAssignedBackEnd().onReorder(oldIndex, newIndex),
+                    );
+                  }
                 }),
           ),
         )

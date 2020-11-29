@@ -12,4 +12,5 @@ class SignInText {
   static final String NEW_USER_DEPT = "Department";
   static final String NEW_USER_PHONE = "Phone";
   static final String HEADING_CREATE_ACCOUNT = "Create Account";
+  static final String TYPE = "Category";
 }

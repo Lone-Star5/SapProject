@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:sapproject/main.dart';
 
 class AuthenticationService {
   final FirebaseAuth _firebaseAuth;
@@ -8,11 +10,19 @@ class AuthenticationService {
   Stream<User> get getauthStateChanges => _firebaseAuth.authStateChanges();
 
   void signIn({String email, String password}) async {
+    FirebaseFirestore.instance.collection("HR").get().then((value) {
+      value.docs.forEach((element) {
+        if (element['email'] == email) {
+          AuthenticationWrapper.field = 1;
+        }
+      });
+    });
+    if (AuthenticationWrapper.field == 0) AuthenticationWrapper.field = 2;
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-      Fluttertoast.showToast(msg: "You have Signed In!");
     } on FirebaseAuthException catch (e) {
+      AuthenticationWrapper.field = 0;
       Fluttertoast.showToast(msg: e.message);
     }
   }
@@ -29,10 +39,11 @@ class AuthenticationService {
     }
   }
 
-  void signOut() async {
+  Future<void> signOut() async {
     try {
       await _firebaseAuth.signOut();
       Fluttertoast.showToast(msg: "You have Signed Out!");
+      AuthenticationWrapper.field = 0;
     } on FirebaseAuthException catch (e) {
       Fluttertoast.showToast(msg: e.message);
     }

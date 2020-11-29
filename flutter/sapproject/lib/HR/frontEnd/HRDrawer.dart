@@ -2,9 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:sapproject/HR/backend/HRText.dart';
+import 'package:sapproject/HR/frontEnd/HRHealthScreen.dart';
 import 'package:sapproject/WelcomeScreen/SignInRegister/backEnd/AuthenticationClass.dart';
 
-class SideDrawer extends StatelessWidget {
+class HRDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _drawerWidth = MediaQuery.of(context).size.width * 0.7;
@@ -22,6 +24,13 @@ class SideDrawer extends StatelessWidget {
               height: _accountSectionHeight,
               child: UserAccountsDrawerHeader(
                 margin: const EdgeInsets.only(top: 20),
+                currentAccountPicture: CircleAvatar(
+                  foregroundColor: Colors.red,
+                  child: CircleAvatar(
+                    radius: 30,
+                    backgroundImage: AssetImage('assets/images/face_logo.png'),
+                  ),
+                ),
                 decoration: new BoxDecoration(color: Colors.blueGrey[900]),
                 accountEmail: Text(FirebaseAuth.instance.currentUser.email,
                     style: GoogleFonts.ubuntu(
@@ -29,7 +38,7 @@ class SideDrawer extends StatelessWidget {
                     )),
                 accountName: Text(FirebaseAuth.instance.currentUser.displayName,
                     style: GoogleFonts.ubuntu(
-                      textStyle: TextStyle(color: Colors.white, fontSize: 26),
+                      textStyle: TextStyle(color: Colors.white, fontSize: 18),
                     )),
               ),
             ),
@@ -38,28 +47,29 @@ class SideDrawer extends StatelessWidget {
               color: Colors.grey[700],
             ),
             // The Options present in drawer starts from here
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              // ignore: todo
-              //TODO: ADD MORE DETAILS HERE
-              child: ListTile(
-                leading: Icon(
-                  Icons.power_settings_new,
-                  color: Colors.white,
-                ),
-                title: InkWell(
-                  onTap: () => context.read<AuthenticationService>().signOut(),
-                  child: new Text(
-                    "Sign- Out",
-                    style: GoogleFonts.ubuntu(
-                        textStyle:
-                            TextStyle(color: Colors.white, fontSize: 20)),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  // ignore: todo
+                  //TODO: ADD MORE DETAILS HERE
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.power_settings_new,
+                      color: Colors.white,
+                    ),
+                    title: new Text(
+                      HRText.HR_SIGN_OUT,
+                      style: GoogleFonts.ubuntu(
+                          textStyle:
+                              TextStyle(color: Colors.white, fontSize: 20)),
+                    ),
+                    onTap: () {
+                      context.read<AuthenticationService>().signOut();
+                    },
                   ),
                 ),
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-              ),
+              ],
             ),
           ],
         ),
