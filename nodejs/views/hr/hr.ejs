@@ -188,7 +188,7 @@
                     <div class="hr-header">
                         <h1><strong>Health Report</strong></h1>
                     </div>
-                    <div class = "form-group">
+                    <!-- <div class = "form-group">
                         <label>Select Employee</label>
                         <select id="course-select" class="custom-select">
                             <option>Select...</option>
@@ -205,7 +205,7 @@
                         <div class="col-md-6">
                             Employee Department: <span id="course-info-dept"></span>
                         </div>
-                    </div>
+                    </div> -->
                     
                 </div>
             </div>
@@ -248,13 +248,13 @@
 
     <script>
 
-        document.querySelector('#course-select').addEventListener('change',(e)=>{
-            let id = e.target.selectedIndex;
-            id--;
-            document.getElementById(`course-info-email`).innerText = <%- JSON.stringify(employee)%>[id].email;
-            document.getElementById(`course-info-dept`).innerText = <%- JSON.stringify(employee)%>[id].department;
+        // document.querySelector('#course-select').addEventListener('change',(e)=>{
+        //     let id = e.target.selectedIndex;
+        //     id--;
+        //     document.getElementById(`course-info-email`).innerText = <%- JSON.stringify(employee)%>[id].email;
+        //     document.getElementById(`course-info-dept`).innerText = <%- JSON.stringify(employee)%>[id].department;
 
-        })
+        // })
 
         // Select which tasks to do for the manager
         Array.from(document.querySelectorAll('.anchor')).forEach((item)=> {
