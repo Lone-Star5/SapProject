@@ -162,7 +162,7 @@ app.get('/manager', isManager, (req, res) => {
                 })
             }).then(() => {
 
-                res.render('manager/manager', { email: firebase.auth().currentUser.email, reviewtasks: reviewtasks, reassigntasks: reassigntasks, employee: employee, alltasks: alltasks });
+                res.render('manager/manager', { email: firebase.auth().currentUser.displayName, reviewtasks: reviewtasks, reassigntasks: reassigntasks, employee: employee, alltasks: alltasks });
             }).catch((err) => {
                 res.json(err);
             })
