@@ -581,6 +581,6 @@ app.post('/employee/complete', (req, res) => {
     })
 })
 
-app.get('/employee/confirmation', (req, res) => {
+app.get('/employee/confirmation', isEmployee, (req, res) => {
     res.render('Confirmation');
 })
