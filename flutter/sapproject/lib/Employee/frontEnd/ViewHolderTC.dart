@@ -26,15 +26,70 @@ class ViewHolderTaskCompleted extends StatelessWidget {
       //Widgets inside the ViewHolder Container
       child: Row(
         children: <Widget>[
+          _documentSnapshot['reviewed'] == true
+              ? Icon(
+                  Icons.verified,
+                  color: Colors.green,
+                )
+              : Icon(
+                  Icons.verified,
+                  color: Colors.red,
+                ),
           Padding(
-            padding: EdgeInsets.only(left: 10, top: 20, bottom: 20),
+            padding: EdgeInsets.only(left: 15, top: 20, bottom: 20),
             child: Text(_documentSnapshot['title'],
                 style: GoogleFonts.ubuntu(
                   textStyle: TextStyle(color: Colors.black, fontSize: 26),
                 )),
           ),
+          _documentSnapshot['managerComment'] != null
+              ? IconButton(
+                  icon: Icon(
+                    Icons.message,
+                    color: Colors.blueGrey,
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: SizedBox(
+                            height: _cotainerHeight,
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Container(
+                                    child: Text(
+                                        "Manager Email : ${_documentSnapshot['manager']}",
+                                        style: GoogleFonts.ubuntu(
+                                            textStyle:
+                                                TextStyle(fontSize: 20))),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(5),
+                                    child: Text(
+                                      _documentSnapshot['managerComment'],
+                                      style: GoogleFonts.ubuntu(fontSize: 25),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                )
+              : Container(),
           //Divider between the Task heading and the dates inside each ViewHolder
-          Expanded(child: Divider()),
+          Expanded(
+              child: Divider(
+            color: Colors.transparent,
+          )),
           //ClipPath used for drawing the curve with linear gradient.
           ClipPath(
             clipper: BackGroundClipper(),

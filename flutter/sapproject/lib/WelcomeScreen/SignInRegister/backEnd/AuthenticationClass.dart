@@ -48,4 +48,13 @@ class AuthenticationService {
       Fluttertoast.showToast(msg: e.message);
     }
   }
+
+  void resetPasswrod({String email}) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      Fluttertoast.showToast(msg: "Password reset mail has been sent to You!");
+    } on FirebaseException catch (e) {
+      Fluttertoast.showToast(msg: e.message);
+    }
+  }
 }
