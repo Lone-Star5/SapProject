@@ -63,13 +63,13 @@ isEmployee = (req, res, next) => {
 }
 
 isSick = (req, res, next) => {
-    var email= firebase.auth().currentUser.email;
+    var email = firebase.auth().currentUser.email;
     db.collection('isCurrentHealth').doc(email).onSnapshot(response => {
-        let date=response.get('date');
-        let status=response.get('status');
-        var a=(new Date(date._seconds*1000).toDateString());
-        var b=(new Date(Date.now()).toDateString());
-        if(a===b)
+        let date = response.get('date');
+        let status = response.get('status');
+        var a = (new Date(date._seconds * 1000).toDateString());
+        var b = (new Date(Date.now()).toDateString());
+        if (a === b)
             next();
         else
             res.redirect('/employee/formWellBeing');
@@ -294,7 +294,7 @@ app.get('/employee', isEmployee, isSick, (req, res) => {
 
 // Show Employee Health Form
 app.get('/employee/formWellBeing', isEmployee, (req, res) => {
-            res.render('employeeHealth');
+    res.render('employeeHealth');
 });
 // Submit Employee Health Form
 app.post('/employee/formWellBeing', (req, res) => {
@@ -306,8 +306,8 @@ app.post('/employee/formWellBeing', (req, res) => {
     obj.email = email;
     obj.date = new Date();
     db.collection('isCurrentHealth').doc(email).set({
-        date:new Date(),
-        status:obj.status
+        date: new Date(),
+        status: obj.status
     }, { merge: true }).then(() => {
         res.json({ message: 'success' });
     }).catch((err) => {
@@ -369,20 +369,20 @@ app.get('/hr', isHR, (req, res) => {
         response.forEach((data) => {
             employee.push(data.data());
         })
-        }).then(()=>{
-            db.collection('Course').get().then((response)=>{
-                response.forEach((data)=>{
-                    let tempobj = data.data();
-                    tempobj.id = data.id;
-                    if((tempobj.approved == false)&&(tempobj.completed == true)){
-                        courses.push(tempobj);
-                    }
-                })
-            }).then(()=>{
-                res.render('hr/hr', { email: firebase.auth().currentUser.displayName, employee: employee ,courses: courses});
-            }).catch(err => {
-                console.log(err)
-                res.redirect('/');
+    }).then(() => {
+        db.collection('Course').get().then((response) => {
+            response.forEach((data) => {
+                let tempobj = data.data();
+                tempobj.id = data.id;
+                if ((tempobj.approved == false) && (tempobj.completed == true)) {
+                    courses.push(tempobj);
+                }
+            })
+        }).then(() => {
+            res.render('hr/hr', { email: firebase.auth().currentUser.displayName, employee: employee, courses: courses });
+        }).catch(err => {
+            console.log(err)
+            res.redirect('/');
         })
     })
 })
@@ -437,22 +437,22 @@ app.post('/courses/complete', (req, res) => {
         employeeComment: req.body.comment,
         completed: true,
         certificateLink: req.body.certificateLink
-    },{merge:true}).then(()=>{
-        res.json({message:'success'});
-    }).catch((err)=>{
-        res.json({message:'error'})
+    }, { merge: true }).then(() => {
+        res.json({ message: 'success' });
+    }).catch((err) => {
+        res.json({ message: 'error' })
     })
 })
 
-app.post('/courses/approve', (req,res)=>{
+app.post('/courses/approve', (req, res) => {
     db.collection("Course").doc(req.body.id).set({
         approved: true,
         hrComment: req.body.comment,
         hr: firebase.auth().currentUser.email
-    },{merge:true}).then(()=>{
-        res.json({message:'success'});
-    }).catch((err)=>{
-        res.json({message:'error'})
+    }, { merge: true }).then(() => {
+        res.json({ message: 'success' });
+    }).catch((err) => {
+        res.json({ message: 'error' })
     })
 })
 
@@ -529,8 +529,8 @@ app.post('/signup', async (req, res) => {
             displayName: name// some displayName,
         });
 
-        if(type=='Employee')
-        db.collection('isCurrentHealth').doc(email).set({date:new Date(),status:'healthy'})
+        if (type == 'Employee')
+            db.collection('isCurrentHealth').doc(email).set({ date: new Date(), status: 'healthy' })
 
         db.collection(type).add({ searchKey: name[0].toUpperCase(), department: dept, email: email, phone: phno, name: name }).then(() => {
             res.redirect('/' + type)
@@ -546,7 +546,20 @@ app.post('/login', isCorrectType, (req, res) => {
     var type = req.body.type;
     firebase.auth().signInWithEmailAndPassword(email, password)
         .then((user) => {
-            res.redirect('/' + type);
+            if (type == 'Employee'){
+                db.collection('isCurrentHealth').doc(email).onSnapshot(response => {
+                    let date = response.get('date');
+                    let status = response.get('status');
+                    var a = (new Date(date._seconds * 1000).toDateString());
+                    var b = (new Date(Date.now()).toDateString());
+                    if (a === b && status === 'sick')
+                        res.render('Confirmation');
+                    else
+                        res.redirect('/employee');
+                })
+            }
+            else
+                res.redirect('/' + type);
         })
         .catch((error) => {
             var errorCode = error.code;
@@ -581,14 +594,6 @@ app.post('/employee/complete', (req, res) => {
     })
 })
 
-canAccessConfirmation = (req, res, next) => {
-    var email= firebase.auth().currentUser.email;
-    db.collection('isCurrentHealth').doc(email).onSnapshot(response=>{
-        if(response.sick === 'sick')
-            next();
-    })
-}
-
-app.get('/employee/confirmation', isEmployee, canAccessConfirmation, (req, res) => {
+app.get('/employee/confirmation', isEmployee, (req, res) => {
     res.render('Confirmation');
 })
