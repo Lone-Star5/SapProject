@@ -16,6 +16,7 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
+  final TextEditingController _resetPassController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final double _passwordEntryWidth = MediaQuery.of(context).size.width * 0.55;
@@ -96,6 +97,7 @@ class _SignInState extends State<SignIn> {
                 Container(
                   width: _passwordEntryWidth,
                   child: TextFormField(
+                      obscureText: true,
                       controller: _passController,
                       cursorColor: Colors.blueGrey,
                       decoration: InputDecoration(
@@ -120,6 +122,104 @@ class _SignInState extends State<SignIn> {
                             color: Colors.black,
                           ))),
                 ),
+                Container(
+                    margin: EdgeInsets.only(top: 15, bottom: 10),
+                    child: GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return Dialog(
+                              child: SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.2,
+                                width: MediaQuery.of(context).size.width * 0.8,
+                                child: Container(
+                                    color: Colors.transparent,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          margin: const EdgeInsets.only(
+                                              left: 15, right: 15),
+                                          child: TextFormField(
+                                            cursorColor: Colors.blueGrey,
+                                            controller: _resetPassController,
+                                            decoration: InputDecoration(
+                                                labelText: SignInText.EMAIL_ID,
+                                                labelStyle: TextStyle(
+                                                    color: Colors.blueGrey),
+                                                fillColor: Colors.white,
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20.0),
+                                                  borderSide: BorderSide(
+                                                    color: Colors.blueGrey,
+                                                  ),
+                                                ),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20.0),
+                                                  borderSide: BorderSide(
+                                                    color: Colors.blueGrey,
+                                                    width: 1.0,
+                                                  ),
+                                                ),
+                                                prefixIcon: Icon(
+                                                  Icons.email,
+                                                  color: Colors.black,
+                                                )),
+                                          ),
+                                        ),
+                                        Container(
+                                            margin:
+                                                const EdgeInsets.only(top: 20),
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.3,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                gradient: LinearGradient(
+                                                    begin: Alignment.centerLeft,
+                                                    end: Alignment.centerRight,
+                                                    colors: [
+                                                      Colors.blueGrey,
+                                                      Colors.blueGrey[900]
+                                                    ])),
+                                            child: TextButton(
+                                              onPressed: () => context
+                                                  .read<AuthenticationService>()
+                                                  .resetPasswrod(
+                                                      email:
+                                                          _resetPassController
+                                                              .text
+                                                              .trim()),
+                                              child: Text(
+                                                  SignInText.RESET_BUTTON,
+                                                  style: GoogleFonts.ubuntu(
+                                                      color: Colors.white,
+                                                      fontSize: 20)),
+                                            )),
+                                      ],
+                                    )),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: Text(SignInText.RESET_PASSWORD,
+                          style: GoogleFonts.ubuntu(
+                              color: Colors.blueGrey,
+                              fontSize: 20,
+                              decoration: TextDecoration.underline)),
+                    )),
                 //Widget responsible for showing the Sign In button on the screen
                 Container(
                     margin: const EdgeInsets.only(top: 20),

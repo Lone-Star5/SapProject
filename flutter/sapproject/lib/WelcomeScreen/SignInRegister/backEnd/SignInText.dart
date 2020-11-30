@@ -13,4 +13,6 @@ class SignInText {
   static final String NEW_USER_PHONE = "Phone";
   static final String HEADING_CREATE_ACCOUNT = "Create Account";
   static final String TYPE = "Category";
+  static final String RESET_PASSWORD = "Reset Password";
+  static final String RESET_BUTTON = "Reset";
 }
