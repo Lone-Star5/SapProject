@@ -65,14 +65,15 @@ isEmployee = (req, res, next) => {
 isSick = (req, res, next) => {
     var email = firebase.auth().currentUser.email;
     db.collection('isCurrentHealth').doc(email).onSnapshot(response => {
+        console.log('1');
         let date = response.get('date');
         let status = response.get('status');
         var a = (new Date(date._seconds * 1000).toDateString());
         var b = (new Date(Date.now()).toDateString());
         if (a === b)
-            next();
+            return next();
         else
-            res.redirect('/employee/formWellBeing');
+            return res.render('employeeHealth');
     })
 }
 
@@ -305,19 +306,24 @@ app.post('/employee/formWellBeing', (req, res) => {
     obj.description = req.body.ques4;
     obj.email = email;
     obj.date = new Date();
-    db.collection('isCurrentHealth').doc(email).set({
-        date: new Date(),
-        status: obj.status
-    }, { merge: true }).then(() => {
-        res.json({ message: 'success' });
-    }).catch((err) => {
-        res.json({ message: 'error' })
-    })
-    db.collection('Health').add(obj).then(data => {
-        res.json({ message: 'success' });
-    }).catch(err => {
-        res.json({ message: 'error' });
-    })
+    console.log(2);
+    try {
+        db.collection('isCurrentHealth').doc(email).set({
+            date: new Date(),
+            status: obj.status
+        }).then(() => {
+            console.log(3);
+            db.collection('Health').add(obj).then(data => {
+                console.log('data',data);
+                return res.json({ message: 'success' });
+            }).catch(err => {
+                return res.json({ message: 'error' });
+            })
+        })
+    }catch(err){
+        res.json({message:'error'});
+    }
+    
 })
 
 
@@ -547,25 +553,33 @@ app.post('/login', isCorrectType, (req, res) => {
     firebase.auth().signInWithEmailAndPassword(email, password)
         .then((user) => {
             if (type == 'Employee'){
+                var flag = false;
                 db.collection('isCurrentHealth').doc(email).onSnapshot(response => {
+                    // console.log(response);
                     let date = response.get('date');
                     let status = response.get('status');
                     var a = (new Date(date._seconds * 1000).toDateString());
                     var b = (new Date(Date.now()).toDateString());
-                    if (a === b && status === 'sick')
-                        res.render('Confirmation');
+                    console.log(a,b,status,date);
+                    if ((a==b)&& (status == 'sick'))
+                        flag=true;
+                    console.log(flag);
+                    if(flag)
+                        return res.render('Confirmation')
                     else
-                        res.redirect('/employee');
+                        return res.redirect('/employee');
+
                 })
+                    
             }
             else
-                res.redirect('/' + type);
+                return res.redirect('/' + type);
         })
         .catch((error) => {
             var errorCode = error.code;
             var errorMessage = error.message;
             console.log(errorCode + ": " + errorMessage);
-            res.redirect('/');
+            return res.redirect('/');
         });
 });
 
