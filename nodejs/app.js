@@ -114,7 +114,7 @@ isManager = (req, res, next) => {
 }
 
 app.get('/', (req, res) => {
-    res.render('landing');
+    res.redirect('/login');
 })
 
 
