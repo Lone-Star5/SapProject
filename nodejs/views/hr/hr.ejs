@@ -362,26 +362,33 @@
                 ul.style.cursor='pointer';
                 // Generate each health report of employee
                 info.forEach((entry,i)=>{
-                    let {date,status} = entry;
+                    let {date,status,illness} = entry;
                     let listItem = document.createElement("li");
                     listItem.id = i;
                     listItem.classList.add('list-group-item')
                     let div = document.createElement('div');
                     div.classList.add('row');
                     let div1 = document.createElement('div');
-                    div1.classList.add('col-md-10');
+                    div1.classList.add('col-md-4');
                     let div2 = document.createElement('div');
-                    div2.classList.add('col-md-2');
+                    div2.classList.add('col-md-4');
+                    let divnew  = document.createElement('div');
+                    divnew.classList.add('col-md-4');
                     div1.innerText='Date: ';
                     div2.innerText='Status: ';
+                    divnew.innerText='Illness: ';
                     let span1 = document.createElement('span');
                     span1.innerText=new Date(date).toDateString();
                     div1.appendChild(span1);
                     let span2 = document.createElement('span');
                     span2.innerText=status;
                     div2.appendChild(span2); 
+                    let spannew = document.createElement('span');
+                    spannew.innerText = illness;
+                    divnew.appendChild(spannew);
                     div.appendChild(div1);
                     div.appendChild(div2);
+                    div.appendChild(divnew);
                     listItem.appendChild(div);
                     
                     // Check for sick or healthy for 3 days
@@ -389,7 +396,6 @@
                         let healthdate = new Date(date);
                         console.log(healthdate);
                         let currentdate = new Date();
-                        console.log(currentdate)
                         let timediff = currentdate - healthdate;
                         let days =(timediff / (1000 * 3600 * 24));
                         if(days>2){

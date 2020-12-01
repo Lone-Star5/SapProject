@@ -41,11 +41,11 @@ isCorrectType = (req, res, next) => {
         })
     }).catch((err) => {
         console.log('Sorry! The designation is incorrect');
-    });
+    }); 
 }
 
 isEmployee = (req, res, next) => {
-    firebase.auth().onAuthStateChanged(user => {
+    let user = firebase.auth().currentUser;
         if (user) {
             var email = firebase.auth().currentUser.email;
             db.collection('Employee').get().then((response) => {
@@ -57,17 +57,17 @@ isEmployee = (req, res, next) => {
                 console.log('Sorry! The designation is incorrect');
             });
         }
-        else
+        else{
             res.redirect('/login');
-    })
+        }
 }
 
-isSick = (req, res, next) => {
-    var email = firebase.auth().currentUser.email;
-    db.collection('isCurrentHealth').doc(email).onSnapshot(response => {
-        console.log('1');
-        let date = response.get('date');
-        let status = response.get('status');
+isSick =  (req, res, next) => {
+    let email = firebase.auth().currentUser.email;
+    db.collection('isCurrentHealth').doc(email).get().then((data)=>{
+        data = data.data();
+        let date = data.date;
+        let status = data.status;
         var a = (new Date(date._seconds * 1000).toDateString());
         var b = (new Date(Date.now()).toDateString());
         if (a === b)
@@ -75,10 +75,11 @@ isSick = (req, res, next) => {
         else
             return res.render('employeeHealth');
     })
+   
 }
 
 isHR = (req, res, next) => {
-    firebase.auth().onAuthStateChanged(user => {
+    let user = firebase.auth().currentUser;
         if (user) {
             var email = firebase.auth().currentUser.email;
             db.collection('HR').get().then((response) => {
@@ -92,11 +93,10 @@ isHR = (req, res, next) => {
         }
         else
             res.redirect('/login');
-    })
 }
 
 isManager = (req, res, next) => {
-    firebase.auth().onAuthStateChanged(user => {
+    let user = firebase.auth().currentUser;
         if (user) {
             var email = firebase.auth().currentUser.email;
             db.collection('Manager').get().then((response) => {
@@ -111,11 +111,10 @@ isManager = (req, res, next) => {
         else {
             res.redirect('/login');
         }
-    })
 }
 
 app.get('/', (req, res) => {
-    res.render('landing');
+    res.redirect('/login');
 })
 
 
@@ -298,31 +297,30 @@ app.get('/employee/formWellBeing', isEmployee, (req, res) => {
     res.render('employeeHealth');
 });
 // Submit Employee Health Form
-app.post('/employee/formWellBeing', (req, res) => {
+app.post('/employee/formWellBeing', async (req, res) => {
     let email = firebase.auth().currentUser.email;
     let obj = {};
-    obj.status = req.body.ques1 == true ? 'sick' : 'healthy';
+    if(req.body.ques1==true){
+        obj.status = 'sick';
+    }else{
+        obj.status = 'healthy';
+    }
     obj.travelling = req.body.ques3;
     obj.description = req.body.ques4;
+    obj.illness = req.body.ques2;
     obj.email = email;
     obj.date = new Date();
-    console.log(2);
-    try {
-        db.collection('isCurrentHealth').doc(email).set({
-            date: new Date(),
-            status: obj.status
-        }).then(() => {
-            console.log(3);
-            db.collection('Health').add(obj).then(data => {
-                console.log('data',data);
-                return res.json({ message: 'success' });
-            }).catch(err => {
-                return res.json({ message: 'error' });
+        db.collection('Health').add(obj).then((data)=>{
+            db.collection('isCurrentHealth').doc(email).set({
+                status: obj.status,
+                date: new Date()
+            }).then(()=>{
+                res.json({message:'success'})
             })
+        }).catch(err=>{
+            res.json({message:'error'})
         })
-    }catch(err){
-        res.json({message:'error'});
-    }
+    
     
 })
 
@@ -543,7 +541,7 @@ app.post('/signup', async (req, res) => {
         });
     }
     else
-        console.log('Password Mismatch');
+        res.json({message: "Error"});
 });
 
 app.post('/login', isCorrectType, (req, res) => {
@@ -551,26 +549,22 @@ app.post('/login', isCorrectType, (req, res) => {
     var password = req.body.password;
     var type = req.body.type;
     firebase.auth().signInWithEmailAndPassword(email, password)
-        .then((user) => {
+        .then(async (user) => {
             if (type == 'Employee'){
                 var flag = false;
-                db.collection('isCurrentHealth').doc(email).onSnapshot(response => {
-                    // console.log(response);
-                    let date = response.get('date');
-                    let status = response.get('status');
+                db.collection('isCurrentHealth').doc(email).get().then((data)=>{
+                    data  = data.data();
+                    let date = data.date;
+                    let status = data.status;
                     var a = (new Date(date._seconds * 1000).toDateString());
                     var b = (new Date(Date.now()).toDateString());
-                    console.log(a,b,status,date);
-                    if ((a==b)&& (status == 'sick'))
+                    if ((a==b)&& (status == 'sick'))    
                         flag=true;
-                    console.log(flag);
                     if(flag)
                         return res.render('Confirmation')
                     else
                         return res.redirect('/employee');
-
-                })
-                    
+                });     
             }
             else
                 return res.redirect('/' + type);
@@ -586,9 +580,9 @@ app.post('/login', isCorrectType, (req, res) => {
 app.get('/logout', (req, res) => {
     firebase.auth().signOut().then(() => {
         console.log('Logging out');
-    }).then(() => {
+    }).then((response) => {
         res.redirect('/login');
-    }).catch(function (error) {
+    }).catch((error)=> {
         var errorCode = error.code;
         var errorMessage = error.message;
         console.log(errorCode + ": " + errorMessage);
