@@ -9,4 +9,5 @@ class HRText {
   static final String HR_EMAIL_BODY = "Description:";
   static final String HR_HEALTH_SEARCH = "Search by Name: ";
   static final String HR_SEND_MAIL = "Send Mail";
+  static final String HR_HEALTH_ILLNESS = "Illness :";
 }

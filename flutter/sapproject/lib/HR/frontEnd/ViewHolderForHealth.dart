@@ -112,7 +112,7 @@ class _ListTileCustom extends StatelessWidget {
                   ),
                 ],
               )),
-          Container(
+              Container(
               margin: const EdgeInsets.only(left: 15, right: 15, top: 20),
               child: Row(
                 children: [
@@ -121,6 +121,19 @@ class _ListTileCustom extends StatelessWidget {
                           textStyle: TextStyle(fontSize: 20))),
                   Expanded(child: Divider(color: Colors.transparent)),
                   Text(_documentSnapshot['travelling'].toString(),
+                      style: GoogleFonts.ubuntu(
+                          textStyle: TextStyle(fontSize: 20))),
+                ],
+              )),
+          Container(
+              margin: const EdgeInsets.only(left: 15, right: 15, top: 20),
+              child: Row(
+                children: [
+                  Text(HRText.HR_HEALTH_ILLNESS,
+                      style: GoogleFonts.ubuntu(
+                          textStyle: TextStyle(fontSize: 20))),
+                  Expanded(child: Divider(color: Colors.transparent)),
+                  Text(_documentSnapshot['illness'].toString(),
                       style: GoogleFonts.ubuntu(
                           textStyle: TextStyle(fontSize: 20))),
                 ],
