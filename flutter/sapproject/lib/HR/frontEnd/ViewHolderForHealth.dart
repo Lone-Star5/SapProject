@@ -1,17 +1,57 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sapproject/HR/backend/HRText.dart';
+import 'package:sapproject/HR/backend/SearchService.dart';
 
 class ViewHolderForHealth {
   List<DocumentSnapshot> _healthReportList;
+  final List<String> _months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+  Map<int, TimeSickClass> _checkPerMonth = {
+    0: TimeSickClass(),
+    1: TimeSickClass(),
+    2: TimeSickClass(),
+    3: TimeSickClass(),
+    4: TimeSickClass(),
+    5: TimeSickClass(),
+    6: TimeSickClass(),
+    7: TimeSickClass(),
+    8: TimeSickClass(),
+    9: TimeSickClass(),
+    10: TimeSickClass(),
+    11: TimeSickClass(),
+  };
   ViewHolderForHealth() {
     _healthReportList = List<DocumentSnapshot>();
   }
   void getHealthView({@required BuildContext context, @required String email}) {
     FirebaseFirestore.instance.collection("Health").get().then((value) {
       value.docs.forEach((element) {
-        if (element['email'] == email) _healthReportList.add(element);
+        Timestamp timestamp = element['date'];
+        if (element['email'] == email) {
+          _checkPerMonth[timestamp.toDate().month - 1].setTotal(
+              _checkPerMonth[timestamp.toDate().month - 1].getTotal + 1);
+          _healthReportList.add(element);
+          if (element['status'] == 'sick') {
+            _checkPerMonth[timestamp.toDate().month - 1].setSickTimes(
+                _checkPerMonth[timestamp.toDate().month - 1].getSickTimes + 1);
+          }
+        }
       });
       final _heightForCard = MediaQuery.of(context).size.height * 0.7;
       final _widthForCard = MediaQuery.of(context).size.width * 0.9;
@@ -25,16 +65,64 @@ class ViewHolderForHealth {
                 child: SizedBox(
                   height: _heightForCard,
                   width: _widthForCard,
-                  child: Container(
-                    color: Colors.transparent,
-                    child: ListView.builder(
-                        itemCount: _healthReportList.length,
-                        itemBuilder: (context, index) =>
-                            _ListTileCustom(_healthReportList[index])),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                            itemCount: 12,
+                            itemBuilder: (context, index) => _MonthTileCustom(
+                                _checkPerMonth[index].getTotal,
+                                _checkPerMonth[index].getSickTimes,
+                                _months[index])),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                            itemCount: _healthReportList.length,
+                            itemBuilder: (context, index) =>
+                                _ListTileCustom(_healthReportList[index])),
+                      ),
+                    ],
                   ),
                 ));
           });
     });
+  }
+}
+
+class _MonthTileCustom extends StatelessWidget {
+  final int total, sickTimes;
+  final String month;
+  _MonthTileCustom(this.total, this.sickTimes, this.month);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.1,
+      margin: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.blueGrey,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Container(child: Text(month, style: TextStyle(color: Colors.white))),
+          Container(
+              margin: const EdgeInsets.only(left: 10, right: 10),
+              child: Row(children: [
+                Container(
+                    child: Text("Days Sick : ${sickTimes.toString()}",
+                        style: GoogleFonts.ubuntu(
+                            textStyle: TextStyle(color: Colors.white)))),
+                Expanded(child: Divider(color: Colors.transparent)),
+                Container(
+                    child: Text(
+                        "Days Healthy : ${(total - sickTimes).toString()}",
+                        style: GoogleFonts.ubuntu(
+                            textStyle: TextStyle(color: Colors.white)))),
+              ])),
+        ],
+      ),
+    );
   }
 }
 
@@ -112,7 +200,7 @@ class _ListTileCustom extends StatelessWidget {
                   ),
                 ],
               )),
-              Container(
+          Container(
               margin: const EdgeInsets.only(left: 15, right: 15, top: 20),
               child: Row(
                 children: [

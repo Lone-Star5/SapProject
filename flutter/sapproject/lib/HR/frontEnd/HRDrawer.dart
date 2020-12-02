@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:sapproject/HR/backend/HRText.dart';
-import 'package:sapproject/HR/frontEnd/HRHealthScreen.dart';
 import 'package:sapproject/WelcomeScreen/SignInRegister/backEnd/AuthenticationClass.dart';
 
 class HRDrawer extends StatelessWidget {
@@ -24,13 +23,6 @@ class HRDrawer extends StatelessWidget {
               height: _accountSectionHeight,
               child: UserAccountsDrawerHeader(
                 margin: const EdgeInsets.only(top: 20),
-                currentAccountPicture: CircleAvatar(
-                  foregroundColor: Colors.red,
-                  child: CircleAvatar(
-                    radius: 30,
-                    backgroundImage: AssetImage('assets/images/face_logo.png'),
-                  ),
-                ),
                 decoration: new BoxDecoration(color: Colors.blueGrey[900]),
                 accountEmail: Text(FirebaseAuth.instance.currentUser.email,
                     style: GoogleFonts.ubuntu(

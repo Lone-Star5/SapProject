@@ -19,3 +19,17 @@ class SearchService {
     return snapshot;
   }
 }
+
+class TimeSickClass {
+  int _total = 0, _times = 0;
+  int get getTotal => this._total;
+  int get getSickTimes => this._times;
+
+  void setTotal(int x) {
+    this._total = x;
+  }
+
+  void setSickTimes(int x) {
+    this._times = x;
+  }
+}
